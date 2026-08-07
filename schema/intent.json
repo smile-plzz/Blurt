@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blurt.local/schema/intent.json",
+  "title": "Intent",
+  "description": "Full lifecycle of a single captured intent, from capture to resolution.",
+  "type": "object",
+  "schemaVersion": "0.1.0",
+  "required": ["id", "text", "captured_at", "resolution_status"],
+  "properties": {
+    "id": { "type": "string", "description": "UUID for this intent." },
+    "text": { "type": "string", "description": "Raw transcribed (or typed) intent text, unedited." },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "capture_method": {
+      "type": "string",
+      "enum": ["voice", "typed_fallback"],
+      "description": "How the intent entered the system. Capture stays dumb: no analysis here."
+    },
+    "reminder_sent_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Set by the Reminder Agent once a check-in fires. Null until then."
+    },
+    "follow_up_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "How many follow-up check-ins have fired for this intent."
+    },
+    "resolution_status": {
+      "type": "string",
+      "enum": [
+        "unresolved",
+        "done",
+        "done_late",
+        "done_adjacent",
+        "no_longer_relevant",
+        "abandoned"
+      ],
+      "description": "Not a boolean by design. See blurt-concept.md's 'resolved needs more than binary yes/no' note. done_adjacent = did something related instead of the literal intent; no_longer_relevant = user decided it didn't matter; abandoned = repeatedly ignored, no repair worked."
+    },
+    "resolved_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "category": {
+      "type": ["string", "null"],
+      "description": "Inferred task category, written by Persona Agent, read by Reminder Agent. Null until inferred."
+    }
+  }
+}

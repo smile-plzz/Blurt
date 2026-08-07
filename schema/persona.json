@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://blurt.local/schema/persona.json",
+  "title": "User Persona",
+  "description": "Per-user, isolated persona. Never pooled or generalized across users.",
+  "type": "object",
+  "schemaVersion": "0.1.0",
+  "required": ["user_id", "onboarding_profile", "interaction_log", "inferred_patterns", "active_clarifications"],
+  "properties": {
+    "user_id": { "type": "string" },
+    "onboarding_profile": {
+      "type": "object",
+      "description": "Cold-start snapshot. Written once at onboarding, read by inference to seed inferred_patterns.",
+      "properties": {
+        "adhd_subtype": {
+          "type": "string",
+          "enum": ["inattentive", "hyperactive", "combined", "unspecified"]
+        },
+        "mc_answers": {
+          "type": "object",
+          "description": "Multiple-choice onboarding answers (daily rhythm, known triggers, etc). Keyed by question id."
+        },
+        "voice_transcript_analysis": {
+          "type": ["string", "null"],
+          "description": "Summary derived from voice-recorded open answers at onboarding."
+        }
+      }
+    },
+    "interaction_log": {
+      "type": "array",
+      "description": "Passive signal. Append-only. One entry per intent lifecycle event.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "intent_id": { "type": "string" },
+          "captured_at": { "type": "string", "format": "date-time" },
+          "reminder_sent_at": { "type": ["string", "null"], "format": "date-time" },
+          "resolution_status": { "type": "string" },
+          "resolved_at": { "type": ["string", "null"], "format": "date-time" },
+          "follow_up_count": { "type": "integer" }
+        }
+      }
+    },
+    "inferred_patterns": {
+      "type": "object",
+      "description": "The layer that turns raw logs into something the reminder engine can act on. Written by Persona Agent, read by Reminder Agent.",
+      "properties": {
+        "forget_triggers": { "type": "array", "items": { "type": "string" } },
+        "best_reminder_windows": { "type": "array", "items": { "type": "string" } },
+        "task_categories_prone_to_drop": { "type": "array", "items": { "type": "string" } },
+        "confidence": {
+          "type": "object",
+          "description": "Per-field confidence/coverage metrics, to make overfitting-to-one-user risk visible rather than silent.",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "active_clarifications": {
+      "type": "array",
+      "description": "Active signal: periodic micro-questions asked to fill gaps passive data can't explain.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": { "type": "string" },
+          "answer": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}
