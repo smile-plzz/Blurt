@@ -20,4 +20,6 @@ Every other agent's outputs get reviewed here for data-collection scope creep �
 
 ## Status
 
-Draft only. Not yet reviewed against any agent's actual implementation (none exist yet).
+Draft only.
+
+**Flag from Capture Agent's first prototype (`capture/web/`):** it uses the browser `SpeechRecognition` API. On Chrome/Edge this sends raw audio to the vendor's server for transcription — that's a real exception to "local-first" already present in week one, not a hypothetical. Options to resolve: (a) accept it for the self-test phase and document it here as a known, scoped exception, (b) swap to an on-device model (e.g. `whisper.cpp`/`transformers.js`) before continuing self-testing. Not yet decided — needs a decision before this stops being a draft.

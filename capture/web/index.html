@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt</title>
+<meta name="theme-color" content="#141416">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <button id="mic-btn" aria-label="Blurt it out">
+      <span id="mic-icon">●</span>
+    </button>
+    <p id="status" aria-live="polite">tap. speak. done.</p>
+
+    <form id="type-form">
+      <input id="type-input" type="text" placeholder="or type it" autocomplete="off">
+    </form>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <ul id="recent"></ul>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
