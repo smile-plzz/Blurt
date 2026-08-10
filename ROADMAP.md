@@ -19,7 +19,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 
 | Agent | Status |
 |---|---|
-| Data & Schema | ✅ `schema/intent.json` (0.2.0, includes the intent state machine below), `schema/persona.json` — versioned and documented |
+| Data & Schema | ✅ `schema/intent.json` (0.3.0 — state machine + decomposition/deadline fields, both below), `schema/persona.json` — versioned and documented |
 | Capture | ✅ prototype live (`capture/web/`) — voice + typed fallback, writes state-machine-shaped events straight to localStorage |
 | Frontend | 🟡 in progress — 10-screen mockup set done (`frontend/mockups/`); build-sequence steps 2-3 scaffolded (`frontend/web/`): home feed, manually hand-triggered `direct`/`inquiring` check-ins, and a rule-based "not sure" fallback for confusable moment pairs |
 | Persona & Inference | 🟡 in progress — step 4 MVP scaffolded (`api/infer.js` + `frontend/web/app.js`'s `inferDecision()`): one Mistral call returns moment/urgency/receptivity/framing, falls back to steps 2-3 on failure. Needs `MISTRAL_API_KEY` set in Vercel manually. |
@@ -34,6 +34,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 3. 🟡 "Not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E) — scaffolded (`frontend/web/app.js`: `isAmbiguous`/`renderNotSure`), heuristics not yet tuned against real data
 4. 🟡 Persona/inference layer automates steps 2–3 (Option A: single LLM call for moment + urgency + receptivity + framing) — MVP scaffolded on Mistral via a Vercel serverless function (`api/infer.js`), needs `MISTRAL_API_KEY` set manually and real-use testing
 5. ⬜ Recovery Mode, seeded by an onboarding gap-baseline question
+6. 🟡 Task decomposition — MVP scaffolded (`api/decompose.js` + `frontend/web/app.js`): on-demand (not at capture), AI-judgment-only trigger, subtasks are real intents linked via `parent_intent_id`/`subtasks`, editable proposal before approval, no forced sequencing, rollup check-in view instead of per-subtask nudges, independent parent/subtask resolution. Deadline prompt (decision #8) not built yet. Verified locally end-to-end; needs real Mistral key + real-use testing.
 
 **Next logical build step:** set `MISTRAL_API_KEY` in Vercel and real-use test step 4's automatic moment/urgency/framing decisions against the step 2/3 manual baseline — does the model's framing choice and "why" line actually feel better calibrated than picking it by hand?
 
@@ -258,3 +259,35 @@ Mirrors `OPEN_QUESTIONS.md` in the repo (owned by QA & Validation Agent) — kee
 5. **"Resolved" needed more than binary yes/no** — addressed via `resolution_status`'s enum and, since 2026-08-10, the `state` machine in Section 3.2.
 
 The two things worth the most prototype time before any AI/persona work were **capture friction** and **follow-up tone** — both now have live prototypes (`capture/web/`, `frontend/web/`).
+
+---
+
+## 6. Task Decomposition — Design Decisions *(2026-08-10 follow-up — resolved decisions, not yet built; see AGENTS.md step 6)*
+
+Task decomposition lets a captured intent that actually contains multiple steps ("plan the birthday party") get broken into subtasks, without turning every capture into a checklist. These are the resolved decisions for that feature.
+
+**1. Trigger — when does decomposition happen?**
+Not every capture. Only intents that genuinely contain multiple steps or clearly related sub-actions get decomposed. "Cut my nails" stays a single atomic intent; "plan the birthday party" is a candidate. This is a judgment call made at the point decomposition is considered (see #2), not a rule applied at capture.
+
+**2. Relationship to capture stays dumb**
+Decomposition never happens at capture time — that stays a hard rule. It happens on demand, when the user opens the item later. Capture stays fast and dumb; the decomposition step only runs once the item is "activated" by the user actually looking at it.
+
+**3. Are subtasks real intents, or something new?**
+Subtasks are real intents. Each subtask gets its own `id`, its own `state` (dormant/surfaced/stalled/deferred/dropped), and its own `resolution_status`. A `parent_intent_id` links each subtask back to the parent. This means the existing state machine work extends directly — no second state machine needs to be built. The parent intent itself also keeps a `subtasks[]` reference for grouping/display.
+
+**4. Check-in load — how do you avoid this becoming nagging times five?**
+Subtask check-ins don't surface as five separate interruptions. They get compiled into a separate check-in section — a rollup view that groups pending follow-ups, stalled subtasks, and resurfacing items together, rather than each subtask triggering its own individual nudge. This keeps the framing-mode gentleness intact at the per-notification level while still surfacing everything that needs attention in one pass.
+
+**5. Sequential or not?**
+No rigid sequencing. Subtasks are not forced into step 1 → step 2 → step 3 order. Ordering/surfacing is instead driven by urgency, deadline (if one exists), and natural grouping by the kind of task. This avoids the ADHD failure mode where a stalled step 1 blocks everything downstream.
+
+**6. Who decides the step boundaries — and can the user edit them?**
+Hybrid. The AI proposes the decomposition (which subtasks, how they're split), and the user approves or modifies it before it's committed. The AI never silently finalizes a breakdown the user hasn't seen.
+
+**7. What does "done" mean at the parent level?**
+Both the parent and individual subtasks can independently land in a done/archived list. There's no forced "all subtasks must resolve for the parent to close" logic — a subtask can be archived as no-longer-relevant on its own, and the parent can be archived on its own, without one blocking the other's resolution.
+
+**8. No deadlines — but what replaces urgency ordering?**
+If a subtask (or the parent) has no deadline, the system asks the user once whether one exists. If the user confirms there isn't one, the item stays in the normal no-priority/urgency-neutral pool — same as the rest of Blurt's existing no-deadline ethos. Deadline presence, when it exists, is what drives ordering (see #5); absence of a deadline just means the item competes on the same even footing as everything else.
+
+**Schema:** implemented additively in `schema/intent.json` 0.3.0 as `parent_intent_id`, `subtasks`, `deadline`, `deadline_confirmed_absent` — see `schema/SCHEMA.md`'s migration note. **Build:** propose/edit/approve flow and the rollup check-in view are scaffolded (`api/decompose.js`, `frontend/web/app.js`) and verified locally end-to-end; the deadline-confirmation prompt (#8) isn't built yet.

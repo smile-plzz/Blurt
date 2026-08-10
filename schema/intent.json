@@ -4,7 +4,7 @@
   "title": "Intent",
   "description": "Full lifecycle of a single captured intent, from capture to resolution.",
   "type": "object",
-  "schemaVersion": "0.2.0",
+  "schemaVersion": "0.3.0",
   "required": ["id", "text", "captured_at", "resolution_status", "state"],
   "properties": {
     "id": { "type": "string", "description": "UUID for this intent." },
@@ -72,6 +72,28 @@
       "minimum": 0,
       "default": 0,
       "description": "How many times this intent has cycled into `stalled`. Crossing a not-yet-tuned threshold moves it to flagged_for_recovery."
+    },
+    "parent_intent_id": {
+      "type": ["string", "null"],
+      "default": null,
+      "description": "Set on subtask intents only, per the decomposition feature (Notion roadmap, decomposition decisions, 2026-08-10). Points back to the parent intent's id. Subtasks are full intents - same state machine, same resolution_status enum - not a separate schema."
+    },
+    "subtasks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "Set on parent intents only: ids of this intent's decomposed subtasks, for grouping/display. Empty until the user approves a proposed decomposition (decomposition is never auto-committed - see decision #6). Resolution is independent per intent: a subtask resolving does not resolve the parent, and vice versa (decision #7)."
+    },
+    "deadline": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "default": null,
+      "description": "Optional, user-confirmed deadline. Null by default, matching Blurt's no-deadline-by-default ethos - only ever set when the user explicitly confirms one exists. When present, drives ordering among subtasks/parents that have one (decision #8); does not create urgency pressure on its own."
+    },
+    "deadline_confirmed_absent": {
+      "type": "boolean",
+      "default": false,
+      "description": "True once the system has asked whether this intent has a deadline and the user confirmed it doesn't. Prevents re-asking; the intent then competes in the normal urgency-neutral pool alongside everything else without a deadline (decision #8)."
     }
   }
 }

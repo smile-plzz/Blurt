@@ -20,11 +20,36 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+.topnav {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem 0;
+}
+
+.topnav-link {
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  font-family: inherit;
+}
+
+.topnav-danger {
+  color: var(--accent);
+  opacity: 0.75;
+}
+
 main {
   min-height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
+  padding: 1rem 1.25rem 4rem;
 }
 
 header h1 {
@@ -139,10 +164,32 @@ header h1 {
   margin-bottom: 0.4rem;
 }
 
+/* Same class of bug as #checkin[hidden] below: .framing-picker's own display:flex
+   outranks the UA default [hidden]{display:none}, so it stayed visible even with
+   the hidden attribute set. */
+.framing-picker[hidden] {
+  display: none;
+}
+
 .checkin-kicker {
   margin: 0;
   font-size: 0.8rem;
   color: var(--dim);
+}
+
+.checkin-source {
+  margin: 0;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.checkin-source.source-auto {
+  color: var(--ok);
+}
+
+.checkin-source.source-fallback {
+  color: var(--accent);
 }
 
 #checkin-title {
@@ -160,6 +207,52 @@ header h1 {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+#checkin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.subtask-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.subtask-row input[type="text"] {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.6rem;
+  font-family: inherit;
+}
+
+.subtask-row .subtask-remove {
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.subtask-rollup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .checkin-actions button,
