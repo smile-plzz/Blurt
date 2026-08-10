@@ -4,7 +4,9 @@ Thin rendering layer over the JSON contracts (`schema/intent.json`, `schema/pers
 
 ## Status
 
-`mockups/` has a 10-screen UI mockup set (Claude Design, Organic design system) covering onboarding, capture, home feed, check-in tone variants, Recovery Mode entry, and settings/privacy — grounded in the intent state machine, framing modes, and Recovery Mode spec from the Notion roadmap. Open `mockups/Blurt Mockups (standalone).html` directly in a browser to view; it's a mockup artifact, not implementation code.
+`mockups/` has a 13-screen UI mockup set (Claude Design) covering onboarding, capture, home feed, check-in tone variants, Recovery Mode entry, settings/privacy, and (added 2026-08-10) decomposition propose/approve + rollup check-in — grounded in the intent state machine, framing modes, Recovery Mode spec, and decomposition decisions from the Notion roadmap. Open `mockups/Blurt Mockups (standalone).html` directly in a browser to view; it's a mockup artifact, not implementation code.
+
+**Known gap vs. the mockup (2026-08-10):** the mockup's "Rollup check-in" screen (13) is a *global* catch-up view — it groups subtask check-ins by parent and mixes in other resurfacing items from across the whole feed in one pass, with a single "that's enough for now" exit (closer to a lightweight Recovery Mode entry point). What's actually implemented in `web/app.js` (`renderSubtaskRollup`) is scoped to one parent at a time, only reachable by opening that specific parent's card. Not yet reconciled — flagged for a future pass. The mockup's proposal screen (12) also uses checkbox-toggle+strikethrough for removing a subtask where the built version uses delete-row buttons; same behavior, different interaction pattern, lower priority to reconcile.
 
 `web/` is the first real scaffold: build-sequence step 2 (`AGENTS.md`) — a home feed plus **manually hand-triggered** `direct`/`inquiring` check-ins (radio toggle picks the framing; no automated moment/urgency/receptivity detection yet, that's step 4). Static HTML/CSS/JS, no build step, same pattern as `capture/web/`:
 
