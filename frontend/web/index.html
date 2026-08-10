@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="/frontend/web/style.css">
 </head>
 <body>
+  <nav class="topnav">
+    <a href="/capture/web/" class="topnav-link">+ capture</a>
+    <button id="reset-btn" class="topnav-link topnav-danger">reset test data</button>
+  </nav>
   <main>
     <header>
       <h1>Blurt</h1>
@@ -24,6 +28,7 @@
         <label><input type="radio" name="framing" value="direct" checked> direct</label>
         <label><input type="radio" name="framing" value="inquiring"> inquiring</label>
       </div>
+      <p class="checkin-source" id="checkin-source"></p>
       <p class="checkin-kicker" id="checkin-kicker"></p>
       <h2 id="checkin-title"></h2>
       <p id="checkin-body"></p>

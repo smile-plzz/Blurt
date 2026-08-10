@@ -16,6 +16,7 @@ const STORAGE_KEY = "blurt_intents_v0.1.0";
 const feedEl = document.getElementById("feed");
 const emptyEl = document.getElementById("empty");
 const checkinEl = document.getElementById("checkin");
+const checkinSource = document.getElementById("checkin-source");
 const checkinKicker = document.getElementById("checkin-kicker");
 const checkinTitle = document.getElementById("checkin-title");
 const checkinBody = document.getElementById("checkin-body");
@@ -179,6 +180,8 @@ async function openCheckin(id) {
   if (!intent) return;
 
   document.getElementById("framing-picker").hidden = true;
+  checkinSource.textContent = "";
+  checkinSource.className = "checkin-source";
   checkinKicker.textContent = "Thinking…";
   checkinTitle.textContent = "";
   checkinBody.textContent = "";
@@ -189,6 +192,7 @@ async function openCheckin(id) {
   if (activeIntentId !== id) return; // closed/changed while waiting
 
   if (decision) {
+    setCheckinSource("auto", `mistral · ${decision.moment} · ${decision.urgency} urgency`);
     if (decision.moment === "not_sure" || !decision.framing) {
       renderNotSure(intent, decision.why);
     } else {
@@ -198,6 +202,7 @@ async function openCheckin(id) {
   }
 
   // Fallback: step 2/3 rule-based/manual flow, unchanged from before step 4.
+  setCheckinSource("fallback", "rule-based fallback — AI call failed or MISTRAL_API_KEY not set");
   document.getElementById("framing-picker").hidden = isAmbiguous(intent);
   if (isAmbiguous(intent)) {
     renderNotSure(intent);
@@ -205,6 +210,15 @@ async function openCheckin(id) {
     const framing = document.querySelector('input[name="framing"]:checked').value;
     renderCheckin(framing);
   }
+}
+
+// Visible for testing purposes (per Ismail's request): makes it obvious whether
+// step 4's Mistral call actually ran or the check-in silently fell back to the
+// step 2/3 rule-based path - otherwise a missing/broken MISTRAL_API_KEY looks
+// identical to the AI just picking the same framing the rules would have.
+function setCheckinSource(kind, label) {
+  checkinSource.textContent = label;
+  checkinSource.className = "checkin-source source-" + kind;
 }
 
 // The "not sure" fallback (roadmap Section 3.1, decision on confusable pairs):
@@ -296,6 +310,16 @@ function stall(intent) {
 }
 
 checkinClose.addEventListener("click", closeCheckin);
+
+const resetBtn = document.getElementById("reset-btn");
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    if (confirm("Clear all captured intents on this device? This can't be undone.")) {
+      localStorage.removeItem(STORAGE_KEY);
+      renderFeed();
+    }
+  });
+}
 
 document.querySelectorAll('input[name="framing"]').forEach((radio) => {
   radio.addEventListener("change", (e) => {
