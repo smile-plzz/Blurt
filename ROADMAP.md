@@ -34,7 +34,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 3. 🟡 "Not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E) — scaffolded (`frontend/web/app.js`: `isAmbiguous`/`renderNotSure`), heuristics not yet tuned against real data
 4. 🟡 Persona/inference layer automates steps 2–3 (Option A: single LLM call for moment + urgency + receptivity + framing) — MVP scaffolded on Mistral via a Vercel serverless function (`api/infer.js`), needs `MISTRAL_API_KEY` set manually and real-use testing
 5. ⬜ Recovery Mode, seeded by an onboarding gap-baseline question
-6. ⬜ Task decomposition (design decided 2026-08-10 follow-up, not built): on-demand (not at capture), subtasks are real intents linked via `parent_intent_id`/`subtasks`, AI proposes + user approves, no forced sequencing, rollup check-in view instead of per-subtask nudges, independent parent/subtask resolution, opt-in asked-once deadlines
+6. 🟡 Task decomposition — MVP scaffolded (`api/decompose.js` + `frontend/web/app.js`): on-demand (not at capture), AI-judgment-only trigger, subtasks are real intents linked via `parent_intent_id`/`subtasks`, editable proposal before approval, no forced sequencing, rollup check-in view instead of per-subtask nudges, independent parent/subtask resolution. Deadline prompt (decision #8) not built yet. Verified locally end-to-end; needs real Mistral key + real-use testing.
 
 **Next logical build step:** set `MISTRAL_API_KEY` in Vercel and real-use test step 4's automatic moment/urgency/framing decisions against the step 2/3 manual baseline — does the model's framing choice and "why" line actually feel better calibrated than picking it by hand?
 
@@ -290,4 +290,4 @@ Both the parent and individual subtasks can independently land in a done/archive
 **8. No deadlines — but what replaces urgency ordering?**
 If a subtask (or the parent) has no deadline, the system asks the user once whether one exists. If the user confirms there isn't one, the item stays in the normal no-priority/urgency-neutral pool — same as the rest of Blurt's existing no-deadline ethos. Deadline presence, when it exists, is what drives ordering (see #5); absence of a deadline just means the item competes on the same even footing as everything else.
 
-**Schema:** implemented additively in `schema/intent.json` 0.3.0 as `parent_intent_id`, `subtasks`, `deadline`, `deadline_confirmed_absent` — see `schema/SCHEMA.md`'s migration note.
+**Schema:** implemented additively in `schema/intent.json` 0.3.0 as `parent_intent_id`, `subtasks`, `deadline`, `deadline_confirmed_absent` — see `schema/SCHEMA.md`'s migration note. **Build:** propose/edit/approve flow and the rollup check-in view are scaffolded (`api/decompose.js`, `frontend/web/app.js`) and verified locally end-to-end; the deadline-confirmation prompt (#8) isn't built yet.
