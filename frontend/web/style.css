@@ -112,6 +112,13 @@ header h1 {
   justify-content: center;
 }
 
+/* #checkin's own display:flex outranks the UA default [hidden]{display:none}
+   (ID beats bare attribute selector), so the modal stayed visible - covering
+   the feed with an empty overlay - even with the hidden attribute set. */
+#checkin[hidden] {
+  display: none;
+}
+
 #checkin-card {
   width: 100%;
   max-width: 480px;
