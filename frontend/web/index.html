@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt — Home</title>
+<meta name="theme-color" content="#141416">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Blurt</h1>
+      <p class="subtitle">what's still open</p>
+    </header>
+
+    <ul id="feed"></ul>
+    <p id="empty" hidden>nothing captured yet.</p>
+  </main>
+
+  <div id="checkin" hidden>
+    <div id="checkin-card">
+      <div class="framing-picker" role="radiogroup" aria-label="Framing mode (manual, for step-2 tone testing)">
+        <label><input type="radio" name="framing" value="direct" checked> direct</label>
+        <label><input type="radio" name="framing" value="inquiring"> inquiring</label>
+      </div>
+      <p class="checkin-kicker" id="checkin-kicker"></p>
+      <h2 id="checkin-title"></h2>
+      <p id="checkin-body"></p>
+      <div class="checkin-actions" id="checkin-actions"></div>
+      <button id="checkin-close" class="btn-ghost">close</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
