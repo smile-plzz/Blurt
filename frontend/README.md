@@ -16,6 +16,8 @@ Reads/writes the same `blurt_intents_v0.1.0` localStorage key as Capture (same o
 
 Step 3 is also scaffolded: a rule-based "not sure" fallback (`isAmbiguous`/`renderNotSure` in `app.js`) for the confusable moment pairs from the six-moments detection table — A/C (vague capture text, no named object) and B/E (`stall_count >= 2`, i.e. repeatedly stalled). When either rule trips, the check-in bypasses the direct/inquiring framing picker and asks directly ("still working on that, or something new?") instead of guessing. Both heuristics are starting guesses, not tuned against real capture data yet.
 
+Step 4 MVP is scaffolded too: `openCheckin` now calls `/api/infer` (`api/infer.js`, a Vercel serverless function) first — "Option A" from the roadmap, one Mistral call per check-in returning moment + urgency + receptivity + framing together, plus a one-line "why am I being reminded now" transparency note appended to the check-in copy. If the call fails, times out, or `MISTRAL_API_KEY` isn't configured, it silently falls back to the step 2/3 rule-based/manual flow above — the app never breaks for lack of a key. **Requires `MISTRAL_API_KEY` set in the Vercel project's Environment Variables** (Settings → Environment Variables) — this isn't something Claude can set from here, since it's a secret. `receptivity` has no real interaction history to draw on yet (no persona store exists) and is expected to come back `"unknown"` until the Persona Agent's `interaction_log` exists.
+
 ## Surfaces to build
 
 - **Capture confirmation** — as close to invisible as possible. This layer can quietly reintroduce the friction the Capture Agent worked to remove; treat every added tap/screen as a regression.

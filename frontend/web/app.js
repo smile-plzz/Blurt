@@ -142,29 +142,79 @@ function isAmbiguous(intent) {
   return isVagueText(intent.text) || isRepeatStalled(intent);
 }
 
-function openCheckin(id) {
+// Orchestrator Agent, step 4 (AGENTS.md): "Option A" from the roadmap's Section 3.7
+// - one call to /api/infer (Vercel serverless function, api/infer.js) returns
+// moment + urgency + receptivity + framing together. If it fails or the endpoint
+// isn't configured (no MISTRAL_API_KEY, offline, etc.), openCheckin falls back to
+// the step 2/3 rule-based/manual flow below rather than breaking the check-in.
+async function inferDecision(intent) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch("/api/infer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: intent.text,
+        state: intent.state,
+        stall_count: intent.stall_count,
+        captured_at: intent.captured_at,
+        resolution_status: intent.resolution_status
+      }),
+      signal: controller.signal
+    }).finally(() => clearTimeout(timeout));
+    if (!res.ok) return null;
+    const decision = await res.json();
+    if (!decision || !decision.moment) return null;
+    return decision;
+  } catch {
+    return null;
+  }
+}
+
+async function openCheckin(id) {
   activeIntentId = id;
   const intents = loadIntents();
   const intent = findIntent(intents, id);
   if (!intent) return;
 
-  document.getElementById("framing-picker").hidden = isAmbiguous(intent);
+  document.getElementById("framing-picker").hidden = true;
+  checkinKicker.textContent = "Thinking…";
+  checkinTitle.textContent = "";
+  checkinBody.textContent = "";
+  checkinActions.innerHTML = "";
+  checkinEl.hidden = false;
 
+  const decision = await inferDecision(intent);
+  if (activeIntentId !== id) return; // closed/changed while waiting
+
+  if (decision) {
+    if (decision.moment === "not_sure" || !decision.framing) {
+      renderNotSure(intent, decision.why);
+    } else {
+      renderCheckin(decision.framing, decision.why);
+    }
+    return;
+  }
+
+  // Fallback: step 2/3 rule-based/manual flow, unchanged from before step 4.
+  document.getElementById("framing-picker").hidden = isAmbiguous(intent);
   if (isAmbiguous(intent)) {
     renderNotSure(intent);
   } else {
     const framing = document.querySelector('input[name="framing"]:checked').value;
     renderCheckin(framing);
   }
-  checkinEl.hidden = false;
 }
 
 // The "not sure" fallback (roadmap Section 3.1, decision on confusable pairs):
 // don't guess silently, don't stay dumb either - ask directly, in neutral framing.
-function renderNotSure(intent) {
+// `why` is set when this came from the step-4 model call; absent in the step 2/3
+// rule-based fallback path, which has no transparency signal to offer yet.
+function renderNotSure(intent, why) {
   checkinKicker.textContent = "Not sure";
   checkinTitle.textContent = "Still working on that, or something new?";
-  checkinBody.textContent = `“${intent.text}”`;
+  checkinBody.textContent = why ? `“${intent.text}” — ${why}` : `“${intent.text}”`;
 
   checkinActions.innerHTML = "";
   const responses = [
@@ -189,7 +239,10 @@ function renderNotSure(intent) {
   }
 }
 
-function renderCheckin(framing) {
+// `why` (optional): the step-4 model's one-line "why am I being reminded now"
+// transparency note (roadmap Section 3.3). Absent when called from the manual
+// radio picker or the step 2/3 fallback path.
+function renderCheckin(framing, why) {
   const intents = loadIntents();
   const intent = findIntent(intents, activeIntentId);
   if (!intent) return closeCheckin();
@@ -197,7 +250,7 @@ function renderCheckin(framing) {
   const copy = framingCopy(intent, framing);
   checkinKicker.textContent = copy.kicker;
   checkinTitle.textContent = copy.title;
-  checkinBody.textContent = copy.body;
+  checkinBody.textContent = why ? `${copy.body} ${why}` : copy.body;
 
   checkinActions.innerHTML = "";
   for (const action of copy.actions) {
