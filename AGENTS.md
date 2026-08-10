@@ -24,6 +24,15 @@ Build order recommendation (even though agents work in parallel, sequence matter
 3. 🟡 in progress - Add a "not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E from the six-moments detection table) - rule-based, no persona dependency. Scaffolded in `frontend/web/app.js` (`isAmbiguous`/`renderNotSure`): vague-text heuristic proxies for A/C, `stall_count >= 2` proxies for B/E - both starting guesses, not tuned against real data.
 4. 🟡 in progress - Persona/inference layer automates what was manual in steps 2-3, starting with **Option A**: one LLM call per event returning moment + urgency + receptivity + framing together. Refactor toward decomposed, rule-based sub-signals (Option B) only once real use shows where Option A is specifically getting it wrong. MVP scaffolded: `api/infer.js` (Vercel serverless function, Mistral API) + `frontend/web/app.js`'s `inferDecision()`. No persona/interaction_log store exists yet, so `receptivity` has no real history and is expected to come back `"unknown"`. Falls back to the step 2/3 rule-based/manual flow if the call fails or `MISTRAL_API_KEY` isn't set. MVP stays on Vercel; full product deployment moves this to Render later (decided 2026-08-10 follow-up).
 5. Recovery Mode, seeded by an onboarding question for the user's personal "normal gap" baseline (not a fixed number, not 2 weeks of silent data collection first), triggered by whichever fires first: stalled-item threshold or gap-vs-baseline.
+6. ⬜ not started - **Task decomposition** (Notion roadmap, decomposition decisions, 2026-08-10 follow-up). Design decided, not yet built:
+   - Not every capture gets decomposed — only intents that genuinely contain multiple steps ("plan the birthday party"), judged at the point decomposition is considered, not at capture.
+   - Runs on demand when the user opens the item, never at capture time — `capture stays dumb` is unaffected.
+   - Subtasks are real intents (`schema/intent.json` 0.3.0's `parent_intent_id`/`subtasks`), not a parallel schema — the existing state machine and `resolution_status` enum extend directly.
+   - AI proposes, user approves or edits before anything commits — never silently finalized.
+   - No forced sequencing (avoids the ADHD failure mode where a stalled step 1 blocks everything downstream); ordering comes from deadline (if any) and natural grouping, not a fixed step order.
+   - Subtask check-ins compile into a rollup view rather than each one firing its own individual nudge - keeps per-notification gentleness intact under a 5x-the-items load.
+   - Parent and subtask resolution are fully independent in both directions.
+   - Deadlines stay opt-in and asked-once (`deadline`/`deadline_confirmed_absent`) - absence of a deadline means an item competes in the same urgency-neutral pool as everything else, not a source of pressure on its own.
 
 This ordering exists to avoid building the persona/AI layer before the state machine underneath it is proven right, which would force a rebuild.
 
