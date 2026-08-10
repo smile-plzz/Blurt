@@ -14,6 +14,8 @@ cd frontend/web && npx serve .
 
 Reads/writes the same `blurt_intents_v0.1.0` localStorage key as Capture (same origin required to share data today — a real shared store is an Orchestrator-layer concern later). Handles all three `resolution_status` outcomes reachable from a check-in (`done`, `done_adjacent`, `no_longer_relevant`), plus `deferred`/`stalled` state transitions. `done_late` and `abandoned` aren't reachable from the UI yet — no timing/staleness logic exists here on purpose (that's the persona/inference layer's job in step 4).
 
+Step 3 is also scaffolded: a rule-based "not sure" fallback (`isAmbiguous`/`renderNotSure` in `app.js`) for the confusable moment pairs from the six-moments detection table — A/C (vague capture text, no named object) and B/E (`stall_count >= 2`, i.e. repeatedly stalled). When either rule trips, the check-in bypasses the direct/inquiring framing picker and asks directly ("still working on that, or something new?") instead of guessing. Both heuristics are starting guesses, not tuned against real capture data yet.
+
 ## Surfaces to build
 
 - **Capture confirmation** — as close to invisible as possible. This layer can quietly reintroduce the friction the Capture Agent worked to remove; treat every added tap/screen as a regression.

@@ -93,6 +93,11 @@ header h1 {
   border-color: var(--ok);
 }
 
+.tag-ambiguous {
+  color: #c9a227;
+  border-color: #6b551a;
+}
+
 #empty {
   color: var(--dim);
   font-size: 0.9rem;

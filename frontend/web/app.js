@@ -1,7 +1,15 @@
-// Frontend Agent, step 2 of the build sequence (AGENTS.md): manually hand-triggered
-// direct/inquiring check-ins, to test whether the two framings feel different before
-// any automated moment/urgency/receptivity detection exists. No inference here -
-// the human picks the framing via the radio toggle, same as tapping a mockup.
+// Frontend Agent, steps 2-3 of the build sequence (AGENTS.md).
+// Step 2: manually hand-triggered direct/inquiring check-ins, to test whether the
+// two framings feel different before any automated moment/urgency/receptivity
+// detection exists. No inference here - the human picks the framing via the radio
+// toggle, same as tapping a mockup.
+// Step 3: a rule-based "not sure" fallback for the confusable moment pairs named in
+// the roadmap's six-moments detection table (Notion, 2026-08-10) - A/C ("don't know
+// what to do" vs "started, got distracted") and B/E ("can't start" vs "didn't do
+// what I planned"). Nothing here infers which moment it actually is; it just
+// recognizes when the signal is too thin to guess confidently and asks directly
+// instead, per that section's decision. This is rule-based on purpose - the real
+// moment/urgency/receptivity detection is step 4, once the persona layer exists.
 
 const STORAGE_KEY = "blurt_intents_v0.1.0";
 
@@ -64,6 +72,12 @@ function renderFeed() {
     tag.textContent = intent.state;
 
     li.appendChild(text);
+    if (intent.state !== "resolved" && intent.state !== "dropped" && isAmbiguous(intent)) {
+      const notSureTag = document.createElement("span");
+      notSureTag.className = "tag tag-ambiguous";
+      notSureTag.textContent = "not sure";
+      li.appendChild(notSureTag);
+    }
     li.appendChild(tag);
 
     if (intent.state !== "resolved" && intent.state !== "dropped") {
@@ -106,11 +120,73 @@ function framingCopy(intent, framing) {
   };
 }
 
+// A/C signal: vague, no named object - can't tell "don't know what to do" from
+// "started, got distracted" without an "active task" concept the design doc flags
+// as not built yet, so a vague capture is the closest rule-based proxy available.
+const VAGUE_PHRASES = ["ugh", "what now", "hmm", "idk", "i don't know", "something"];
+
+function isVagueText(text) {
+  const t = text.trim().toLowerCase();
+  if (t.split(/\s+/).filter(Boolean).length <= 2) return true;
+  return VAGUE_PHRASES.some((p) => t === p || t.includes(p));
+}
+
+// B/E signal: repeatedly stalled - the detection table calls this "easy to confuse
+// with E once the resolution window has passed." Threshold of 2 is a starting
+// guess, not tuned against real data yet.
+function isRepeatStalled(intent) {
+  return intent.state === "stalled" && intent.stall_count >= 2;
+}
+
+function isAmbiguous(intent) {
+  return isVagueText(intent.text) || isRepeatStalled(intent);
+}
+
 function openCheckin(id) {
   activeIntentId = id;
-  const framing = document.querySelector('input[name="framing"]:checked').value;
-  renderCheckin(framing);
+  const intents = loadIntents();
+  const intent = findIntent(intents, id);
+  if (!intent) return;
+
+  document.getElementById("framing-picker").hidden = isAmbiguous(intent);
+
+  if (isAmbiguous(intent)) {
+    renderNotSure(intent);
+  } else {
+    const framing = document.querySelector('input[name="framing"]:checked').value;
+    renderCheckin(framing);
+  }
   checkinEl.hidden = false;
+}
+
+// The "not sure" fallback (roadmap Section 3.1, decision on confusable pairs):
+// don't guess silently, don't stay dumb either - ask directly, in neutral framing.
+function renderNotSure(intent) {
+  checkinKicker.textContent = "Not sure";
+  checkinTitle.textContent = "Still working on that, or something new?";
+  checkinBody.textContent = `“${intent.text}”`;
+
+  checkinActions.innerHTML = "";
+  const responses = [
+    { label: "Still working on it", handler: (i) => defer(i) },
+    { label: "Not anymore — let it go", handler: (i) => resolve(i, "no_longer_relevant") }
+  ];
+  for (const action of responses) {
+    const btn = document.createElement("button");
+    btn.textContent = action.label;
+    btn.className = "btn-primary";
+    btn.addEventListener("click", () => {
+      const current = loadIntents();
+      const target = findIntent(current, activeIntentId);
+      if (target) {
+        action.handler(target);
+        saveIntents(current);
+      }
+      closeCheckin();
+      renderFeed();
+    });
+    checkinActions.appendChild(btn);
+  }
 }
 
 function renderCheckin(framing) {
@@ -144,6 +220,7 @@ function renderCheckin(framing) {
 
 function closeCheckin() {
   checkinEl.hidden = true;
+  document.getElementById("framing-picker").hidden = false;
   activeIntentId = null;
 }
 

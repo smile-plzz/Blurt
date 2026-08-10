@@ -21,7 +21,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 |---|---|
 | Data & Schema | ✅ `schema/intent.json` (0.2.0, includes the intent state machine below), `schema/persona.json` — versioned and documented |
 | Capture | ✅ prototype live (`capture/web/`) — voice + typed fallback, writes state-machine-shaped events straight to localStorage |
-| Frontend | 🟡 in progress — 10-screen mockup set done (`frontend/mockups/`); build-sequence step 2 scaffolded (`frontend/web/`): home feed + manually hand-triggered `direct`/`inquiring` check-ins |
+| Frontend | 🟡 in progress — 10-screen mockup set done (`frontend/mockups/`); build-sequence steps 2-3 scaffolded (`frontend/web/`): home feed, manually hand-triggered `direct`/`inquiring` check-ins, and a rule-based "not sure" fallback for confusable moment pairs |
 | Persona & Inference | ⬜ not started (step 4 — automates what's manual in Frontend today) |
 | Reminder & Tone | ⬜ not started |
 | Orchestrator | ⬜ not started |
@@ -31,11 +31,11 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 **Current build sequence** (supersedes the old two-phase "log yourself, then build" plan — see Section 3 for why):
 1. ✅ Capture + intent state machine + minimal tracker
 2. 🟡 Manual `direct`/`inquiring` check-in copy, hand-triggered (in progress — `frontend/web/`)
-3. ⬜ "Not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E)
+3. 🟡 "Not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E) — scaffolded (`frontend/web/app.js`: `isAmbiguous`/`renderNotSure`), heuristics not yet tuned against real data
 4. ⬜ Persona/inference layer automates steps 2–3 (Option A: single LLM call for moment + urgency + receptivity + framing)
 5. ⬜ Recovery Mode, seeded by an onboarding gap-baseline question
 
-**Next logical build step:** finish step 2 (real-use testing of `direct` vs `inquiring` tone), then step 3's fallback state — both before any persona/AI work, per the ordering decided in Section 3.
+**Next logical build step:** real-use testing of all three — `direct`/`inquiring` tone and whether the "not sure" heuristics (vague text, `stall_count >= 2`) actually catch the right cases — before any persona/AI work, per the ordering decided in Section 3.
 
 ---
 
