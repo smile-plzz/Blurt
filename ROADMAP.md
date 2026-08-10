@@ -22,7 +22,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 | Data & Schema | ✅ `schema/intent.json` (0.2.0, includes the intent state machine below), `schema/persona.json` — versioned and documented |
 | Capture | ✅ prototype live (`capture/web/`) — voice + typed fallback, writes state-machine-shaped events straight to localStorage |
 | Frontend | 🟡 in progress — 10-screen mockup set done (`frontend/mockups/`); build-sequence steps 2-3 scaffolded (`frontend/web/`): home feed, manually hand-triggered `direct`/`inquiring` check-ins, and a rule-based "not sure" fallback for confusable moment pairs |
-| Persona & Inference | ⬜ not started (step 4 — automates what's manual in Frontend today) |
+| Persona & Inference | 🟡 in progress — step 4 MVP scaffolded (`api/infer.js` + `frontend/web/app.js`'s `inferDecision()`): one Mistral call returns moment/urgency/receptivity/framing, falls back to steps 2-3 on failure. Needs `MISTRAL_API_KEY` set in Vercel manually. |
 | Reminder & Tone | ⬜ not started |
 | Orchestrator | ⬜ not started |
 | Privacy | 🟡 draft decision only (local-first, one live exception: Web Speech API sends audio to Chrome/Edge's servers) |
@@ -32,10 +32,10 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 1. ✅ Capture + intent state machine + minimal tracker
 2. 🟡 Manual `direct`/`inquiring` check-in copy, hand-triggered (in progress — `frontend/web/`)
 3. 🟡 "Not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E) — scaffolded (`frontend/web/app.js`: `isAmbiguous`/`renderNotSure`), heuristics not yet tuned against real data
-4. ⬜ Persona/inference layer automates steps 2–3 (Option A: single LLM call for moment + urgency + receptivity + framing)
+4. 🟡 Persona/inference layer automates steps 2–3 (Option A: single LLM call for moment + urgency + receptivity + framing) — MVP scaffolded on Mistral via a Vercel serverless function (`api/infer.js`), needs `MISTRAL_API_KEY` set manually and real-use testing
 5. ⬜ Recovery Mode, seeded by an onboarding gap-baseline question
 
-**Next logical build step:** real-use testing of all three — `direct`/`inquiring` tone and whether the "not sure" heuristics (vague text, `stall_count >= 2`) actually catch the right cases — before any persona/AI work, per the ordering decided in Section 3.
+**Next logical build step:** set `MISTRAL_API_KEY` in Vercel and real-use test step 4's automatic moment/urgency/framing decisions against the step 2/3 manual baseline — does the model's framing choice and "why" line actually feel better calibrated than picking it by hand?
 
 ---
 
