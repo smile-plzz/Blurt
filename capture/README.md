@@ -36,4 +36,4 @@ Open on a phone (same network) or `localhost` in a browser that supports `Speech
 
 ## Depends on
 
-`schema/intent.json` (implemented against v0.1.0).
+`schema/intent.json` (implemented against v0.2.0 — emits and migrates the `state`/`state_updated_at`/`stall_count` lifecycle fields; see `schema/SCHEMA.md`'s migration note).

@@ -18,6 +18,15 @@ Build order recommendation (even though agents work in parallel, sequence matter
 5. Orchestrator Agent wires real LLM calls in last, once each piece works standalone.
 6. Privacy Agent and QA Agent run continuously throughout, not as a final phase.
 
+**Superseding, finer-grained sequence (per the Notion roadmap's 2026-08-10 design doc — supersedes step 2-3 above until this note is reconciled back into the numbered list):**
+1. Capture + the `state` machine (`schema/intent.json` 0.2.0) + a minimal tracker (capture-to-resolution latency, drop/stall counts) - no AI, no persona yet. States are editable for the first few weeks of real use, not locked.
+2. Draft `direct` and `inquiring` framing-mode copy, manually (hand-)triggered - tests whether the two tones feel different before automating selection. `activation-only` and `silent-recovery` copy comes later.
+3. Add a "not sure" fallback state + in-the-moment clarifying question for confusable moment pairs (A/C, B/E from the six-moments detection table) - rule-based, no persona dependency.
+4. Persona/inference layer automates what was manual in steps 2-3, starting with **Option A**: one LLM call per event returning moment + urgency + receptivity + framing together. Refactor toward decomposed, rule-based sub-signals (Option B) only once real use shows where Option A is specifically getting it wrong.
+5. Recovery Mode, seeded by an onboarding question for the user's personal "normal gap" baseline (not a fixed number, not 2 weeks of silent data collection first), triggered by whichever fires first: stalled-item threshold or gap-vs-baseline.
+
+This ordering exists to avoid building the persona/AI layer before the state machine underneath it is proven right, which would force a rebuild.
+
 ---
 
 ## 1. Data & Schema Agent

@@ -24,8 +24,8 @@ Living checklist owned by the QA & Validation Agent. Source: `blurt-concept.md`'
 | # | Question | Status |
 |---|---|---|
 | 8 | What does "gentle" actually look like, per real ADHD users' own description (best/worst reminder they've received)? | open |
-| 9 | Where's the helpful-nudge-to-nagging threshold, and does it shift by time of day, task type, or mood? | open |
-| 10 | Does a missed reminder need repair (apology-free re-ask), or does repeated ignoring mean switch channel/timing? | open |
+| 9 | Where's the helpful-nudge-to-nagging threshold, and does it shift by time of day, task type, or mood? | partial — design answer given (urgency/receptivity/framing decomposed as independent, tunable inputs), still needs real-use validation |
+| 10 | Does a missed reminder need repair (apology-free re-ask), or does repeated ignoring mean switch channel/timing? | partial — design answer given (repeated ignoring -> receptivity-driven switch to `silent-recovery` framing, no per-item repair loop), still needs real-use validation |
 
 ## Persona / personalization
 
@@ -40,7 +40,11 @@ Living checklist owned by the QA & Validation Agent. Source: `blurt-concept.md`'
 | # | Question | Status |
 |---|---|---|
 | 14 | What actually causes ADHD-app abandonment — forgetting it exists, distrust after a bad reminder, something else? | open |
-| 15 | Would users trust an AI-generated persona enough to act on it, or does it need a "why am I being reminded now" transparency layer? | open |
+| 15 | Would users trust an AI-generated persona enough to act on it, or does it need a "why am I being reminded now" transparency layer? | partial — design answer given (a one-line "why" is a near-free byproduct of the urgency/receptivity/framing split), still needs real-use validation |
+
+## Design decisions made since (2026-08-10 Notion doc)
+
+Not open questions anymore, but flagged here since they resolve/reshape several items above and drive the current build sequence in `AGENTS.md`: a minimal intent `state` machine (see `schema/SCHEMA.md`), a six-moment detection table, the urgency/receptivity/framing decomposition for interventions (item 9, 15), a concrete Recovery Mode spec, and redefined success metrics (latency distribution, drop/stall rate — explicitly not streaks/DAU). See the Notion page's "Product Development Roadmap" section for the live source.
 
 ## Standing caution
 
