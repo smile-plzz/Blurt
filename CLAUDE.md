@@ -9,6 +9,15 @@ scaffolded as spec-only folders. Read `blurt-concept.md` (product rationale) and
 builds what, build order) before making structural changes — they're the spec of record for *why*
 and *who builds what*, respectively.
 
+**Product roadmap source of record:** the Notion page
+[`Blurt - "just blurt it out"`](https://app.notion.com/p/Blurt-just-blurt-it-out-3b446f62ebad807f9bdbf6a9d46e70ff)
+is where Ismail does ideation and drives product direction — check it before proposing new scope or
+structural changes, not just the files in this repo. It has a "Product Development Roadmap" section
+with live build status per agent and a running list of open questions. When work here raises a
+product decision that isn't yours to make, add the question to that Notion section (don't just ask
+inline in the repo) so it's visible where Ismail actually works. Keep `OPEN_QUESTIONS.md` and the
+Notion questions in sync when either changes.
+
 ## Commands
 
 Capture Agent prototype (`capture/web/`) is static HTML/CSS/JS, no build step, no dependencies:
