@@ -16,7 +16,9 @@ structural changes, not just the files in this repo. It has a "Product Developme
 with live build status per agent and a running list of open questions. When work here raises a
 product decision that isn't yours to make, add the question to that Notion section (don't just ask
 inline in the repo) so it's visible where Ismail actually works. Keep `OPEN_QUESTIONS.md` and the
-Notion questions in sync when either changes.
+Notion questions in sync when either changes. `ROADMAP.md` is a hand-synced mirror of the Notion
+page's roadmap section for in-repo visibility — Notion stays canonical; re-sync `ROADMAP.md` after
+material Notion changes rather than editing it independently.
 
 ## Commands
 
