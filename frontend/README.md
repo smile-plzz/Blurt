@@ -4,7 +4,7 @@ Thin rendering layer over the JSON contracts (`schema/intent.json`, `schema/pers
 
 ## Status
 
-Not started. Can render against stub JSON as soon as schemas exist; upgrade to live data as other agents land.
+Not started as code. `mockups/` has a 10-screen UI mockup set (Claude Design, Organic design system) covering onboarding, capture, home feed, check-in tone variants, Recovery Mode entry, and settings/privacy — grounded in the intent state machine, framing modes, and Recovery Mode spec from the Notion roadmap. Open `mockups/Blurt Mockups (standalone).html` directly in a browser to view; it's a mockup artifact, not implementation code. Can render against stub JSON as soon as schemas exist; upgrade to live data as other agents land.
 
 ## Surfaces to build
 
