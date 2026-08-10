@@ -242,9 +242,30 @@
       </div>
     </div>
 
-    <!-- 09 Recovery Mode entry -->
+    <!-- 09 Check-in — not sure (ambiguous) -->
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">09</span><h6 style="margin:0">Recovery Mode — entry (3-step)</h6></div>
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">09</span><h6 style="margin:0">Check-in — not sure (ambiguous signal)</h6></div>
+      <div data-screen-label="Check-in — not sure" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 24px">
+          <div class="card elev-lg" style="background:var(--color-surface);position:relative">
+            <span class="tag tag-outline" style="position:absolute;top:-12px;left:14px;background:var(--color-bg)">not sure</span>
+            <p class="card-kicker" style="margin-top:6px">Signal's thin — asking directly instead of guessing</p>
+            <h3 style="margin:0 0 6px">Still working on that, or something new?</h3>
+            <p class="card-body">&ldquo;something&rdquo;</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+              <button class="btn btn-primary btn-block" style="height:46px">Still working on it</button>
+              <button class="btn btn-secondary btn-block" style="height:46px">Not anymore — let it go</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px;opacity:.55;max-width:390px;margin:0">Triggered by vague capture text or repeated stalling — skips the direct/inquiring pick rather than framing a guess as certain.</p>
+    </div>
+
+    <!-- 10 Recovery Mode entry -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">10</span><h6 style="margin:0">Recovery Mode — entry (3-step)</h6></div>
       <div data-screen-label="Recovery Mode — entry" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
         <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
         <div style="flex:1;padding:20px 26px;display:flex;flex-direction:column;gap:20px;overflow:auto">
@@ -270,7 +291,7 @@
 
     <!-- 10 Settings / Privacy -->
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">10</span><h6 style="margin:0">Settings — privacy</h6></div>
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">11</span><h6 style="margin:0">Settings — privacy</h6></div>
       <div data-screen-label="Settings — privacy" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
         <div class="nav" style="padding:20px 20px 8px">
           <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -303,6 +324,101 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- 12 Decomposition — propose/approve -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">12</span><h6 style="margin:0">Decomposition — propose/approve (new, step 6)</h6></div>
+      <div data-screen-label="Decomposition — propose" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+        <div class="nav" style="padding:20px 24px 8px">
+          <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span class="nav-brand" style="font-size:18px;margin-right:0;margin-left:8px">Break this down?</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 24px 20px;display:flex;flex-direction:column;gap:16px">
+          <div class="card elev-sm" style="background:var(--color-surface)">
+            <p class="card-kicker">This looks like more than one step</p>
+            <p class="card-body" style="opacity:1;font-style:italic">&ldquo;Plan the birthday party&rdquo;</p>
+          </div>
+          <div>
+            <label style="font-size:12px;opacity:.6;display:block;margin-bottom:8px">Proposed subtasks — edit or remove any of these</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
+                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
+                <span style="font-size:14px;flex:1">Pick a date and venue</span>
+                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+              </div>
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
+                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
+                <span style="font-size:14px;flex:1">Send invites</span>
+                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+              </div>
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
+                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
+                <span style="font-size:14px;flex:1">Order a cake</span>
+                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+              </div>
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px;opacity:.5">
+                <input type="checkbox" style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
+                <span style="font-size:14px;flex:1;text-decoration:line-through">Buy decorations</span>
+                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+              </div>
+            </div>
+            <button class="btn btn-ghost" style="margin-top:8px;padding-inline:0;font-size:13px">+ Add a step</button>
+          </div>
+          <p style="font-size:12px;opacity:.5;margin:0">No order forced — these surface independently, by urgency and deadline, not step 1-2-3.</p>
+        </div>
+        <div style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-primary btn-block" style="height:48px">Approve 3 subtasks</button>
+          <button class="btn btn-ghost" style="align-self:center">Keep as one item</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13 Rollup check-in -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">13</span><h6 style="margin:0">Rollup check-in view (new, step 6)</h6></div>
+      <div data-screen-label="Rollup check-in" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+        <div class="nav" style="padding:20px 24px 8px">
+          <span class="nav-brand" style="font-size:18px">A few things to catch up on</span>
+        </div>
+        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
+          <p style="font-size:13px;opacity:.6;margin:0">Grouped so this is one pass, not five separate pings.</p>
+
+          <div>
+            <p style="font-size:12px;opacity:.55;margin:0 0 8px;text-transform:uppercase;letter-spacing:.03em">Birthday party</p>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
+                <span style="font-size:14px">Send invites</span>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-secondary" style="height:34px;padding:0 12px;font-size:12px">Done</button>
+                  <button class="btn btn-ghost" style="height:34px;padding:0 12px;font-size:12px">Not yet</button>
+                </div>
+              </div>
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
+                <span style="font-size:14px">Order a cake</span>
+                <span class="tag tag-accent">stalled twice</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-size:12px;opacity:.55;margin:0 0 8px;text-transform:uppercase;letter-spacing:.03em">Also resurfacing</p>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
+                <span style="font-size:14px">Book dentist appointment</span>
+                <div style="display:flex;gap:6px">
+                  <button class="btn btn-secondary" style="height:34px;padding:0 12px;font-size:12px">Done</button>
+                  <button class="btn btn-ghost" style="height:34px;padding:0 12px;font-size:12px">Not yet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:14px 24px 32px">
+          <button class="btn btn-ghost btn-block" style="height:44px">That's enough for now</button>
+        </div>
+      </div>
+      <p style="font-size:12px;opacity:.55;max-width:390px;margin:0">Parent and subtasks resolve independently — clearing "Order a cake" doesn't require touching "Send invites."</p>
     </div>
 
   </div>
