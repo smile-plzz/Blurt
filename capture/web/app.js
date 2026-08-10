@@ -1,6 +1,7 @@
 // Capture Agent: emits raw intent.json-shaped events. No analysis performed here by design.
 
 const STORAGE_KEY = "blurt_intents_v0.1.0";
+const SCHEMA_VERSION = "0.2.0";
 
 const micBtn = document.getElementById("mic-btn");
 const micIcon = document.getElementById("mic-icon");
@@ -11,11 +12,20 @@ const toast = document.getElementById("toast");
 const recentEl = document.getElementById("recent");
 
 function loadIntents() {
+  let intents;
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    intents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch {
     return [];
   }
+  // schema 0.1.0 -> 0.2.0 migration: backfill state fields on read, per schema/SCHEMA.md.
+  // Pre-existing records already survived capture, so they backfill to "dormant", not "captured".
+  for (const intent of intents) {
+    if (intent.state === undefined) intent.state = "dormant";
+    if (intent.state_updated_at === undefined) intent.state_updated_at = null;
+    if (intent.stall_count === undefined) intent.stall_count = 0;
+  }
+  return intents;
 }
 
 function saveIntent(text, captureMethod) {
@@ -31,7 +41,10 @@ function saveIntent(text, captureMethod) {
     follow_up_count: 0,
     resolution_status: "unresolved",
     resolved_at: null,
-    category: null
+    category: null,
+    state: "captured",
+    state_updated_at: null,
+    stall_count: 0
   };
 
   const intents = loadIntents();
@@ -40,6 +53,22 @@ function saveIntent(text, captureMethod) {
 
   showToast("blurted.");
   renderRecent();
+}
+
+// Minimal tracker (schema/SCHEMA.md 0.2.0 migration note): aggregate counts only, no
+// per-intent judgment made here - stays within "capture stays dumb." Nothing calls this
+// yet since no UI writes resolved_at/state transitions; exposed for the Persona/Frontend
+// agents to consume once they do.
+function trackerStats() {
+  const intents = loadIntents();
+  const latenciesMs = intents
+    .filter((i) => i.resolved_at)
+    .map((i) => new Date(i.resolved_at) - new Date(i.captured_at));
+  const stateCounts = intents.reduce((counts, i) => {
+    counts[i.state] = (counts[i.state] || 0) + 1;
+    return counts;
+  }, {});
+  return { schemaVersion: SCHEMA_VERSION, total: intents.length, latenciesMs, stateCounts };
 }
 
 function showToast(message) {
@@ -117,5 +146,7 @@ if (!SpeechRecognition) {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
+
+window.blurtTracker = trackerStats;
 
 renderRecent();
