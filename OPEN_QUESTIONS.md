@@ -46,6 +46,8 @@ Living checklist owned by the QA & Validation Agent. Source: `blurt-concept.md`'
 
 Not open questions anymore, but flagged here since they resolve/reshape several items above and drive the current build sequence in `AGENTS.md`: a minimal intent `state` machine (see `schema/SCHEMA.md`), a six-moment detection table, the urgency/receptivity/framing decomposition for interventions (item 9, 15), a concrete Recovery Mode spec, and redefined success metrics (latency distribution, drop/stall rate — explicitly not streaks/DAU). See the Notion page's "Product Development Roadmap" section for the live source.
 
+**2026-08-11 build (all frontend screens + persona wiring):** items 9/10/15's design answers are no longer just design — they're live. The "why am I being reminded now" transparency line (item 15) is now genuinely generated per check-in from a real ten-field onboarding persona, not a placeholder; the urgency/receptivity/framing split (items 9-10) is driven by that same persona for the first time. None of items 1-15 are answered by this — they still need real usage/user-research validation, not code — but the mechanism they'd be validating against now actually exists end-to-end rather than existing only as a design decision on paper.
+
 ## Standing caution
 
 Item 1 and item 11+ pattern-inference claims are being validated only against Ismail's own mixed-subtype data. Do not treat "works for me" as "works generally" — push for at least one other tester with a different subtype before trusting any generalization claim from the Persona Agent.
