@@ -11,7 +11,10 @@
 // instead, per that section's decision. This is rule-based on purpose - the real
 // moment/urgency/receptivity detection is step 4, once the persona layer exists.
 
-const STORAGE_KEY = "blurt_intents_v0.1.0";
+// Intent storage/state-transition helpers (loadIntents, saveIntents, findIntent,
+// resolve, defer, stall, tagClassForState) live in intents.js, loaded before this
+// file - shared with recovery.js so both write the same localStorage store
+// through one code path.
 
 const feedEl = document.getElementById("feed");
 const emptyEl = document.getElementById("empty");
@@ -26,24 +29,6 @@ const checkinActions = document.getElementById("checkin-actions");
 const checkinClose = document.getElementById("checkin-close");
 const rollupEntry = document.getElementById("rollup-entry");
 
-// Mirrors the mockup's per-state tag color coding (screen 6, "Home — intent
-// feed"): neutral for dormant/deferred, accent for stalled/needs-attention,
-// accent-2 for surfaced/active, outline for settled (resolved/dropped).
-function tagClassForState(state) {
-  switch (state) {
-    case "stalled":
-    case "flagged_for_recovery":
-      return "tag-accent";
-    case "surfaced":
-      return "tag-accent-2";
-    case "resolved":
-    case "dropped":
-      return "tag-outline";
-    default:
-      return "tag-neutral";
-  }
-}
-
 function setFramingTag(label) {
   if (!label) {
     checkinFramingTag.hidden = true;
@@ -54,35 +39,6 @@ function setFramingTag(label) {
 }
 
 let activeIntentId = null;
-
-function loadIntents() {
-  let intents;
-  try {
-    intents = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
-    return [];
-  }
-  // Same 0.1.0 -> 0.2.0 backfill as capture/web/app.js - see schema/SCHEMA.md.
-  for (const intent of intents) {
-    if (intent.state === undefined) intent.state = "dormant";
-    if (intent.state_updated_at === undefined) intent.state_updated_at = null;
-    if (intent.stall_count === undefined) intent.stall_count = 0;
-    // 0.2.0 -> 0.3.0 backfill (decomposition/deadline fields).
-    if (intent.parent_intent_id === undefined) intent.parent_intent_id = null;
-    if (intent.subtasks === undefined) intent.subtasks = [];
-    if (intent.deadline === undefined) intent.deadline = null;
-    if (intent.deadline_confirmed_absent === undefined) intent.deadline_confirmed_absent = false;
-  }
-  return intents;
-}
-
-function saveIntents(intents) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(intents));
-}
-
-function findIntent(intents, id) {
-  return intents.find((i) => i.id === id);
-}
 
 function renderFeed() {
   // Subtasks stay off the main feed - they surface through their parent's rollup
@@ -723,36 +679,11 @@ function closeCheckin() {
   activeIntentId = null;
 }
 
-function resolve(intent, resolutionStatus) {
-  intent.resolution_status = resolutionStatus;
-  intent.resolved_at = new Date().toISOString();
-  intent.state = resolutionStatus === "no_longer_relevant" ? "dropped" : "resolved";
-  intent.state_updated_at = intent.resolved_at;
-}
-
-function defer(intent) {
-  intent.state = "deferred";
-  intent.state_updated_at = new Date().toISOString();
-}
-
-function stall(intent) {
-  intent.stall_count += 1;
-  intent.state = "stalled";
-  intent.state_updated_at = new Date().toISOString();
-}
-
 checkinClose.addEventListener("click", closeCheckin);
 rollupEntry.addEventListener("click", renderGlobalRollup);
 
-const resetBtn = document.getElementById("reset-btn");
-if (resetBtn) {
-  resetBtn.addEventListener("click", () => {
-    if (confirm("Clear all captured intents on this device? This can't be undone.")) {
-      localStorage.removeItem(STORAGE_KEY);
-      renderFeed();
-    }
-  });
-}
+// "reset test data" moved into settings.html's "Delete everything" (Data
+// section, mockup screen 11) now that a real settings screen exists.
 
 document.querySelectorAll('input[name="framing"]').forEach((radio) => {
   radio.addEventListener("change", (e) => {
@@ -760,4 +691,48 @@ document.querySelectorAll('input[name="framing"]').forEach((radio) => {
   });
 });
 
-renderFeed();
+// Entry gate: onboarding first (mockup screens 1-3), then Recovery Mode
+// (screen 10) if triggered, per roadmap Section 3.4's decided trigger -
+// whichever fires first between a stalled-item threshold and a personal
+// gap-since-last-open baseline (seeded at onboarding). Falls through to the
+// normal feed otherwise. maybeEnterRecovery/hasCompletedOnboarding/loadPersona
+// live in persona.js, loaded before this file.
+function maybeEnterRecovery() {
+  const persona = loadPersona();
+  const now = Date.now();
+  const lastOpenRaw = localStorage.getItem(LAST_OPEN_KEY);
+  const lastOpen = lastOpenRaw ? Number(lastOpenRaw) : null;
+  const gapDays = lastOpen ? (now - lastOpen) / 86400000 : null;
+  // gap_baseline_days - Q7 of the onboarding question flow, the one signal
+  // Section 3.4 says can't be inferred from behavior later.
+  const baselineDays = persona?.onboarding_profile?.gap_baseline_days ?? null;
+
+  const intents = loadIntents();
+  // Placeholder threshold, not yet derived from real usage data - roadmap
+  // Section 3.4 specifies "crosses a personal threshold" without a number.
+  const STALL_THRESHOLD = 3;
+  const stalledCount = intents.filter(
+    (i) => !i.parent_intent_id && (i.state === "stalled" || i.state === "flagged_for_recovery")
+  ).length;
+
+  const shouldRecover = stalledCount >= STALL_THRESHOLD || (gapDays !== null && baselineDays !== null && gapDays > baselineDays);
+
+  localStorage.setItem(LAST_OPEN_KEY, String(now));
+
+  // Session-scoped, not permanent: per Recovery Mode's spec, most stalled
+  // items are expected to stay untouched and "age back into STALLED" rather
+  // than force a resolution - so the trigger can fire again next session
+  // without this flag treating one Recovery Mode visit as solving everything.
+  if (shouldRecover && sessionStorage.getItem("blurt_recovery_shown") !== "true") {
+    sessionStorage.setItem("blurt_recovery_shown", "true");
+    window.location.href = "/frontend/web/recovery.html";
+    return true;
+  }
+  return false;
+}
+
+if (!hasCompletedOnboarding()) {
+  window.location.href = "/frontend/web/onboarding.html";
+} else if (!maybeEnterRecovery()) {
+  renderFeed();
+}

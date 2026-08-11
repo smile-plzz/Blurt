@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
+  <script src="_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/_ds_bundle.js"></script>
+</helmet>
+
+<div style="background:var(--color-bg);min-height:100vh;font-family:var(--font-body);color:var(--color-text);padding:64px 56px 120px">
+
+  <div style="max-width:720px;margin:0 0 56px">
+    <span class="tag tag-accent-2">Onboarding spec</span>
+    <h1 style="margin:16px 0 10px;font-size:52px">Ten questions, three passes</h1>
+    <p style="font-size:17px;opacity:.75;margin:0 0 18px">A context profile, not a screening test. The sequence moves from <em>where you are right now</em> to <em>how things go wrong</em> to <em>how you want to be helped</em> — so early answers are easy and low-stakes, and the questions that shape tone come last, once the user has warmed up.</p>
+    <p style="font-size:14px;opacity:.6;margin:0">Each card below lists the question, its answer set, the signal it writes to the persona, and what that signal changes downstream. Field names are proposals for <code style="font-size:13px">schema/persona.json</code>.</p>
+  </div>
+
+  <div style="max-width:1180px;display:flex;flex-direction:column;gap:44px">
+
+    <!-- PASS 1 -->
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+        <h3 style="margin:0">Pass 1 — Where you are right now</h3>
+        <span class="tag tag-neutral">Q1–Q3 · lowest stakes, answered in ~20s</span>
+      </div>
+      <p style="font-size:14px;opacity:.65;margin:0;max-width:640px">Present state before history. These three are answerable without any self-reflection, which is what makes the harder ones later feel safe.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q1</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">How's your head right now?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Pretty full — a lot going on</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Foggy — can't get a grip on anything</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Flat — nothing feels worth starting</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Fine, mostly — here to get ahead of it</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> entry state &rarr; <code style="font-size:12px">entry_state</code>. Separates crisis-arrival from calm-arrival.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> "pretty full" or "foggy" skips the rest of onboarding after Q3 and drops straight into Recovery Mode with a shorter question set; onboarding resumes later. Nobody in overwhelm should be made to finish a form.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q2</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">What's a thing you've been meaning to do?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Small and annoying (a call, a form, a chore)</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Big and vague (a project, a move, a change)</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Something for someone else</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Honestly, a pile of all three</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> dominant intent shape &rarr; <code style="font-size:12px">typical_intent_class</code>.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> "big and vague" pre-arms the decomposition trigger (Section 6) — that user's first captures are far more likely to be multi-step. "Small and annoying" biases toward <code style="font-size:12px">activation-only</code> framing, where naming the whole task adds nothing.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q3</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">When do you usually notice you meant to do something?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Right as I'm falling asleep</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Mid-task, about something unrelated</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">When someone reminds me</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Too late to do anything about it</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> capture windows &rarr; <code style="font-size:12px">intent_surface_moments[]</code>. Also a soft read on moment C (started, got distracted) vs. moment F (disappeared).</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> seeds candidate check-in windows before any behavioral history exists. "Mid-task" is the strongest signal for keeping capture friction near zero — that user needs the widget, not the app.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PASS 2 -->
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+        <h3 style="margin:0">Pass 2 — Where things come apart</h3>
+        <span class="tag tag-neutral">Q4–Q7 · the differentiating four</span>
+      </div>
+      <p style="font-size:14px;opacity:.65;margin:0;max-width:640px">These carry the most personalization weight. Q4 and Q5 are the two that most separate users from each other; if onboarding has to be cut short, keep these.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+
+        <div class="card elev-md" style="border:1px solid var(--color-accent-300)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="card-kicker">Q4</p><span class="tag tag-accent">highest value</span></div>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">Where do things usually stall for you?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Starting — I know what it is, I just can't begin</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Deciding — I don't know which thing to do first</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Finishing — I start plenty, I just drift off</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Remembering — it's gone before I can act</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> primary failure point &rarr; <code style="font-size:12px">primary_stall_point</code>. Maps directly onto moments B / A / C / F in Section 3.1.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> the single biggest prior on moment detection, which the ambiguity table says is the hard part. "Starting" &rarr; default <code style="font-size:12px">activation-only</code> (smallest next physical action). "Deciding" &rarr; decomposition offered earlier and the rollup view surfaces one item at a time. "Finishing" &rarr; check-ins ask about the in-progress thing before offering anything new. "Remembering" &rarr; optimize capture, resurface sooner.</p>
+        </div>
+
+        <div class="card elev-md" style="border:1px solid var(--color-accent-300)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="card-kicker">Q5</p><span class="tag tag-accent">highest value</span></div>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">When you've been avoiding something, what's usually behind it?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">It's boring, and I can't make myself care</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">It's bigger than it looks and I don't know where to start</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">I'm dreading it — something about it stings</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">I keep thinking there'll be a better moment</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> avoidance mechanism &rarr; <code style="font-size:12px">avoidance_driver</code>. The <em>why</em> behind a stall, which Q4 alone doesn't give.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> decides what a repeat stall means. Dread &rarr; never escalate frequency; switch to <code style="font-size:12px">inquiring</code> early and treat <code style="font-size:12px">dropped</code> as a genuinely good outcome. Size &rarr; propose decomposition instead of re-reminding. Boredom &rarr; <code style="font-size:12px">activation-only</code>, tiny first action. Timing &rarr; the same task at a different window, same framing.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q6</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">When in the day do you actually have something in the tank?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Early — mornings are my good hours</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Late — I come alive at night</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">In bursts, unpredictably</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Rarely — most days are a slog right now</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> usable-energy windows &rarr; <code style="font-size:12px">energy_windows</code>, feeding the receptivity input in Section 3.3.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> when check-ins fire, and how demanding they're allowed to be. "In bursts" means never schedule by clock — wait for an app-open. "Rarely" caps intervention volume from day one and makes <code style="font-size:12px">silent-recovery</code> the default rather than a fallback.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q7</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">How long do you usually go before checking in on your own list?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Most days</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Every few days</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Every couple of weeks, if that</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">I don't keep one — that's the problem</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> personal gap baseline &rarr; <code style="font-size:12px">gap_baseline_days</code>. This is the question Section 3.4 asks for by name.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> the Recovery Mode trigger threshold, before two weeks of history exist. Without it, recovery either fires constantly at light users or never fires at all.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PASS 3 -->
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+        <h3 style="margin:0">Pass 3 — How you want to be met</h3>
+        <span class="tag tag-neutral">Q8–Q10 · tone and intent</span>
+      </div>
+      <p style="font-size:14px;opacity:.65;margin:0;max-width:640px">Last, because they ask the user to picture being interrupted — an easier question once they've already described how things go wrong.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px">
+
+        <div class="card elev-md" style="border:1px solid var(--color-accent-300)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><p class="card-kicker">Q8</p><span class="tag tag-accent">highest value</span></div>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">A reminder lands and you haven't done the thing. What helps?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Just say the thing. "Open the lecture."</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Ask me. "Still on your mind, or can this go?"</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Give me the first inch, not the whole task</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Leave me alone and bring it up next time I'm here</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> starting framing mode &rarr; <code style="font-size:12px">preferred_framing</code>. The four options are exactly the four modes in Section 3.3, written as the user would say them.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> which template step 2 hand-triggers, and later the prior the inference layer starts from instead of guessing. Also the honest answer to "stop nagging" — option four selects <code style="font-size:12px">silent-recovery</code> as the default channel, no notifications at all.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q9</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">Where does it fall apart most?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Work or study things</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Home and admin — bills, forms, appointments</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">People — replies, plans, birthdays</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Looking after myself</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">All of it, fairly evenly</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> drop-prone categories &rarr; <code style="font-size:12px">drop_prone_domains[]</code>, the cold-start value for <code style="font-size:12px">inferred_patterns.task_categories_prone_to_drop</code>.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> urgency tiering and which stalled items Recovery Mode picks. Also the one signal that lets tone shift by domain — a missed self-care intent should never be framed like a missed deadline.</p>
+        </div>
+
+        <div class="card elev-sm">
+          <p class="card-kicker">Q10</p>
+          <p class="card-title" style="font-size:19px;margin:0 0 12px">What would make this worth keeping on your phone?</p>
+          <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Catching things before I lose them</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Actually finishing a few of them</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Feeling less behind than I do now</div>
+            <div style="font-size:14px;padding:9px 13px;border-radius:999px;background:var(--color-surface)">Getting one specific thing off my back</div>
+          </div>
+          <p style="font-size:13px;margin:0 0 8px"><strong>Signal:</strong> success definition &rarr; <code style="font-size:12px">stated_goal</code>.</p>
+          <p style="font-size:13px;margin:0;opacity:.75"><strong>Changes:</strong> which metric this user's experience optimizes for, per Section 3.5. "Less behind" makes a rising <code style="font-size:12px">dropped</code> count something to affirm out loud rather than quietly log; "one specific thing" hands the very next capture straight into the decomposition path.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="hr" style="margin:8px 0"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;max-width:1180px">
+      <div class="card elev-sm">
+        <p class="card-kicker">Keeping it short</p>
+        <p class="card-body" style="opacity:1;font-size:14px">Ten cards is the full set, not the required path. Q1 can end onboarding early. Q4, Q5 and Q8 are the three that carry most of the personalization weight — if a user bails at any point, the persona is still usable with those alone. Q7's answer is the only one that can't be inferred from behavior later, so it should never be the question that gets cut.</p>
+      </div>
+      <div class="card elev-sm">
+        <p class="card-kicker">One screen, one question</p>
+        <p class="card-body" style="opacity:1;font-size:14px">No progress percentage and no "question 4 of 10" counter — a visible remaining count is the same pressure mechanic as an overdue badge. A quiet segmented progress bar (as in mockup screens 02-03) reads as position, not debt. Every question is skippable with a plain "skip" rather than a "prefer not to say."</p>
+      </div>
+      <div class="card elev-sm">
+        <p class="card-kicker">Where the voice prompt sits</p>
+        <p class="card-body" style="opacity:1;font-size:14px">The existing open voice prompt ("tell me about a time it slipped") comes after Q10, framed as optional. By then the user has answered ten concrete questions and knows what the app is for, so the open answer tends to be specific rather than a shrug. Its transcript enriches the same fields the MC answers seeded, and never overwrites them.</p>
+      </div>
+      <div class="card elev-sm">
+        <p class="card-kicker">Not a diagnosis</p>
+        <p class="card-body" style="opacity:1;font-size:14px">No question asks about symptoms, subtype, medication or duration. Subtype, if it's still wanted, is better inferred from Q4 and Q6 than self-reported — and nothing downstream currently needs it. The wording throughout describes situations, not traits.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

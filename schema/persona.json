@@ -4,25 +4,75 @@
   "title": "User Persona",
   "description": "Per-user, isolated persona. Never pooled or generalized across users.",
   "type": "object",
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "0.2.0",
   "required": ["user_id", "onboarding_profile", "interaction_log", "inferred_patterns", "active_clarifications"],
   "properties": {
     "user_id": { "type": "string" },
     "onboarding_profile": {
       "type": "object",
-      "description": "Cold-start snapshot. Written once at onboarding, read by inference to seed inferred_patterns.",
+      "description": "Cold-start snapshot. Written once at onboarding (three-pass, ten-question flow - see frontend/mockups/Blurt Onboarding Question Flow.dc.html), read by inference to seed inferred_patterns. Not a diagnosis: no question asks about symptoms, subtype, medication, or duration.",
       "properties": {
         "adhd_subtype": {
           "type": "string",
-          "enum": ["inattentive", "hyperactive", "combined", "unspecified"]
+          "enum": ["inattentive", "hyperactive", "combined", "unspecified"],
+          "description": "Deliberately no longer collected via onboarding self-report (2026-08-11 onboarding spec decision - 'better inferred from Q4 and Q6 than self-reported, and nothing downstream currently needs it'). Field kept for schema stability; stays 'unspecified' unless a future inference pass writes it."
+        },
+        "entry_state": {
+          "type": ["string", "null"],
+          "enum": ["overwhelmed_full", "foggy", "flat", "fine_ahead_of_it", null],
+          "description": "Q1. Separates crisis-arrival from calm-arrival. 'overwhelmed_full' or 'foggy' ends onboarding early after Q3 - nobody in overwhelm should be made to finish a form."
+        },
+        "typical_intent_class": {
+          "type": ["string", "null"],
+          "enum": ["small_annoying", "big_vague", "for_someone_else", "mixed", null],
+          "description": "Q2. 'big_vague' pre-arms the decomposition trigger; 'small_annoying' biases toward activation-only framing."
+        },
+        "intent_surface_moments": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["falling_asleep", "mid_task", "reminded_by_someone", "too_late"] },
+          "description": "Q3. Candidate capture/check-in windows before any behavioral history exists. 'mid_task' is the strongest signal for zero-friction capture (widget, not app)."
+        },
+        "primary_stall_point": {
+          "type": ["string", "null"],
+          "enum": ["starting", "deciding", "finishing", "remembering", null],
+          "description": "Q4, highest-value. Maps onto moments B/A/C/F (Section 3.1). Single biggest prior on moment detection."
+        },
+        "avoidance_driver": {
+          "type": ["string", "null"],
+          "enum": ["boredom", "size", "dread", "timing", null],
+          "description": "Q5, highest-value. The *why* behind a stall, which primary_stall_point alone doesn't give. Decides what a repeat stall means - dread must never escalate frequency."
+        },
+        "energy_windows": {
+          "type": ["string", "null"],
+          "enum": ["mornings", "nights", "bursts", "rarely", null],
+          "description": "Q6. Feeds the receptivity input (Section 3.3). 'bursts' means never schedule by clock; 'rarely' caps intervention volume and defaults to silent-recovery."
+        },
+        "gap_baseline_days": {
+          "type": ["number", "null"],
+          "description": "Q7 - the exact question Section 3.4 asks for by name. Recovery Mode trigger threshold before two weeks of real history exist. The one signal that can't be inferred from behavior later, so it should never be the question that gets cut."
+        },
+        "preferred_framing": {
+          "type": ["string", "null"],
+          "enum": ["direct", "inquiring", "activation-only", "silent-recovery", null],
+          "description": "Q8, highest-value. Starting framing-mode prior for the inference layer, written as the user would say it. 'silent-recovery' is the honest answer to 'stop nagging' - no notifications at all."
+        },
+        "drop_prone_domains": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["work_study", "home_admin", "people", "self_care", "even"] },
+          "description": "Q9. Cold-start value for inferred_patterns.task_categories_prone_to_drop. Lets tone shift by domain - a missed self-care intent must never be framed like a missed deadline."
+        },
+        "stated_goal": {
+          "type": ["string", "null"],
+          "enum": ["catching_things", "finishing_things", "feeling_less_behind", "one_specific_thing", null],
+          "description": "Q10. Which success metric (Section 3.5) this user's experience optimizes for."
         },
         "mc_answers": {
           "type": "object",
-          "description": "Multiple-choice onboarding answers (daily rhythm, known triggers, etc). Keyed by question id."
+          "description": "Freeform overflow for any further multiple-choice answers not yet promoted to a first-class field above. Keyed by question id."
         },
         "voice_transcript_analysis": {
           "type": ["string", "null"],
-          "description": "Summary derived from voice-recorded open answers at onboarding."
+          "description": "Summary derived from the voice-recorded open answer, asked after Q10 (once the user already knows what the app is for) rather than before the questions."
         }
       }
     },

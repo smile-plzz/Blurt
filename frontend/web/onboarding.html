@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt — Onboarding</title>
+<meta name="theme-color" content="#f5ead8">
+<link rel="stylesheet" href="/frontend/mockups/_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
+<link rel="stylesheet" href="/frontend/web/style.css">
+</head>
+<body>
+  <div class="phone">
+
+    <!-- Step 0: Welcome -->
+    <section id="step-welcome" class="onboard-step">
+      <div class="onboard-blob onboard-blob-1"></div>
+      <div class="onboard-blob onboard-blob-2"></div>
+      <div class="onboard-hero">
+        <h1 style="font-size:56px;margin:0">Blurt</h1>
+        <p style="font-size:18px;margin:0 0 6px;opacity:.8">Just blurt it out.</p>
+        <p style="font-size:14px;opacity:.65;max-width:280px">Say the thing the moment it forms — before it disappears. We'll bring it back at the right time.</p>
+      </div>
+      <div class="onboard-footer">
+        <button id="get-started" class="btn btn-primary btn-block" style="height:52px;font-size:16px">Get started</button>
+        <button id="skip-onboarding" class="btn btn-ghost" style="align-self:center">I've used Blurt before</button>
+      </div>
+    </section>
+
+    <!-- Steps 1-10: one question per screen, rendered by onboarding.js from
+         the QUESTIONS array (frontend/mockups/Blurt Onboarding Question Flow.dc.html).
+         A quiet segmented bar shows position, never a "question N of 10" count
+         or percentage - per that spec's explicit "position, not debt" decision. -->
+    <section id="step-question" class="onboard-step" hidden>
+      <div style="padding:20px 28px 0">
+        <div id="question-progress" class="onboard-progress"></div>
+        <span id="question-pass-tag" class="tag tag-outline"></span>
+        <h3 id="question-title" style="margin:14px 0 4px"></h3>
+      </div>
+      <div style="flex:1;overflow:auto;padding:8px 28px;display:flex;flex-direction:column;gap:10px" id="question-options"></div>
+      <div style="padding:12px 28px 32px;text-align:center">
+        <button id="question-skip" class="btn btn-ghost">Skip</button>
+      </div>
+    </section>
+
+    <!-- Q1 branch-out: entry_state signals overwhelm - onboarding stops here,
+         no form left to finish. -->
+    <section id="step-gentle-exit" class="onboard-step" hidden>
+      <div class="onboard-hero" style="align-items:center;text-align:center">
+        <h2 style="margin:0 0 10px">Let's keep this simple.</h2>
+        <p style="font-size:14px;opacity:.65;max-width:280px">No more questions right now — just say the first thing on your mind, whenever you're ready. We'll pick the rest up later.</p>
+      </div>
+      <div class="onboard-footer">
+        <button id="gentle-exit-continue" class="btn btn-primary btn-block" style="height:52px">Okay</button>
+      </div>
+    </section>
+
+    <!-- Final step: voice prompt, now after Q10 (optional, framed once the
+         user already knows what the app is for) per the onboarding spec. -->
+    <section id="step-voice" class="onboard-step" hidden>
+      <div style="padding:20px 28px 0">
+        <div class="onboard-progress onboard-progress-full"></div>
+        <span class="tag tag-outline">Last one — optional</span>
+        <h3 style="margin:14px 0 8px">In your own words</h3>
+        <p style="font-size:13px;opacity:.7;margin:0">Tell us about a time you meant to do something and it just&nbsp;&hellip; didn't happen. Talk as long as you want.</p>
+      </div>
+      <div class="onboard-voice">
+        <div class="onboard-mic-wrap">
+          <div id="pulse-1" class="pulse-ring" hidden></div>
+          <div id="pulse-2" class="pulse-ring d2" hidden></div>
+          <button id="voice-toggle" class="btn onboard-mic-btn" aria-label="Start recording">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          </button>
+        </div>
+        <p id="voice-status" class="text-muted" style="font-size:12px;margin:0">Tap to talk, or skip — typing works too.</p>
+        <textarea id="voice-fallback" class="input" rows="3" placeholder="Or type it instead&hellip;" style="width:100%;max-width:280px;font-size:14px"></textarea>
+      </div>
+      <div style="padding:0 28px 36px;display:flex;flex-direction:column;gap:8px">
+        <button id="voice-done" class="btn btn-secondary btn-block" style="height:48px">I'm done talking</button>
+        <button id="voice-skip" class="btn btn-ghost" style="align-self:center">Skip for now</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/frontend/web/persona.js"></script>
+  <script src="/frontend/web/onboarding.js"></script>
+</body>
+</html>

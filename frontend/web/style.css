@@ -2,6 +2,16 @@
    type) comes from the "organic" design system linked in index.html
    (frontend/mockups/_ds/organic-.../styles.css), the same one the mockups use. */
 
+@keyframes pulse { 0% { transform: scale(1); opacity: .5 } 100% { transform: scale(1.9); opacity: 0 } }
+.pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-accent);
+  animation: pulse 2.2s ease-out infinite;
+}
+.pulse-ring.d2 { animation-delay: .7s; }
+
 .phone {
   max-width: 480px;
   margin: 0 auto;
@@ -9,6 +19,148 @@
   display: flex;
   flex-direction: column;
   position: relative;
+}
+
+/* — onboarding — */
+.onboard-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 100dvh;
+}
+
+/* Same class of bug as #checkin[hidden]/.framing-picker[hidden] below: the
+   class's own display:flex outranks the UA default [hidden]{display:none}. */
+.onboard-step[hidden] {
+  display: none;
+}
+
+.onboard-blob {
+  position: absolute;
+  border-radius: 50%;
+}
+.onboard-blob-1 {
+  top: -80px; right: -80px; width: 260px; height: 260px;
+  background: var(--color-accent-2-200); opacity: .6;
+}
+.onboard-blob-2 {
+  bottom: 60px; left: -60px; width: 180px; height: 180px;
+  background: var(--color-accent-200); opacity: .7;
+}
+
+.onboard-hero {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 36px;
+  gap: 14px;
+}
+
+.onboard-footer {
+  position: relative;
+  padding: 0 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.onboard-voice {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 0 28px;
+  text-align: center;
+}
+
+.onboard-mic-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.onboard-mic-btn {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-md);
+}
+
+/* — onboarding: question flow (10 questions, quiet position bar not a count) — */
+.onboard-progress {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.onboard-progress-seg {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--color-divider);
+}
+
+.onboard-progress-seg.filled {
+  background: var(--color-accent);
+}
+
+.onboard-progress-full {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  margin-bottom: 20px;
+}
+
+.onboard-pill {
+  text-align: left;
+  width: 100%;
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  padding: 13px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-divider);
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.onboard-pill:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+}
+
+.onboard-pill:active {
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+}
+
+/* — recovery mode — */
+.recovery-main {
+  flex: 1;
+  padding: 20px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* — settings — */
+.settings-main {
+  flex: 1;
+  padding: 12px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .nav {
@@ -69,6 +221,10 @@ main {
   height: 44px;
 }
 
+.rollup-entry[hidden] {
+  display: none;
+}
+
 .fab {
   position: fixed;
   bottom: 28px;
@@ -108,6 +264,12 @@ main {
   top: -12px;
   left: 14px;
   background: var(--color-bg);
+}
+
+/* Same [hidden]-specificity issue as above: the ds .tag class sets
+   display:inline-flex, which outranks the UA default [hidden]{display:none}. */
+.checkin-float-tag[hidden] {
+  display: none;
 }
 
 .framing-picker {

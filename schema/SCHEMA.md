@@ -22,7 +22,7 @@ Per-user, isolated. Never pooled or generalized across users (design principle f
 
 | Field | Written by | Read by | Notes |
 |---|---|---|---|
-| `onboarding_profile` | Persona Agent (onboarding flow) | Persona Agent (seeds inference) | MC answers + voice transcript analysis. |
+| `onboarding_profile` | Persona Agent (onboarding flow) | Persona Agent (seeds inference) | Ten first-class MC-answer fields (`entry_state`, `typical_intent_class`, `intent_surface_moments`, `primary_stall_point`, `avoidance_driver`, `energy_windows`, `gap_baseline_days`, `preferred_framing`, `drop_prone_domains`, `stated_goal`) per the three-pass onboarding spec, plus voice transcript analysis. `adhd_subtype` is no longer collected via self-report (kept for schema stability only) - not a diagnosis, per that spec's explicit decision. |
 | `interaction_log` | Persona Agent (from intent events) | Persona Agent (inference input) | Append-only. |
 | `inferred_patterns` | Persona Agent | Reminder Agent, Orchestrator | The layer that makes reminders feel calibrated instead of generic. Includes `confidence` so overfitting-to-one-user risk is visible. |
 | `active_clarifications` | Persona Agent (periodic micro-questions) | Persona Agent | Active signal, fills gaps passive data can't explain. |
@@ -43,3 +43,7 @@ Local-first by default draft assumption (see `PRIVACY.md`), pending Privacy Agen
 **0.1.0 -> 0.2.0** (additive): added `state`, `state_updated_at`, `stall_count` per the Notion roadmap's minimal intent state machine (2026-08-10 design doc). Existing `blurt_intents_v0.1.0` localStorage records have no `state` field; on first read, any consumer must backfill `state: "dormant"` (not `"captured"` — these intents already survived capture) with `state_updated_at: null` and `stall_count: 0`, rather than treating the absence as an error. `resolution_status` is untouched — this migration does not reshape or reinterpret it.
 
 **0.2.0 -> 0.3.0** (additive): added `parent_intent_id`, `subtasks`, `deadline`, `deadline_confirmed_absent` per the Notion roadmap's decomposition design decisions (2026-08-10 follow-up). Existing records have none of these fields; on first read, backfill `parent_intent_id: null`, `subtasks: []`, `deadline: null`, `deadline_confirmed_absent: false`. No existing field is reshaped or reinterpreted — an intent with no `parent_intent_id` and empty `subtasks` is just a normal, non-decomposed intent, which is every intent that predates this version.
+
+### persona.json migrations
+
+**0.1.0 -> 0.2.0** (additive): added ten first-class fields under `onboarding_profile` (see table above) per the three-pass, ten-question onboarding spec (`frontend/mockups/Blurt Onboarding Question Flow.dc.html`, 2026-08-11). `adhd_subtype` is untouched structurally but is no longer written by the onboarding UI - existing personas keep whatever value they have (`"unspecified"` for anyone onboarded before this version). New fields are all nullable/optional; a persona written before this version simply has them `undefined`, equivalent to "not asked" - no backfill required since every consumer must already treat an unset field as "no signal yet," not an error.

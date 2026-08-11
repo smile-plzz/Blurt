@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt — Settings</title>
+<meta name="theme-color" content="#f5ead8">
+<link rel="stylesheet" href="/frontend/mockups/_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
+<link rel="stylesheet" href="/frontend/web/style.css">
+</head>
+<body>
+  <div class="phone">
+    <nav class="nav">
+      <a href="/frontend/web/" class="btn btn-icon" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <span class="nav-brand" style="margin-right:0;margin-left:8px">Settings</span>
+    </nav>
+
+    <main class="settings-main">
+      <div>
+        <h6 style="opacity:.5;margin:0 0 8px">Persona</h6>
+        <div id="persona-card" class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
+          <p class="card-body" id="persona-summary" style="margin:0;opacity:1;font-size:14px"></p>
+          <a href="/frontend/web/onboarding.html" class="btn btn-ghost" style="padding-inline:0">Edit</a>
+        </div>
+      </div>
+
+      <div>
+        <h6 style="opacity:.5;margin:0 0 8px">Privacy</h6>
+        <div class="card elev-sm">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="card-title" style="font-size:15px">Local-first</span>
+            <span class="tag tag-neutral">Always on</span>
+          </div>
+          <p class="card-body">Your logs stay on this device. One exception: voice transcription currently uses your browser's built-in speech service, which sends audio off-device. Not user-switchable yet.</p>
+        </div>
+      </div>
+
+      <div>
+        <h6 style="opacity:.5;margin:0 0 8px">Data</h6>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button id="export-data" class="btn btn-secondary btn-block" style="height:46px">Export my data</button>
+          <button id="delete-data" class="btn btn-ghost btn-block" style="height:46px">Delete everything</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/frontend/web/persona.js"></script>
+  <script src="/frontend/web/intents.js"></script>
+  <script src="/frontend/web/settings.js"></script>
+</body>
+</html>
