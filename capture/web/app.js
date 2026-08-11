@@ -4,12 +4,24 @@ const STORAGE_KEY = "blurt_intents_v0.1.0";
 const SCHEMA_VERSION = "0.2.0";
 
 const micBtn = document.getElementById("mic-btn");
-const micIcon = document.getElementById("mic-icon");
 const statusEl = document.getElementById("status");
+const listeningTag = document.getElementById("listening-tag");
+const pulse1 = document.getElementById("pulse-1");
+const pulse2 = document.getElementById("pulse-2");
+const pulse3 = document.getElementById("pulse-3");
 const typeForm = document.getElementById("type-form");
 const typeInput = document.getElementById("type-input");
 const toast = document.getElementById("toast");
+const toastText = document.getElementById("toast-text");
 const recentEl = document.getElementById("recent");
+
+function setListeningUI(isListening) {
+  micBtn.classList.toggle("listening", isListening);
+  listeningTag.hidden = !isListening;
+  pulse1.hidden = !isListening;
+  pulse2.hidden = !isListening;
+  pulse3.hidden = !isListening;
+}
 
 function loadIntents() {
   let intents;
@@ -51,7 +63,7 @@ function saveIntent(text, captureMethod) {
   intents.push(intent);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(intents));
 
-  showToast("blurted.");
+  showToast(`Captured — “${trimmed}”`);
   renderRecent();
 }
 
@@ -72,7 +84,7 @@ function trackerStats() {
 }
 
 function showToast(message) {
-  toast.textContent = message;
+  toastText.textContent = message;
   toast.classList.add("show");
   clearTimeout(showToast._t);
   showToast._t = setTimeout(() => toast.classList.remove("show"), 1400);
@@ -117,13 +129,13 @@ if (!SpeechRecognition) {
 
   recognition.addEventListener("end", () => {
     listening = false;
-    micBtn.classList.remove("listening");
+    setListeningUI(false);
     statusEl.textContent = "tap. speak. done.";
   });
 
   recognition.addEventListener("error", (e) => {
     listening = false;
-    micBtn.classList.remove("listening");
+    setListeningUI(false);
     if (e.error === "no-speech") {
       statusEl.textContent = "didn't catch that. tap to retry.";
     } else if (e.error === "not-allowed" || e.error === "service-not-allowed") {
@@ -134,10 +146,13 @@ if (!SpeechRecognition) {
   });
 
   micBtn.addEventListener("click", () => {
-    if (listening) return;
+    if (listening) {
+      recognition.stop(); // tap-to-stop, matching the mockup's "Tap to stop" affordance
+      return;
+    }
     listening = true;
-    micBtn.classList.add("listening");
-    statusEl.textContent = "listening...";
+    setListeningUI(true);
+    statusEl.textContent = "listening…";
     recognition.start();
   });
 }
