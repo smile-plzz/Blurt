@@ -21,7 +21,7 @@ This section is the working nerve center. The `Blurt` GitHub repo (`smile-plzz/b
 |---|---|
 | Data & Schema | ✅ `schema/intent.json` (0.3.0 — state machine + decomposition/deadline fields, both below), `schema/persona.json` — versioned and documented |
 | Capture | ✅ prototype live (`capture/web/`) — voice + typed fallback, writes state-machine-shaped events straight to localStorage |
-| Frontend | 🟡 in progress — 10-screen mockup set done (`frontend/mockups/`); build-sequence steps 2-3 scaffolded (`frontend/web/`): home feed, manually hand-triggered `direct`/`inquiring` check-ins, and a rule-based "not sure" fallback for confusable moment pairs |
+| Frontend | 🟡 in progress — 13-screen mockup set done (`frontend/mockups/`, "organic" design system); build-sequence steps 2-3 scaffolded (`frontend/web/`): home feed, manually hand-triggered `direct`/`inquiring` check-ins, a rule-based "not sure" fallback for confusable moment pairs, task decomposition, and both rollup views. **2026-08-11: `frontend/web/` reskinned to match the mockups' actual design system** (was a bare ad-hoc dark theme) — screen-by-screen verified against the mockup in Chrome. |
 | Persona & Inference | 🟡 in progress — step 4 MVP scaffolded (`api/infer.js` + `frontend/web/app.js`'s `inferDecision()`): one Mistral call returns moment/urgency/receptivity/framing, falls back to steps 2-3 on failure. Needs `MISTRAL_API_KEY` set in Vercel manually. |
 | Reminder & Tone | ⬜ not started |
 | Orchestrator | ⬜ not started |
