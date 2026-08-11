@@ -4,39 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Blurt — Home</title>
-<meta name="theme-color" content="#141416">
+<meta name="theme-color" content="#f5ead8">
+<link rel="stylesheet" href="/frontend/mockups/_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
 <link rel="stylesheet" href="/frontend/web/style.css">
 </head>
 <body>
-  <nav class="topnav">
-    <a href="/capture/web/" class="topnav-link">+ capture</a>
-    <button id="reset-btn" class="topnav-link topnav-danger">reset test data</button>
-  </nav>
-  <main>
-    <header>
-      <h1>Blurt</h1>
-      <p class="subtitle">what's still open</p>
-    </header>
+  <div class="phone">
+    <nav class="nav">
+      <span class="nav-brand">Blurt</span>
+      <button id="reset-btn" class="btn btn-ghost" style="font-size:12px">reset test data</button>
+    </nav>
 
-    <button id="rollup-entry" class="rollup-entry" hidden>a few things to catch up on</button>
+    <main>
+      <button id="rollup-entry" class="rollup-entry btn tag-outline" hidden>a few things to catch up on</button>
 
-    <ul id="feed"></ul>
-    <p id="empty" hidden>nothing captured yet.</p>
-  </main>
+      <ul id="feed"></ul>
+      <p id="empty" class="text-muted" hidden>nothing captured yet.</p>
+    </main>
 
-  <div id="checkin" hidden>
-    <div id="checkin-card">
+    <a href="/capture/web/" class="btn btn-primary fab" aria-label="Capture a new intent">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+    </a>
+  </div>
+
+  <div id="checkin" class="dialog-backdrop" hidden>
+    <div id="checkin-card" class="card elev-lg checkin-sheet">
+      <span id="checkin-framing-tag" class="tag tag-outline checkin-float-tag" hidden></span>
       <div id="framing-picker" class="framing-picker" role="radiogroup" aria-label="Framing mode (manual, for step-2 tone testing)">
-        <label><input type="radio" name="framing" value="direct" checked> direct</label>
-        <label><input type="radio" name="framing" value="inquiring"> inquiring</label>
+        <label class="radio"><input type="radio" name="framing" value="direct" checked><span class="dot"></span>direct</label>
+        <label class="radio"><input type="radio" name="framing" value="inquiring"><span class="dot"></span>inquiring</label>
       </div>
       <p class="checkin-source" id="checkin-source"></p>
-      <p class="checkin-kicker" id="checkin-kicker"></p>
-      <h2 id="checkin-title"></h2>
-      <p id="checkin-body"></p>
+      <p class="card-kicker" id="checkin-kicker"></p>
+      <h3 id="checkin-title"></h3>
+      <p class="card-body" id="checkin-body"></p>
       <div id="checkin-list"></div>
       <div class="checkin-actions" id="checkin-actions"></div>
-      <button id="checkin-close" class="btn-ghost">close</button>
+      <button id="checkin-close" class="btn btn-ghost btn-block">close</button>
     </div>
   </div>
 

@@ -16,6 +16,7 @@ const STORAGE_KEY = "blurt_intents_v0.1.0";
 const feedEl = document.getElementById("feed");
 const emptyEl = document.getElementById("empty");
 const checkinEl = document.getElementById("checkin");
+const checkinFramingTag = document.getElementById("checkin-framing-tag");
 const checkinSource = document.getElementById("checkin-source");
 const checkinKicker = document.getElementById("checkin-kicker");
 const checkinTitle = document.getElementById("checkin-title");
@@ -24,6 +25,33 @@ const checkinList = document.getElementById("checkin-list");
 const checkinActions = document.getElementById("checkin-actions");
 const checkinClose = document.getElementById("checkin-close");
 const rollupEntry = document.getElementById("rollup-entry");
+
+// Mirrors the mockup's per-state tag color coding (screen 6, "Home — intent
+// feed"): neutral for dormant/deferred, accent for stalled/needs-attention,
+// accent-2 for surfaced/active, outline for settled (resolved/dropped).
+function tagClassForState(state) {
+  switch (state) {
+    case "stalled":
+    case "flagged_for_recovery":
+      return "tag-accent";
+    case "surfaced":
+      return "tag-accent-2";
+    case "resolved":
+    case "dropped":
+      return "tag-outline";
+    default:
+      return "tag-neutral";
+  }
+}
+
+function setFramingTag(label) {
+  if (!label) {
+    checkinFramingTag.hidden = true;
+    return;
+  }
+  checkinFramingTag.hidden = false;
+  checkinFramingTag.textContent = label;
+}
 
 let activeIntentId = null;
 
@@ -69,33 +97,38 @@ function renderFeed() {
 
   for (const intent of intents) {
     const li = document.createElement("li");
-    li.className = "feed-item state-" + intent.state;
+    li.className = "card elev-sm feed-item state-" + intent.state;
     if (intent.state === "resolved" || intent.state === "dropped") {
       li.classList.add("settled");
     }
 
-    const text = document.createElement("span");
-    text.className = "feed-text";
+    const text = document.createElement("p");
+    text.className = "card-body feed-text";
     text.textContent = intent.text;
-
-    const tag = document.createElement("span");
-    tag.className = "tag";
-    tag.textContent = intent.state;
-
     li.appendChild(text);
+
+    const tagRow = document.createElement("div");
+    tagRow.style.display = "flex";
+    tagRow.style.gap = "4px";
+
     if (intent.state !== "resolved" && intent.state !== "dropped" && isAmbiguous(intent)) {
       const notSureTag = document.createElement("span");
-      notSureTag.className = "tag tag-ambiguous";
+      notSureTag.className = "tag tag-accent";
       notSureTag.textContent = "not sure";
-      li.appendChild(notSureTag);
+      tagRow.appendChild(notSureTag);
     }
     if (intent.subtasks.length > 0) {
       const subtaskTag = document.createElement("span");
-      subtaskTag.className = "tag";
+      subtaskTag.className = "tag tag-neutral";
       subtaskTag.textContent = `${intent.subtasks.length} subtask${intent.subtasks.length === 1 ? "" : "s"}`;
-      li.appendChild(subtaskTag);
+      tagRow.appendChild(subtaskTag);
     }
-    li.appendChild(tag);
+    const tag = document.createElement("span");
+    tag.className = "tag " + tagClassForState(intent.state);
+    if (intent.state === "dropped") tag.style.opacity = "0.7";
+    tag.textContent = intent.state;
+    tagRow.appendChild(tag);
+    li.appendChild(tagRow);
 
     if (intent.state !== "resolved" && intent.state !== "dropped") {
       li.addEventListener("click", () => openCheckin(intent.id));
@@ -111,13 +144,14 @@ function renderFeed() {
 function framingCopy(intent, framing) {
   if (framing === "direct") {
     return {
+      tag: "direct",
       kicker: "Check-in",
       title: intent.text,
       body: "You mentioned this earlier.",
       actions: [
-        { label: "Done", handler: (i) => resolve(i, "done") },
-        { label: "Not yet", handler: (i) => defer(i) },
-        { label: "Something else happened", handler: (i) => resolve(i, "done_adjacent"), ghost: true }
+        { label: "Done", handler: (i) => resolve(i, "done"), variant: "primary" },
+        { label: "Not yet", handler: (i) => defer(i), variant: "secondary" },
+        { label: "Something else happened", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
       ]
     };
   }
@@ -126,13 +160,14 @@ function framingCopy(intent, framing) {
     ? `Still stalled, ${intent.stall_count === 1 ? "once" : intent.stall_count + " times"}.`
     : "This has been sitting a while.";
   return {
+    tag: "inquiring",
     kicker: stalledNote,
     title: "Still on your mind, or can this go?",
     body: `“${intent.text}”`,
     actions: [
-      { label: "Still there", handler: (i) => stall(i) },
-      { label: "Let it go", handler: (i) => resolve(i, "no_longer_relevant") },
-      { label: "Handled a different way", handler: (i) => resolve(i, "done_adjacent"), ghost: true }
+      { label: "Still there", handler: (i) => stall(i), variant: "secondary" },
+      { label: "Let it go", handler: (i) => resolve(i, "no_longer_relevant"), variant: "ghost" },
+      { label: "Handled a different way", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
     ]
   };
 }
@@ -211,6 +246,7 @@ async function openCheckin(id) {
 
   if (!intent.parent_intent_id) {
     document.getElementById("framing-picker").hidden = true;
+    setFramingTag(null);
     checkinSource.textContent = "";
     checkinSource.className = "checkin-source";
     checkinKicker.textContent = "Thinking…";
@@ -235,6 +271,7 @@ async function openCheckin(id) {
 // and a subtask opened from the rollup can reach it the same way.
 async function runCheckin(intent, id) {
   document.getElementById("framing-picker").hidden = true;
+  setFramingTag(null);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   checkinKicker.textContent = "Thinking…";
@@ -292,57 +329,72 @@ async function fetchDecomposition(intent) {
 // explicitly in scope per Ismail's 2026-08-10 "keep it simple, add edit" decision.
 function renderDecomposeProposal(intent, subtaskTexts) {
   document.getElementById("framing-picker").hidden = true;
+  setFramingTag(null);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
-  checkinKicker.textContent = "This looks like more than one thing";
+  checkinKicker.textContent = "This looks like more than one step";
   checkinTitle.textContent = intent.text;
-  checkinBody.textContent = "Split it up? Edit, remove, or add before approving.";
+  checkinBody.textContent = "Proposed subtasks — edit, exclude, or remove any of these.";
 
-  const rows = subtaskTexts.slice();
+  // { text, included } per row - mockup's checkbox toggles a row out of the
+  // approved set without deleting it; the × button removes it outright.
+  const rows = subtaskTexts.map((text) => ({ text, included: true }));
 
   function renderRows() {
     checkinList.innerHTML = "";
-    rows.forEach((value, index) => {
-      const row = document.createElement("div");
-      row.className = "subtask-row";
+    rows.forEach((row, index) => {
+      const rowEl = document.createElement("div");
+      rowEl.className = "card elev-sm subtask-row" + (row.included ? "" : " excluded");
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = row.included;
+      checkbox.addEventListener("change", () => {
+        row.included = checkbox.checked;
+        renderRows();
+      });
+      rowEl.appendChild(checkbox);
 
       const input = document.createElement("input");
       input.type = "text";
-      input.value = value;
-      input.addEventListener("input", () => { rows[index] = input.value; });
-      row.appendChild(input);
+      input.className = "subtask-text";
+      input.value = row.text;
+      input.addEventListener("input", () => { row.text = input.value; });
+      rowEl.appendChild(input);
 
       const removeBtn = document.createElement("button");
-      removeBtn.className = "subtask-remove";
-      removeBtn.textContent = "×";
+      removeBtn.className = "btn btn-icon subtask-remove";
+      removeBtn.innerHTML = "×";
       removeBtn.setAttribute("aria-label", "Remove subtask");
       removeBtn.addEventListener("click", () => {
         rows.splice(index, 1);
         renderRows();
       });
-      row.appendChild(removeBtn);
+      rowEl.appendChild(removeBtn);
 
-      checkinList.appendChild(row);
+      checkinList.appendChild(rowEl);
     });
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "btn btn-ghost subtask-add";
+    addBtn.textContent = "+ Add a step";
+    addBtn.addEventListener("click", () => {
+      rows.push({ text: "", included: true });
+      renderRows();
+    });
+    checkinList.appendChild(addBtn);
+
+    const includedCount = rows.filter((r) => r.included).length;
+    approveBtn.textContent = `Approve ${includedCount} subtask${includedCount === 1 ? "" : "s"}`;
   }
-  renderRows();
 
   checkinActions.innerHTML = "";
 
-  const addBtn = document.createElement("button");
-  addBtn.className = "btn-ghost";
-  addBtn.textContent = "+ add subtask";
-  addBtn.addEventListener("click", () => {
-    rows.push("");
-    renderRows();
-  });
-  checkinActions.appendChild(addBtn);
-
   const approveBtn = document.createElement("button");
-  approveBtn.className = "btn-primary";
-  approveBtn.textContent = "Approve";
+  approveBtn.className = "btn btn-primary btn-block";
+  approveBtn.style.height = "48px";
   approveBtn.addEventListener("click", () => {
-    const texts = rows.map((t) => t.trim()).filter(Boolean);
+    const texts = rows.filter((r) => r.included).map((r) => r.text.trim()).filter(Boolean);
     if (texts.length === 0) return;
     const current = loadIntents();
     const target = findIntent(current, activeIntentId);
@@ -354,10 +406,12 @@ function renderDecomposeProposal(intent, subtaskTexts) {
     renderFeed();
   });
   checkinActions.appendChild(approveBtn);
+  renderRows();
 
   const skipBtn = document.createElement("button");
-  skipBtn.className = "btn-ghost";
-  skipBtn.textContent = "Not now — check in on this as-is";
+  skipBtn.className = "btn btn-ghost";
+  skipBtn.style.alignSelf = "center";
+  skipBtn.textContent = "Keep as one item";
   skipBtn.addEventListener("click", () => runCheckin(intent, intent.id));
   checkinActions.appendChild(skipBtn);
 }
@@ -395,6 +449,7 @@ function commitDecomposition(parent, texts, allIntents) {
 // independently, so the parent itself is always reachable from here too.
 function renderSubtaskRollup(intent) {
   document.getElementById("framing-picker").hidden = true;
+  setFramingTag(null);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   checkinKicker.textContent = "Subtasks";
@@ -407,11 +462,11 @@ function renderSubtaskRollup(intent) {
     const sub = findIntent(allIntents, subId);
     if (!sub) continue;
     const row = document.createElement("div");
-    row.className = "subtask-rollup-row";
+    row.className = "card elev-sm subtask-rollup-row";
     const label = document.createElement("span");
     label.textContent = sub.text;
     const tag = document.createElement("span");
-    tag.className = "tag";
+    tag.className = "tag " + tagClassForState(sub.state);
     tag.textContent = sub.state;
     row.appendChild(label);
     row.appendChild(tag);
@@ -426,7 +481,7 @@ function renderSubtaskRollup(intent) {
 
   checkinActions.innerHTML = "";
   const parentBtn = document.createElement("button");
-  parentBtn.className = "btn-ghost";
+  parentBtn.className = "btn btn-ghost";
   parentBtn.textContent = "Check in on this task itself";
   parentBtn.addEventListener("click", () => runCheckin(intent, intent.id));
   checkinActions.appendChild(parentBtn);
@@ -473,7 +528,7 @@ function updateRollupEntry() {
 
 function rollupRow(item, { onDone, onNotYet }) {
   const row = document.createElement("div");
-  row.className = "rollup-row";
+  row.className = "card elev-sm rollup-row";
 
   const label = document.createElement("span");
   label.textContent = item.text;
@@ -481,7 +536,7 @@ function rollupRow(item, { onDone, onNotYet }) {
 
   if (item.stall_count > 0) {
     const tag = document.createElement("span");
-    tag.className = "tag tag-ambiguous";
+    tag.className = "tag tag-accent";
     tag.textContent = `stalled ${item.stall_count === 1 ? "once" : item.stall_count + " times"}`;
     row.appendChild(tag);
   }
@@ -490,13 +545,13 @@ function rollupRow(item, { onDone, onNotYet }) {
   actions.className = "rollup-row-actions";
 
   const doneBtn = document.createElement("button");
-  doneBtn.className = "btn-secondary";
+  doneBtn.className = "btn btn-secondary";
   doneBtn.textContent = "Done";
   doneBtn.addEventListener("click", onDone);
   actions.appendChild(doneBtn);
 
   const notYetBtn = document.createElement("button");
-  notYetBtn.className = "btn-ghost";
+  notYetBtn.className = "btn btn-ghost";
   notYetBtn.textContent = "Not yet";
   notYetBtn.addEventListener("click", onNotYet);
   actions.appendChild(notYetBtn);
@@ -512,6 +567,7 @@ function renderGlobalRollup() {
   checkinList.innerHTML = "";
   checkinEl.hidden = false;
   document.getElementById("framing-picker").hidden = true;
+  setFramingTag(null);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   checkinKicker.textContent = "";
@@ -572,7 +628,8 @@ function renderGlobalRollup() {
 
   checkinActions.innerHTML = "";
   const exitBtn = document.createElement("button");
-  exitBtn.className = "btn-ghost";
+  exitBtn.className = "btn btn-ghost btn-block";
+  exitBtn.style.height = "44px";
   exitBtn.textContent = "That's enough for now";
   exitBtn.addEventListener("click", closeCheckin);
   checkinActions.appendChild(exitBtn);
@@ -592,19 +649,20 @@ function setCheckinSource(kind, label) {
 // `why` is set when this came from the step-4 model call; absent in the step 2/3
 // rule-based fallback path, which has no transparency signal to offer yet.
 function renderNotSure(intent, why) {
-  checkinKicker.textContent = "Not sure";
+  setFramingTag("not sure");
+  checkinKicker.textContent = why || "Signal's thin — asking directly instead of guessing";
   checkinTitle.textContent = "Still working on that, or something new?";
-  checkinBody.textContent = why ? `“${intent.text}” — ${why}` : `“${intent.text}”`;
+  checkinBody.textContent = `“${intent.text}”`;
 
   checkinActions.innerHTML = "";
   const responses = [
-    { label: "Still working on it", handler: (i) => defer(i) },
-    { label: "Not anymore — let it go", handler: (i) => resolve(i, "no_longer_relevant") }
+    { label: "Still working on it", handler: (i) => defer(i), variant: "primary" },
+    { label: "Not anymore — let it go", handler: (i) => resolve(i, "no_longer_relevant"), variant: "secondary" }
   ];
   for (const action of responses) {
     const btn = document.createElement("button");
     btn.textContent = action.label;
-    btn.className = "btn-primary";
+    btn.className = "btn btn-" + action.variant + " btn-block";
     btn.addEventListener("click", () => {
       const current = loadIntents();
       const target = findIntent(current, activeIntentId);
@@ -628,15 +686,21 @@ function renderCheckin(framing, why) {
   if (!intent) return closeCheckin();
 
   const copy = framingCopy(intent, framing);
+  setFramingTag(copy.tag);
   checkinKicker.textContent = copy.kicker;
   checkinTitle.textContent = copy.title;
   checkinBody.textContent = why ? `${copy.body} ${why}` : copy.body;
 
   checkinActions.innerHTML = "";
+  const actionRow = document.createElement("div");
+  actionRow.className = "action-row";
+  checkinActions.appendChild(actionRow);
+
   for (const action of copy.actions) {
     const btn = document.createElement("button");
     btn.textContent = action.label;
-    btn.className = action.ghost ? "btn-ghost" : "btn-primary";
+    btn.className = "btn btn-" + action.variant;
+    if (action.fullRow) btn.classList.add("full-row");
     btn.addEventListener("click", () => {
       const current = loadIntents();
       const target = findIntent(current, activeIntentId);
@@ -647,13 +711,14 @@ function renderCheckin(framing, why) {
       closeCheckin();
       renderFeed();
     });
-    checkinActions.appendChild(btn);
+    (action.fullRow ? checkinActions : actionRow).appendChild(btn);
   }
 }
 
 function closeCheckin() {
   checkinEl.hidden = true;
   checkinList.innerHTML = "";
+  setFramingTag(null);
   document.getElementById("framing-picker").hidden = false;
   activeIntentId = null;
 }
