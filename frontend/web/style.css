@@ -128,6 +128,65 @@ header h1 {
   font-size: 0.9rem;
 }
 
+.rollup-entry {
+  display: block;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+}
+
+.rollup-group-label {
+  margin: 0 0 0.5rem;
+  color: var(--dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.rollup-group {
+  margin-bottom: 1rem;
+}
+
+.rollup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.rollup-row-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex: none;
+}
+
+.rollup-row-actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.rollup-row-actions .btn-secondary {
+  background: var(--ok);
+  color: #0a1a12;
+}
+
 #checkin {
   position: fixed;
   inset: 0;

@@ -23,6 +23,7 @@ const checkinBody = document.getElementById("checkin-body");
 const checkinList = document.getElementById("checkin-list");
 const checkinActions = document.getElementById("checkin-actions");
 const checkinClose = document.getElementById("checkin-close");
+const rollupEntry = document.getElementById("rollup-entry");
 
 let activeIntentId = null;
 
@@ -64,6 +65,7 @@ function renderFeed() {
 
   feedEl.innerHTML = "";
   emptyEl.hidden = intents.length > 0;
+  updateRollupEntry();
 
   for (const intent of intents) {
     const li = document.createElement("li");
@@ -430,6 +432,152 @@ function renderSubtaskRollup(intent) {
   checkinActions.appendChild(parentBtn);
 }
 
+// Reconciles the built per-parent-only rollup above with mockup screen 13
+// ("Rollup check-in view"), which shows a *global* pass: every parent with
+// pending subtasks, grouped by parent, plus other top-level items that are
+// separately resurfacing (stalled/deferred, no subtasks of their own) - one
+// shared "that's enough for now" exit instead of nudging through each parent.
+// Decision #4 in the roadmap ("compiled into a separate check-in section")
+// is about avoiding five separate interruptions; this is that single pass.
+function pendingSubtasksOf(parent, allIntents) {
+  return parent.subtasks
+    .map((id) => findIntent(allIntents, id))
+    .filter((s) => s && s.state !== "resolved" && s.state !== "dropped");
+}
+
+function collectRollupGroups() {
+  const allIntents = loadIntents();
+  const topLevel = allIntents.filter((i) => !i.parent_intent_id);
+
+  const parentGroups = [];
+  for (const parent of topLevel) {
+    if (parent.subtasks.length === 0) continue;
+    const pending = pendingSubtasksOf(parent, allIntents);
+    if (pending.length > 0) parentGroups.push({ parent, pending });
+  }
+
+  // "Also resurfacing": standalone items (no subtasks of their own) that are
+  // themselves stalled or deferred - the non-decomposition resurfacing case
+  // mockup 13's second section covers ("Book dentist appointment").
+  const resurfacing = topLevel.filter(
+    (i) => i.subtasks.length === 0 && (i.state === "stalled" || i.state === "deferred")
+  );
+
+  return { parentGroups, resurfacing };
+}
+
+function updateRollupEntry() {
+  const { parentGroups, resurfacing } = collectRollupGroups();
+  rollupEntry.hidden = parentGroups.length === 0 && resurfacing.length === 0;
+}
+
+function rollupRow(item, { onDone, onNotYet }) {
+  const row = document.createElement("div");
+  row.className = "rollup-row";
+
+  const label = document.createElement("span");
+  label.textContent = item.text;
+  row.appendChild(label);
+
+  if (item.stall_count > 0) {
+    const tag = document.createElement("span");
+    tag.className = "tag tag-ambiguous";
+    tag.textContent = `stalled ${item.stall_count === 1 ? "once" : item.stall_count + " times"}`;
+    row.appendChild(tag);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "rollup-row-actions";
+
+  const doneBtn = document.createElement("button");
+  doneBtn.className = "btn-secondary";
+  doneBtn.textContent = "Done";
+  doneBtn.addEventListener("click", onDone);
+  actions.appendChild(doneBtn);
+
+  const notYetBtn = document.createElement("button");
+  notYetBtn.className = "btn-ghost";
+  notYetBtn.textContent = "Not yet";
+  notYetBtn.addEventListener("click", onNotYet);
+  actions.appendChild(notYetBtn);
+
+  row.appendChild(actions);
+  return row;
+}
+
+function renderGlobalRollup() {
+  const { parentGroups, resurfacing } = collectRollupGroups();
+  activeIntentId = null;
+
+  checkinList.innerHTML = "";
+  checkinEl.hidden = false;
+  document.getElementById("framing-picker").hidden = true;
+  checkinSource.textContent = "";
+  checkinSource.className = "checkin-source";
+  checkinKicker.textContent = "";
+  checkinTitle.textContent = "A few things to catch up on";
+  checkinBody.textContent = "Grouped so this is one pass, not five separate pings.";
+
+  function actOn(item, effect) {
+    const current = loadIntents();
+    const target = findIntent(current, item.id);
+    if (target) {
+      effect(target);
+      saveIntents(current);
+    }
+    renderFeed();
+    renderGlobalRollup();
+  }
+
+  for (const { parent, pending } of parentGroups) {
+    const group = document.createElement("div");
+    group.className = "rollup-group";
+    const label = document.createElement("p");
+    label.className = "rollup-group-label";
+    label.textContent = parent.text;
+    group.appendChild(label);
+    for (const sub of pending) {
+      group.appendChild(
+        rollupRow(sub, {
+          onDone: () => actOn(sub, (i) => resolve(i, "done")),
+          onNotYet: () => actOn(sub, (i) => stall(i))
+        })
+      );
+    }
+    checkinList.appendChild(group);
+  }
+
+  if (resurfacing.length > 0) {
+    const group = document.createElement("div");
+    group.className = "rollup-group";
+    const label = document.createElement("p");
+    label.className = "rollup-group-label";
+    label.textContent = "Also resurfacing";
+    group.appendChild(label);
+    for (const item of resurfacing) {
+      group.appendChild(
+        rollupRow(item, {
+          onDone: () => actOn(item, (i) => resolve(i, "done")),
+          onNotYet: () => actOn(item, (i) => stall(i))
+        })
+      );
+    }
+    checkinList.appendChild(group);
+  }
+
+  if (parentGroups.length === 0 && resurfacing.length === 0) {
+    checkinTitle.textContent = "All caught up";
+    checkinBody.textContent = "";
+  }
+
+  checkinActions.innerHTML = "";
+  const exitBtn = document.createElement("button");
+  exitBtn.className = "btn-ghost";
+  exitBtn.textContent = "That's enough for now";
+  exitBtn.addEventListener("click", closeCheckin);
+  checkinActions.appendChild(exitBtn);
+}
+
 // Visible for testing purposes (per Ismail's request): makes it obvious whether
 // step 4's Mistral call actually ran or the check-in silently fell back to the
 // step 2/3 rule-based path - otherwise a missing/broken MISTRAL_API_KEY looks
@@ -529,6 +677,7 @@ function stall(intent) {
 }
 
 checkinClose.addEventListener("click", closeCheckin);
+rollupEntry.addEventListener("click", renderGlobalRollup);
 
 const resetBtn = document.getElementById("reset-btn");
 if (resetBtn) {
