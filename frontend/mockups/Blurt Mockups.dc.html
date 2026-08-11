@@ -11,414 +11,555 @@
   <link rel="stylesheet" href="_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
   <script src="_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/_ds_bundle.js"></script>
   <style>
-    @keyframes pulse { 0%{ transform:scale(1); opacity:.5 } 100%{ transform:scale(1.9); opacity:0 } }
-    .pulse-ring { position:absolute; inset:0; border-radius:50%; border:2px solid var(--color-accent); animation: pulse 2.2s ease-out infinite; }
-    .pulse-ring.d2 { animation-delay: .7s; }
-    .pulse-ring.d3 { animation-delay: 1.4s; }
+    @keyframes ring { 0%{transform:scale(1);opacity:.45} 100%{transform:scale(1.85);opacity:0} }
+    .ring { position:absolute; inset:0; border-radius:50%; border:2px solid var(--color-accent); animation:ring 2.4s ease-out infinite; }
+    .ring.b { animation-delay:.8s; }
+    .ring.c { animation-delay:1.6s; }
+    [data-screen-label] * { scrollbar-width:none; }
+    [data-screen-label] *::-webkit-scrollbar { display:none; }
   </style>
 </helmet>
 
-<div style="background:var(--color-bg);min-height:100vh;padding:56px 48px;font-family:var(--font-body);color:var(--color-text)">
+<div style="background:var(--color-bg);min-height:100vh;font-family:var(--font-body);color:var(--color-text);padding:64px 56px 120px">
 
-  <div style="max-width:760px;margin:0 0 48px">
-    <span class="tag tag-accent-2">MVP UI mockups</span>
-    <h1 style="margin:14px 0 8px">Blurt</h1>
-    <p style="font-size:16px;opacity:.75;margin:0">Ten screens across onboarding, capture, the home feed, check-in tone variants, Recovery Mode, and settings — built against the intent state machine and framing-mode system from the roadmap.</p>
+  <div style="max-width:660px;margin:0 0 20px">
+    <span class="tag tag-accent-2">Final mockup set</span>
+    <h1 style="margin:16px 0 12px;font-size:54px;line-height:1.05">Blurt</h1>
+    <p style="font-size:16px;opacity:.7;margin:0;text-wrap:pretty">Fourteen screens: onboarding, capture, the feed, the three check-in framings, Recovery Mode, decomposition, the rollup, task detail, and settings. One decision per screen, one filled action per screen, and a single state vocabulary used everywhere.</p>
   </div>
 
-  <div style="display:flex;flex-wrap:wrap;gap:52px;align-items:flex-start">
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:56px;max-width:900px">
+    <span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin-right:6px">State vocabulary</span>
+    <span class="tag tag-neutral">dormant</span>
+    <span class="tag tag-outline">surfaced &middot; deferred</span>
+    <span class="tag tag-accent">needs attention</span>
+    <span class="tag tag-accent-2">closed well</span>
+    <span style="font-size:12px;opacity:.5">&mdash; terracotta is reserved for the one thing on a screen that wants a decision</span>
+  </div>
 
-    <!-- 01 Onboarding — Welcome -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">01</span><h6 style="margin:0">Onboarding — Welcome</h6></div>
-      <div data-screen-label="Onboarding — Welcome" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="position:absolute;top:-80px;right:-80px;width:260px;height:260px;border-radius:50%;background:var(--color-accent-2-200);opacity:.6"></div>
-        <div style="position:absolute;bottom:60px;left:-60px;width:180px;height:180px;border-radius:50%;background:var(--color-accent-200);opacity:.7"></div>
-        <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:0 36px;gap:14px">
-          <h1 style="font-size:56px;margin:0">Blurt</h1>
-          <p style="font-size:18px;margin:0 0 6px;opacity:.8">Just blurt it out.</p>
-          <p style="font-size:14px;opacity:.65;max-width:280px">Say the thing the moment it forms — before it disappears. We'll bring it back at the right time.</p>
-        </div>
-        <div style="position:relative;padding:0 28px 40px;display:flex;flex-direction:column;gap:10px">
-          <button class="btn btn-primary btn-block" style="height:52px;font-size:16px">Get started</button>
-          <button class="btn btn-ghost" style="align-self:center">I've used Blurt before</button>
-        </div>
+  <div style="display:flex;flex-direction:column;gap:64px;max-width:1760px">
+
+    <!-- ══ ONBOARDING ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">Onboarding</h3>
+        <span style="font-size:13px;opacity:.55">One question per screen. No counter, no percentage — position, never debt.</span>
       </div>
-    </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
 
-    <!-- 02 Onboarding — Quick questions -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">02</span><h6 style="margin:0">Onboarding — Quick questions</h6></div>
-      <div data-screen-label="Onboarding — Quick questions" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="padding:24px 28px 0">
-          <div style="display:flex;gap:6px;margin-bottom:20px">
-            <div style="height:4px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
-            <div style="height:4px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
-          </div>
-          <span class="tag tag-outline">Step 1 of 2</span>
-          <h3 style="margin:14px 0 4px">A few quick things</h3>
-          <p style="font-size:13px;opacity:.65;margin:0 0 22px">This shapes your persona — you can refine it anytime.</p>
-        </div>
-        <div style="flex:1;overflow:auto;padding:0 28px;display:flex;flex-direction:column;gap:26px">
-          <div class="field">
-            <label>Which sounds most like you?</label>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
-              <label class="radio"><input type="radio" name="subtype" checked><span class="dot"></span>Inattentive — I drift, lose track of things</label>
-              <label class="radio"><input type="radio" name="subtype"><span class="dot"></span>Hyperactive — I move faster than I plan</label>
-              <label class="radio"><input type="radio" name="subtype"><span class="dot"></span>Combined — a mix of both</label>
+        <!-- 01 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">01</span><span style="font-size:13px;opacity:.6">Welcome</span></div>
+          <div data-screen-label="01 Welcome" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;background:var(--color-accent-2-200);opacity:.5"></div>
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45;position:relative">9:41</div>
+            <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 32px 8px;gap:14px">
+              <h1 style="font-size:64px;margin:0;line-height:1">Blurt</h1>
+              <p style="font-size:19px;margin:0;opacity:.85">Just blurt it out.</p>
+              <p style="font-size:15px;opacity:.6;margin:0;max-width:270px;text-wrap:pretty">Say the thing the moment it forms. We'll bring it back when it's useful.</p>
             </div>
-          </div>
-          <div class="field">
-            <label>When do things usually slip your mind?</label>
-            <div class="seg" style="width:100%;margin-top:6px">
-              <label class="seg-opt" style="flex:1;justify-content:center"><input type="radio" name="window">Mornings</label>
-              <label class="seg-opt" style="flex:1;justify-content:center"><input type="radio" name="window" checked>Midday</label>
-              <label class="seg-opt" style="flex:1;justify-content:center"><input type="radio" name="window">Evenings</label>
+            <div style="position:relative;padding:36px 24px 40px;display:flex;flex-direction:column;gap:6px">
+              <button class="btn btn-primary btn-block" style="height:54px;font-size:16px">Get started</button>
+              <button class="btn btn-ghost btn-block" style="height:48px">I've used Blurt before</button>
             </div>
           </div>
         </div>
-        <div style="padding:20px 28px 32px"><button class="btn btn-primary btn-block" style="height:50px">Continue</button></div>
-      </div>
-    </div>
 
-    <!-- 03 Onboarding — Voice prompt -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">03</span><h6 style="margin:0">Onboarding — In your own words</h6></div>
-      <div data-screen-label="Onboarding — Voice prompt" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="padding:24px 28px 0">
-          <div style="display:flex;gap:6px;margin-bottom:20px">
-            <div style="height:4px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
-            <div style="height:4px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
-          </div>
-          <span class="tag tag-outline">Step 2 of 2</span>
-          <h3 style="margin:14px 0 8px">In your own words</h3>
-          <p style="font-size:13px;opacity:.7;margin:0">Tell us about a time you meant to do something and it just&nbsp;&hellip; didn't happen. Talk as long as you want.</p>
-        </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px">
-          <div style="position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center">
-            <div class="pulse-ring"></div><div class="pulse-ring d2"></div>
-            <div style="width:96px;height:96px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:var(--color-bg);box-shadow:var(--shadow-md)">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        <!-- 02 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">02</span><span style="font-size:13px;opacity:.6">Context question (Q4 of 10)</span></div>
+          <div data-screen-label="02 Onboarding question" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="padding:22px 24px 0;display:flex;gap:5px">
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-accent)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
+              <div style="height:3px;flex:1;border-radius:2px;background:var(--color-divider)"></div>
             </div>
-          </div>
-          <div style="display:flex;gap:4px;align-items:flex-end;height:28px">
-            <div style="width:4px;height:10px;background:var(--color-accent-300);border-radius:2px"></div>
-            <div style="width:4px;height:22px;background:var(--color-accent-400);border-radius:2px"></div>
-            <div style="width:4px;height:14px;background:var(--color-accent-300);border-radius:2px"></div>
-            <div style="width:4px;height:26px;background:var(--color-accent);border-radius:2px"></div>
-            <div style="width:4px;height:16px;background:var(--color-accent-400);border-radius:2px"></div>
-            <div style="width:4px;height:8px;background:var(--color-accent-300);border-radius:2px"></div>
-          </div>
-          <p style="font-size:12px;opacity:.5;margin:0">Listening &mdash; 0:14</p>
-        </div>
-        <div style="padding:0 28px 36px;display:flex;flex-direction:column;gap:8px">
-          <button class="btn btn-secondary btn-block" style="height:48px">I'm done talking</button>
-          <button class="btn btn-ghost" style="align-self:center">Skip for now</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 04 Capture — recording -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">04</span><h6 style="margin:0">Capture — recording an intent</h6></div>
-      <div data-screen-label="Capture — recording" style="width:390px;height:800px;border-radius:44px;background:var(--color-neutral-900);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column;color:var(--color-bg)">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 28px 0">
-          <span style="font-size:13px;font-weight:600">9:41</span>
-          <button class="btn btn-icon" style="color:var(--color-bg)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
-        </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:0 32px">
-          <div style="position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center">
-            <div class="pulse-ring"></div><div class="pulse-ring d2"></div><div class="pulse-ring d3"></div>
-            <div style="width:120px;height:120px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:var(--color-bg)">
-              <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-            </div>
-          </div>
-          <p style="font-size:20px;text-align:center;line-height:1.4;margin:0;opacity:.92">&ldquo;I should cut my&hellip;&rdquo;</p>
-          <span class="tag tag-outline" style="border-color:var(--color-accent-300);color:var(--color-accent-300)">Listening</span>
-        </div>
-        <div style="padding:0 28px 40px;display:flex;justify-content:center">
-          <button class="btn btn-primary" style="width:180px;height:52px;font-size:16px">Tap to stop</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 05 Captured confirmation -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">05</span><h6 style="margin:0">Capture — confirmation (transient toast, auto-dismiss)</h6></div>
-      <div data-screen-label="Capture — confirmation" style="width:390px;height:800px;border-radius:44px;background:var(--color-neutral-900);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column;color:var(--color-bg)">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 32px;opacity:.35">
-          <div style="width:120px;height:120px;border-radius:50%;background:var(--color-accent)"></div>
-        </div>
-        <div style="position:absolute;left:20px;right:20px;bottom:36px;display:flex;align-items:center;gap:10px;background:var(--color-bg);color:var(--color-text);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-md)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><polyline points="20 6 9 17 4 12"/></svg>
-          <span style="font-size:13px;flex:1">Captured &mdash; &ldquo;Cut my nails&rdquo;</span>
-        </div>
-      </div>
-      <p style="font-size:12px;opacity:.55;max-width:390px;margin:0">Toast fades after ~1.4s, no tap required — no confirmation screen, matching the existing capture prototype.</p>
-    </div>
-
-    <!-- 06 Home feed -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">06</span><h6 style="margin:0">Home — intent feed</h6></div>
-      <div data-screen-label="Home — intent feed" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div class="nav" style="padding:20px 24px 8px">
-          <span class="nav-brand" style="font-size:20px">Blurt</span>
-          <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg></button>
-        </div>
-        <div style="flex:1;overflow:auto;padding:8px 20px 90px;display:flex;flex-direction:column;gap:10px">
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1">Cut my nails</p>
-            <span class="tag tag-neutral">dormant</span>
-          </div>
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1">Reply to landlord's email</p>
-            <span class="tag tag-accent">stalled</span>
-          </div>
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1">Book dentist appointment</p>
-            <span class="tag tag-accent-2">surfaced</span>
-          </div>
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;opacity:.55">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1;text-decoration:line-through">Return library books</p>
-            <span class="tag tag-outline">resolved</span>
-          </div>
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;opacity:.55">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1">Reorganize desk drawer</p>
-            <span class="tag tag-neutral" style="opacity:.7">dropped</span>
-          </div>
-          <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-            <p class="card-body" style="margin:0;font-size:14px;opacity:1">Text Sam back</p>
-            <span class="tag tag-neutral">dormant</span>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="position:absolute;bottom:28px;right:28px;width:60px;height:60px;border-radius:50%;box-shadow:var(--shadow-md)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- 07 Check-in — direct -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">07</span><h6 style="margin:0">Check-in — direct framing</h6></div>
-      <div data-screen-label="Check-in — direct" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 24px">
-          <div class="card elev-lg" style="background:var(--color-surface);position:relative">
-            <span class="tag tag-outline" style="position:absolute;top:-12px;left:14px;background:var(--color-bg)">direct</span>
-            <p class="card-kicker" style="margin-top:6px">Check-in</p>
-            <h3 style="margin:0 0 6px">Open the lecture.</h3>
-            <p class="card-body">You mentioned this earlier today.</p>
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button class="btn btn-primary" style="flex:1;height:46px">Done</button>
-              <button class="btn btn-secondary" style="flex:1;height:46px">Not yet</button>
-            </div>
-            <button class="btn btn-ghost btn-block" style="height:38px;font-size:13px;margin-top:2px">Something else happened</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 08 Check-in — inquiring -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">08</span><h6 style="margin:0">Check-in — inquiring framing</h6></div>
-      <div data-screen-label="Check-in — inquiring" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 24px">
-          <div class="card elev-lg" style="background:var(--color-surface);position:relative">
-            <span class="tag tag-outline" style="position:absolute;top:-12px;left:14px;background:var(--color-bg)">inquiring</span>
-            <p class="card-kicker" style="margin-top:6px">Still stalled, twice</p>
-            <h3 style="margin:0 0 6px;font-size:22px">Still on your mind, or can this go?</h3>
-            <p class="card-body">&ldquo;Reply to landlord's email&rdquo; &mdash; you mentioned this twice this week.</p>
-            <div style="display:flex;gap:8px;margin-top:6px">
-              <button class="btn btn-secondary" style="flex:1;height:46px">Still there</button>
-              <button class="btn btn-ghost" style="flex:1;height:46px">Let it go</button>
-            </div>
-            <button class="btn btn-ghost btn-block" style="height:38px;font-size:13px;margin-top:2px">Handled a different way</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 09 Check-in — not sure (ambiguous) -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">09</span><h6 style="margin:0">Check-in — not sure (ambiguous signal)</h6></div>
-      <div data-screen-label="Check-in — not sure" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 24px">
-          <div class="card elev-lg" style="background:var(--color-surface);position:relative">
-            <span class="tag tag-outline" style="position:absolute;top:-12px;left:14px;background:var(--color-bg)">not sure</span>
-            <p class="card-kicker" style="margin-top:6px">Signal's thin — asking directly instead of guessing</p>
-            <h3 style="margin:0 0 6px">Still working on that, or something new?</h3>
-            <p class="card-body">&ldquo;something&rdquo;</p>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-              <button class="btn btn-primary btn-block" style="height:46px">Still working on it</button>
-              <button class="btn btn-secondary btn-block" style="height:46px">Not anymore — let it go</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p style="font-size:12px;opacity:.55;max-width:390px;margin:0">Triggered by vague capture text or repeated stalling — skips the direct/inquiring pick rather than framing a guess as certain.</p>
-    </div>
-
-    <!-- 10 Recovery Mode entry -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">10</span><h6 style="margin:0">Recovery Mode — entry (3-step)</h6></div>
-      <div data-screen-label="Recovery Mode — entry" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div style="padding:20px 28px 0"><span style="font-size:13px;font-weight:600">9:41</span></div>
-        <div style="flex:1;padding:20px 26px;display:flex;flex-direction:column;gap:20px;overflow:auto">
-          <p style="font-size:15px;opacity:.5;margin:0">Welcome back.</p>
-          <div>
-            <h3 style="margin:0 0 12px">What's on your mind right now?</h3>
-            <textarea class="input" rows="3" placeholder="Type or tap the mic&hellip;" style="font-size:14px"></textarea>
-            <div style="display:flex;justify-content:flex-end;margin-top:8px">
-              <button class="btn btn-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></button>
-            </div>
-          </div>
-          <div class="card elev-sm" style="background:var(--color-surface)">
-            <p class="card-kicker">A moment later</p>
-            <p class="card-body" style="opacity:1;font-size:14px">You'd also mentioned &ldquo;book dentist appointment&rdquo; a while back &mdash; still relevant, or should I drop it?</p>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <button class="btn btn-secondary" style="flex:1;height:42px;font-size:13px">Still relevant</button>
-              <button class="btn btn-ghost" style="flex:1;height:42px;font-size:13px">Drop it</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 10 Settings / Privacy -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">11</span><h6 style="margin:0">Settings — privacy</h6></div>
-      <div data-screen-label="Settings — privacy" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div class="nav" style="padding:20px 20px 8px">
-          <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <span class="nav-brand" style="font-size:18px;margin-right:0;margin-left:8px">Settings</span>
-        </div>
-        <div style="flex:1;overflow:auto;padding:12px 24px 32px;display:flex;flex-direction:column;gap:22px">
-          <div>
-            <h6 style="opacity:.5;margin:0 0 8px">Persona</h6>
-            <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-              <p class="card-body" style="margin:0;opacity:1;font-size:14px">Combined type &middot; midday slips</p>
-              <button class="btn btn-ghost" style="padding-inline:0">Edit</button>
-            </div>
-          </div>
-          <div>
-            <h6 style="opacity:.5;margin:0 0 8px">Privacy</h6>
-            <div class="card elev-sm">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <span class="card-title" style="font-size:15px">Local-first</span>
-                <span class="tag tag-neutral">Always on</span>
-              </div>
-              <p class="card-body">Your logs stay on this device. One exception: voice transcription currently uses your browser's built-in speech service, which sends audio off-device. Not user-switchable yet.</p>
-            </div>
-          </div>
-          <div>
-            <h6 style="opacity:.5;margin:0 0 8px">Data</h6>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn btn-secondary btn-block" style="height:46px">Export my data</button>
-              <button class="btn btn-ghost btn-block" style="height:46px">Delete everything</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 12 Decomposition — propose/approve -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">12</span><h6 style="margin:0">Decomposition — propose/approve (new, step 6)</h6></div>
-      <div data-screen-label="Decomposition — propose" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div class="nav" style="padding:20px 24px 8px">
-          <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <span class="nav-brand" style="font-size:18px;margin-right:0;margin-left:8px">Break this down?</span>
-        </div>
-        <div style="flex:1;overflow:auto;padding:8px 24px 20px;display:flex;flex-direction:column;gap:16px">
-          <div class="card elev-sm" style="background:var(--color-surface)">
-            <p class="card-kicker">This looks like more than one step</p>
-            <p class="card-body" style="opacity:1;font-style:italic">&ldquo;Plan the birthday party&rdquo;</p>
-          </div>
-          <div>
-            <label style="font-size:12px;opacity:.6;display:block;margin-bottom:8px">Proposed subtasks — edit or remove any of these</label>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
-                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
-                <span style="font-size:14px;flex:1">Pick a date and venue</span>
-                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
-              </div>
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
-                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
-                <span style="font-size:14px;flex:1">Send invites</span>
-                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
-              </div>
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px">
-                <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
-                <span style="font-size:14px;flex:1">Order a cake</span>
-                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
-              </div>
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;gap:10px;padding:12px 14px;opacity:.5">
-                <input type="checkbox" style="width:18px;height:18px;accent-color:var(--color-accent);flex:none">
-                <span style="font-size:14px;flex:1;text-decoration:line-through">Buy decorations</span>
-                <button class="btn btn-icon" style="width:32px;height:32px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px;gap:28px">
+              <h3 style="margin:0;font-size:30px;line-height:1.2;text-wrap:pretty">Where do things usually stall for you?</h3>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="font-size:15px;padding:17px 20px;border-radius:999px;background:var(--color-surface);box-shadow:var(--shadow-sm)">Starting &mdash; I know what it is, I just can't begin</div>
+                <div style="font-size:15px;padding:17px 20px;border-radius:999px;background:var(--color-accent);color:var(--color-bg)">Deciding &mdash; I don't know which thing first</div>
+                <div style="font-size:15px;padding:17px 20px;border-radius:999px;background:var(--color-surface);box-shadow:var(--shadow-sm)">Finishing &mdash; I start plenty, I drift off</div>
+                <div style="font-size:15px;padding:17px 20px;border-radius:999px;background:var(--color-surface);box-shadow:var(--shadow-sm)">Remembering &mdash; it's gone before I act</div>
               </div>
             </div>
-            <button class="btn btn-ghost" style="margin-top:8px;padding-inline:0;font-size:13px">+ Add a step</button>
+            <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:4px">
+              <button class="btn btn-secondary btn-block" style="height:52px;font-size:15px">Next</button>
+              <button class="btn btn-ghost btn-block" style="height:44px">Skip</button>
+            </div>
           </div>
-          <p style="font-size:12px;opacity:.5;margin:0">No order forced — these surface independently, by urgency and deadline, not step 1-2-3.</p>
         </div>
-        <div style="padding:16px 24px 32px;display:flex;flex-direction:column;gap:8px">
-          <button class="btn btn-primary btn-block" style="height:48px">Approve 3 subtasks</button>
-          <button class="btn btn-ghost" style="align-self:center">Keep as one item</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- 13 Rollup check-in -->
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">13</span><h6 style="margin:0">Rollup check-in view (new, step 6)</h6></div>
-      <div data-screen-label="Rollup check-in" style="width:390px;height:800px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
-        <div class="nav" style="padding:20px 24px 8px">
-          <span class="nav-brand" style="font-size:18px">A few things to catch up on</span>
-        </div>
-        <div style="flex:1;overflow:auto;padding:8px 20px 24px;display:flex;flex-direction:column;gap:14px">
-          <p style="font-size:13px;opacity:.6;margin:0">Grouped so this is one pass, not five separate pings.</p>
-
-          <div>
-            <p style="font-size:12px;opacity:.55;margin:0 0 8px;text-transform:uppercase;letter-spacing:.03em">Birthday party</p>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
-                <span style="font-size:14px">Send invites</span>
-                <div style="display:flex;gap:6px">
-                  <button class="btn btn-secondary" style="height:34px;padding:0 12px;font-size:12px">Done</button>
-                  <button class="btn btn-ghost" style="height:34px;padding:0 12px;font-size:12px">Not yet</button>
+        <!-- 03 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">03</span><span style="font-size:13px;opacity:.6">Optional voice answer</span></div>
+          <div data-screen-label="03 Voice prompt" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="padding:36px 24px 0">
+              <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 14px">Optional</p>
+              <h3 style="margin:0 0 10px;font-size:28px;line-height:1.2;text-wrap:pretty">Tell me about one that got away.</h3>
+              <p style="font-size:14px;opacity:.6;margin:0;max-width:290px">Something you meant to do and didn't. Talk as long as you like.</p>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
+              <div style="position:relative;width:132px;height:132px;display:flex;align-items:center;justify-content:center">
+                <div class="ring"></div><div class="ring b"></div>
+                <div style="width:104px;height:104px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:var(--color-bg)">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
                 </div>
               </div>
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
-                <span style="font-size:14px">Order a cake</span>
-                <span class="tag tag-accent">stalled twice</span>
+              <p style="font-size:13px;opacity:.5;margin:0">Listening &middot; 0:14</p>
+            </div>
+            <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:4px">
+              <button class="btn btn-secondary btn-block" style="height:52px;font-size:15px">That's it</button>
+              <button class="btn btn-ghost btn-block" style="height:44px">Skip this</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CAPTURE ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">Capture</h3>
+        <span style="font-size:13px;opacity:.55">Two states, zero taps to leave. Every added tap here is a regression.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+        <!-- 04 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">04</span><span style="font-size:13px;opacity:.6">Recording</span></div>
+          <div data-screen-label="04 Capture recording" style="width:390px;height:812px;border-radius:44px;background:var(--color-neutral-900);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column;color:var(--color-bg)">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px 0">
+              <span style="font-size:12px;opacity:.5;padding-left:4px">9:41</span>
+              <button class="btn btn-icon" style="color:var(--color-bg);opacity:.7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;padding:0 36px">
+              <div style="position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center">
+                <div class="ring"></div><div class="ring b"></div><div class="ring c"></div>
+                <div style="width:132px;height:132px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:var(--color-bg)">
+                  <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+                </div>
+              </div>
+              <p style="font-size:22px;text-align:center;line-height:1.35;margin:0;opacity:.9">&ldquo;I should cut my&hellip;&rdquo;</p>
+            </div>
+            <div style="padding:0 24px 46px;text-align:center">
+              <p style="font-size:13px;opacity:.45;margin:0">Tap anywhere to stop</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">05</span><span style="font-size:13px;opacity:.6">Confirmation &mdash; auto-dismiss</span></div>
+          <div data-screen-label="05 Capture confirmation" style="width:390px;height:812px;border-radius:44px;background:var(--color-neutral-900);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column;color:var(--color-bg)">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.5">9:41</div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;opacity:.16">
+              <div style="width:132px;height:132px;border-radius:50%;background:var(--color-accent)"></div>
+            </div>
+            <div style="position:absolute;left:20px;right:20px;bottom:40px;display:flex;align-items:center;gap:12px;background:var(--color-bg);color:var(--color-text);border-radius:999px;padding:16px 20px;box-shadow:var(--shadow-md)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-2-700)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><polyline points="20 6 9 17 4 12"/></svg>
+              <span style="font-size:14px;flex:1">Got it &mdash; &ldquo;cut my nails&rdquo;</span>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">Fades after 1.4s. No confirmation screen, no dismiss button, no decision.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ FEED ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">The feed</h3>
+        <span style="font-size:13px;opacity:.55">No counts, no badges, no streak. One tag per row, closed items dimmed rather than hidden.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+        <!-- 06 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">06</span><span style="font-size:13px;opacity:.6">Home</span></div>
+          <div data-screen-label="06 Home feed" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 20px 18px 24px">
+              <h3 style="margin:0;font-size:26px">Blurt</h3>
+              <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 4v1.5M12 18.5V20M4 12h1.5M18.5 12H20M6.5 6.5l1 1M16.5 16.5l1 1M6.5 17.5l1-1M16.5 7.5l1-1"/></svg></button>
+            </div>
+            <div style="flex:1;overflow:auto;padding:0 20px 110px;display:flex;flex-direction:column;gap:8px">
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                <span style="font-size:15px;flex:1">Reply to the landlord</span>
+                <span class="tag tag-accent" style="font-size:10px;padding:3px 10px">stalled</span>
+              </div>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                <span style="font-size:15px;flex:1">Plan the birthday party</span>
+                <span class="tag tag-accent" style="font-size:10px;padding:3px 10px">4 open</span>
+              </div>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                <span style="font-size:15px;flex:1">Book the dentist</span>
+                <span class="tag tag-outline" style="font-size:10px;padding:3px 10px">surfaced</span>
+              </div>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                <span style="font-size:15px;flex:1">Cut my nails</span>
+                <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">dormant</span>
+              </div>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                <span style="font-size:15px;flex:1">Text Sam back</span>
+                <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">dormant</span>
+              </div>
+              <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.4;margin:20px 0 2px">Closed this week</p>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px;opacity:.45">
+                <span style="font-size:15px;flex:1;text-decoration:line-through">Return the library books</span>
+                <span class="tag tag-accent-2" style="font-size:10px;padding:3px 10px">done</span>
+              </div>
+              <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px;opacity:.45">
+                <span style="font-size:15px;flex:1">Reorganise the desk drawer</span>
+                <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">let go</span>
+              </div>
+            </div>
+            <div style="position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(to top, var(--color-bg) 55%, transparent);pointer-events:none"></div>
+            <button class="btn btn-primary" style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;box-shadow:var(--shadow-md);padding:0">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+            </button>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">Mic centred and reachable by thumb — it is the only thing on this screen the user must be able to hit without looking.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ CHECK-INS ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">Check-ins</h3>
+        <span style="font-size:13px;opacity:.55">Same card, three framings. Two choices plus a quiet third — never a binary.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+        <!-- 07 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">07</span><span style="font-size:13px;opacity:.6">Direct</span></div>
+          <div data-screen-label="07 Check-in direct" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 20px 28px">
+              <div class="card elev-lg" style="padding:26px 24px 22px;gap:0">
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 14px">Earlier today</p>
+                <h3 style="margin:0 0 24px;font-size:30px;line-height:1.15">Open the lecture.</h3>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary" style="flex:1;height:50px;font-size:15px">Done</button>
+                  <button class="btn btn-secondary" style="flex:1;height:50px;font-size:15px">Not yet</button>
+                </div>
+                <button class="btn btn-ghost btn-block" style="height:44px;font-size:13px;margin-top:6px">Something else happened</button>
               </div>
             </div>
           </div>
+        </div>
 
-          <div>
-            <p style="font-size:12px;opacity:.55;margin:0 0 8px;text-transform:uppercase;letter-spacing:.03em">Also resurfacing</p>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <div class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:12px 14px">
-                <span style="font-size:14px">Book dentist appointment</span>
-                <div style="display:flex;gap:6px">
-                  <button class="btn btn-secondary" style="height:34px;padding:0 12px;font-size:12px">Done</button>
-                  <button class="btn btn-ghost" style="height:34px;padding:0 12px;font-size:12px">Not yet</button>
+        <!-- 08 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">08</span><span style="font-size:13px;opacity:.6">Inquiring</span></div>
+          <div data-screen-label="08 Check-in inquiring" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 20px 28px">
+              <div class="card elev-lg" style="padding:26px 24px 22px;gap:0">
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 14px">Mentioned twice this week</p>
+                <h3 style="margin:0 0 12px;font-size:27px;line-height:1.2;text-wrap:pretty">Still on your mind, or can this go?</h3>
+                <p style="font-size:14px;opacity:.6;margin:0 0 24px">&ldquo;Reply to the landlord&rdquo;</p>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-primary" style="flex:1;height:50px;font-size:15px">Still there</button>
+                  <button class="btn btn-secondary" style="flex:1;height:50px;font-size:15px">Let it go</button>
+                </div>
+                <button class="btn btn-ghost btn-block" style="height:44px;font-size:13px;margin-top:6px">Handled a different way</button>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">"Let it go" sits at equal weight to "still there" — dropping something is a real outcome, not a failure.</p>
+        </div>
+
+        <!-- 09 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">09</span><span style="font-size:13px;opacity:.6">Not sure</span></div>
+          <div data-screen-label="09 Check-in not sure" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:0 20px 28px">
+              <div class="card elev-lg" style="padding:26px 24px 22px;gap:0">
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 14px">Asking rather than guessing</p>
+                <h3 style="margin:0 0 12px;font-size:27px;line-height:1.2;text-wrap:pretty">Still working on that, or something new?</h3>
+                <p style="font-size:14px;opacity:.6;margin:0 0 24px">&ldquo;the thing with the forms&rdquo;</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <button class="btn btn-primary btn-block" style="height:50px;font-size:15px">Still on that</button>
+                  <button class="btn btn-secondary btn-block" style="height:50px;font-size:15px">Something new</button>
                 </div>
               </div>
             </div>
           </div>
+          <p style="font-size:12px;opacity:.55;margin:0">Fires when the signal is too thin to pick a framing. Stacked, not side-by-side — these two answers mean different things.</p>
         </div>
-        <div style="padding:14px 24px 32px">
-          <button class="btn btn-ghost btn-block" style="height:44px">That's enough for now</button>
+
+        <!-- 10 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">10</span><span style="font-size:13px;opacity:.6">Recovery Mode</span></div>
+          <div data-screen-label="10 Recovery Mode" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="flex:1;padding:40px 24px 0;display:flex;flex-direction:column;gap:32px">
+              <div>
+                <p style="font-size:15px;opacity:.5;margin:0 0 16px">Welcome back.</p>
+                <h3 style="margin:0 0 20px;font-size:30px;line-height:1.2">What's on your mind right now?</h3>
+                <textarea class="input" rows="3" placeholder="Type, or hold the mic&hellip;" style="font-size:15px;border-radius:var(--radius-lg)"></textarea>
+              </div>
+              <div class="card elev-sm" style="padding:20px;gap:0;background:var(--color-accent-2-100)">
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.5;margin:0 0 10px">A moment later</p>
+                <p style="font-size:15px;margin:0 0 18px;line-height:1.45">You'd mentioned &ldquo;book the dentist&rdquo; a while back &mdash; still relevant?</p>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-secondary" style="flex:1;height:44px;font-size:14px">Still is</button>
+                  <button class="btn btn-ghost" style="flex:1;height:44px;font-size:14px">Drop it</button>
+                </div>
+              </div>
+            </div>
+            <div style="padding:24px;display:flex;justify-content:center">
+              <div style="width:56px;height:56px;border-radius:50%;background:var(--color-accent);display:flex;align-items:center;justify-content:center;color:var(--color-bg);box-shadow:var(--shadow-md)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">No gap length, no missed count, no backlog. One old item, and only after the user has spoken first.</p>
         </div>
+
       </div>
-      <p style="font-size:12px;opacity:.55;max-width:390px;margin:0">Parent and subtasks resolve independently — clearing "Order a cake" doesn't require touching "Send invites."</p>
+    </div>
+
+    <!-- ══ DECOMPOSITION ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">Multi-step intents</h3>
+        <span style="font-size:13px;opacity:.55">Nothing is numbered. Order comes from deadlines, never from position in a list.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+        <!-- 11 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">11</span><span style="font-size:13px;opacity:.6">Proposed breakdown</span></div>
+          <div data-screen-label="11 Decomposition propose" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="padding:26px 24px 20px">
+              <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 12px">Looks like more than one thing</p>
+              <h3 style="margin:0 0 8px;font-size:26px;line-height:1.2">Plan the birthday party</h3>
+              <p style="font-size:13px;opacity:.55;margin:0">Change anything below. Nothing is saved until you say so.</p>
+            </div>
+            <div style="flex:1;overflow:auto;padding:0 20px 20px;display:flex;flex-direction:column;gap:8px">
+              <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--color-accent);flex:none;display:flex;align-items:center;justify-content:center;color:var(--color-bg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span style="font-size:15px;flex:1">Pick a date and venue</span>
+              </div>
+              <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--color-accent);flex:none;display:flex;align-items:center;justify-content:center;color:var(--color-bg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span style="font-size:15px;flex:1">Send the invites</span>
+              </div>
+              <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--color-accent);flex:none;display:flex;align-items:center;justify-content:center;color:var(--color-bg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span style="font-size:15px;flex:1">Order the cake</span>
+              </div>
+              <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px;opacity:.4">
+                <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-neutral-400);flex:none"></div>
+                <span style="font-size:15px;flex:1;text-decoration:line-through">Buy decorations</span>
+              </div>
+              <button class="btn btn-ghost" style="align-self:flex-start;padding:12px 0;font-size:14px">+ Add a step</button>
+            </div>
+            <div style="padding:8px 24px 40px;display:flex;flex-direction:column;gap:4px">
+              <button class="btn btn-primary btn-block" style="height:52px;font-size:15px">Keep these three</button>
+              <button class="btn btn-ghost btn-block" style="height:44px">Leave it as one thing</button>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">The AI proposes; it never commits a breakdown the user hasn't seen.</p>
+        </div>
+
+        <!-- 12 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">12</span><span style="font-size:13px;opacity:.6">Rollup check-in</span></div>
+          <div data-screen-label="12 Rollup check-in" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="padding:18px 24px 0;font-size:12px;opacity:.45">9:41</div>
+            <div style="padding:32px 24px 22px">
+              <h3 style="margin:0 0 8px;font-size:28px;line-height:1.2">A few things, all at once</h3>
+              <p style="font-size:14px;opacity:.6;margin:0">One pass instead of five separate nudges.</p>
+            </div>
+            <div style="flex:1;overflow:auto;padding:0 20px 20px;display:flex;flex-direction:column;gap:24px">
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px">Birthday party</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="card elev-sm" style="padding:15px 16px;gap:12px">
+                    <span style="font-size:15px">Send the invites</span>
+                    <div style="display:flex;gap:8px">
+                      <button class="btn btn-secondary" style="flex:1;height:42px;font-size:13px">Done</button>
+                      <button class="btn btn-ghost" style="flex:1;height:42px;font-size:13px">Not yet</button>
+                    </div>
+                  </div>
+                  <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                    <span style="font-size:15px;flex:1">Order the cake</span>
+                    <span class="tag tag-accent" style="font-size:10px;padding:3px 10px">stalled</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px">Also resurfacing</p>
+                <div class="card elev-sm" style="padding:15px 16px;gap:12px">
+                  <span style="font-size:15px">Book the dentist</span>
+                  <div style="display:flex;gap:8px">
+                    <button class="btn btn-secondary" style="flex:1;height:42px;font-size:13px">Done</button>
+                    <button class="btn btn-ghost" style="flex:1;height:42px;font-size:13px">Not yet</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:8px 24px 40px">
+              <button class="btn btn-ghost btn-block" style="height:50px;font-size:15px">That's enough for now</button>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">Exits on the user's terms, with items left untouched. Nothing here has to be cleared.</p>
+        </div>
+
+        <!-- 13 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">13</span><span style="font-size:13px;opacity:.6">Task detail</span></div>
+          <div data-screen-label="13 Task detail" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px 0">
+              <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+              <button class="btn btn-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><circle cx="12" cy="5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/></svg></button>
+            </div>
+            <div style="padding:14px 24px 20px">
+              <h3 style="margin:0 0 10px;font-size:26px;line-height:1.2">Plan the birthday party</h3>
+              <p style="font-size:12px;opacity:.5;margin:0">captured 9 days ago &middot; four steps open</p>
+            </div>
+            <div style="flex:1;overflow:auto;padding:0 20px 104px;display:flex;flex-direction:column;gap:24px">
+
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px">Has a date</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                    <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-neutral-400);flex:none"></div>
+                    <span style="font-size:15px;flex:1">Send the invites</span>
+                    <span class="tag tag-outline" style="font-size:10px;padding:3px 10px">Fri</span>
+                  </div>
+                  <div class="card elev-sm" style="padding:18px 16px;gap:14px;border:1px solid var(--color-accent-300)">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-accent-400);flex:none"></div>
+                      <span style="font-size:15px;flex:1">Order the cake</span>
+                      <span class="tag tag-accent" style="font-size:10px;padding:3px 10px">Sat</span>
+                    </div>
+                    <p style="font-size:14px;margin:0;opacity:.75;padding-left:32px;line-height:1.45">Stalled twice. Start with finding the bakery's number.</p>
+                    <div style="display:flex;gap:8px;padding-left:32px">
+                      <button class="btn btn-primary" style="flex:1;height:44px;font-size:14px">Just that bit</button>
+                      <button class="btn btn-ghost" style="flex:1;height:44px;font-size:14px">Let it go</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px">No date &mdash; even footing</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px">
+                    <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-neutral-400);flex:none"></div>
+                    <span style="font-size:15px;flex:1">Pick the playlist</span>
+                    <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">dormant</span>
+                  </div>
+                  <div class="card elev-sm" style="padding:18px 16px;gap:14px;background:var(--color-accent-2-100)">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-neutral-400);flex:none"></div>
+                      <span style="font-size:15px;flex:1">Sort out the speaker</span>
+                    </div>
+                    <p style="font-size:14px;margin:0;opacity:.8;padding-left:32px">Is there a date this needs to happen by?</p>
+                    <div style="display:flex;gap:8px;padding-left:32px">
+                      <button class="btn btn-secondary" style="flex:1;height:44px;font-size:14px">Pick a date</button>
+                      <button class="btn btn-ghost" style="flex:1;height:44px;font-size:14px">There isn't one</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px">Closed</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px;opacity:.45">
+                    <div style="width:20px;height:20px;border-radius:50%;background:var(--color-accent-2-500);flex:none;display:flex;align-items:center;justify-content:center;color:var(--color-bg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <span style="font-size:15px;flex:1;text-decoration:line-through">Pick a date and venue</span>
+                  </div>
+                  <div class="card elev-sm" style="padding:15px 16px;flex-direction:row;align-items:center;gap:12px;opacity:.45">
+                    <div style="width:20px;height:20px;border-radius:50%;border:2.5px solid var(--color-neutral-400);flex:none"></div>
+                    <span style="font-size:15px;flex:1">Buy decorations</span>
+                    <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">let go</span>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-ghost" style="align-self:flex-start;padding:12px 0;font-size:14px">+ Add a step</button>
+            </div>
+            <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px 30px;background:linear-gradient(to top, var(--color-bg) 60%, transparent)">
+              <button class="btn btn-secondary btn-block" style="height:50px;font-size:15px">Archive this whole thing</button>
+            </div>
+          </div>
+          <p style="font-size:12px;opacity:.55;margin:0">Grouped by whether a date exists, so a stalled step never blocks the ones under it. Archiving the parent works with four steps still open.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <h3 style="margin:0;font-size:26px">Settings</h3>
+        <span style="font-size:13px;opacity:.55">States what is true today, including the part that isn't ideal yet.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+        <!-- 14 -->
+        <div style="display:flex;flex-direction:column;gap:12px;width:390px">
+          <div style="display:flex;align-items:baseline;gap:8px"><span class="tag tag-neutral">14</span><span style="font-size:13px;opacity:.6">Privacy &amp; persona</span></div>
+          <div data-screen-label="14 Settings" style="width:390px;height:812px;border-radius:44px;background:var(--color-bg);box-shadow:var(--shadow-lg);overflow:hidden;position:relative;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;padding:18px 20px 0">
+              <button class="btn btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            </div>
+            <div style="padding:14px 24px 24px"><h3 style="margin:0;font-size:26px">Settings</h3></div>
+            <div style="flex:1;overflow:auto;padding:0 20px 32px;display:flex;flex-direction:column;gap:28px">
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px;padding-left:4px">Your persona</p>
+                <div class="card elev-sm" style="padding:16px;flex-direction:row;align-items:center;gap:12px">
+                  <div style="flex:1">
+                    <div style="font-size:15px">Stalls at deciding</div>
+                    <div style="font-size:12px;opacity:.5;margin-top:3px">checks in every few days &middot; asks directly</div>
+                  </div>
+                  <button class="btn btn-ghost" style="height:40px;padding:0 6px;font-size:13px">Edit</button>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px;padding-left:4px">Privacy</p>
+                <div class="card elev-sm" style="padding:20px;gap:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+                    <span style="font-size:15px">Local-first</span>
+                    <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">always on</span>
+                  </div>
+                  <p style="font-size:13.5px;opacity:.65;margin:0;line-height:1.5">Your logs stay on this device. Two exceptions: voice transcription uses your browser's speech service, and check-in wording is generated off-device. Neither is switchable yet.</p>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.45;margin:0 0 10px;padding-left:4px">Your data</p>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <button class="btn btn-secondary btn-block" style="height:48px;font-size:14px">Export everything</button>
+                  <button class="btn btn-ghost btn-block" style="height:48px;font-size:14px">Delete everything</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </div>

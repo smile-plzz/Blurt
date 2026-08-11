@@ -94,16 +94,10 @@ main {
   margin: 0;
 }
 
-#listening-tag {
-  border-color: var(--color-accent-300);
-  color: var(--color-accent-300);
-}
-
-/* Same [hidden]-vs-class-display specificity bug fixed elsewhere in this
-   codebase: the ds .tag class's own display:inline-flex outranks the UA
-   default [hidden]{display:none}. */
-#listening-tag[hidden] {
-  display: none;
+#stop-hint {
+  color: color-mix(in srgb, var(--color-bg) 45%, transparent);
+  font-size: 13px;
+  margin: 0;
 }
 
 #type-form {
@@ -140,8 +134,8 @@ main {
   gap: 10px;
   background: var(--color-bg);
   color: var(--color-text);
-  border-radius: var(--radius-lg);
-  padding: 14px 16px;
+  border-radius: 999px;
+  padding: 16px 20px;
   box-shadow: var(--shadow-md);
   font-size: 13px;
   opacity: 0;

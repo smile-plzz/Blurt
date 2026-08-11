@@ -14,18 +14,19 @@
       <p id="recovery-welcome" class="text-muted" style="font-size:15px;margin:0">Welcome back.</p>
 
       <div id="recovery-step2">
-        <h3 style="margin:0 0 12px">What's on your mind right now?</h3>
-        <textarea id="recovery-input" class="input" rows="3" placeholder="Type or tap the mic&hellip;" style="font-size:14px"></textarea>
-        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-          <button id="recovery-mic" class="btn btn-icon" aria-label="Record">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-          </button>
-          <button id="recovery-continue" class="btn btn-primary" style="padding-inline:20px" disabled>Continue</button>
-        </div>
+        <h3 style="margin:0 0 20px;font-size:30px;line-height:1.2">What's on your mind right now?</h3>
+        <textarea id="recovery-input" class="input" rows="3" placeholder="Type, or hold the mic&hellip;" style="font-size:15px;border-radius:var(--radius-lg)"></textarea>
+        <button id="recovery-continue" class="btn btn-primary btn-block" style="height:48px;margin-top:10px" disabled>Continue</button>
       </div>
 
       <div id="recovery-followup" hidden></div>
     </main>
+
+    <div id="recovery-mic-wrap" style="padding:24px;display:flex;justify-content:center">
+      <button id="recovery-mic" class="btn" style="width:56px;height:56px;border-radius:50%;background:var(--color-accent);color:var(--color-bg);box-shadow:var(--shadow-md)" aria-label="Record">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+      </button>
+    </div>
   </div>
 
   <script src="/frontend/web/persona.js"></script>

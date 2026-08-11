@@ -125,13 +125,14 @@
 .onboard-pill {
   text-align: left;
   width: 100%;
-  font-size: 14px;
+  font-size: 15px;
   font-family: var(--font-body);
   font-weight: 400;
-  padding: 13px 16px;
+  padding: 17px 20px;
   border-radius: 999px;
-  border: 1px solid var(--color-divider);
+  border: none;
   background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--color-text);
   cursor: pointer;
 }
@@ -145,6 +146,12 @@
   background: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
 }
 
+.onboard-pill.selected {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-color: var(--color-accent);
+}
+
 /* — recovery mode — */
 .recovery-main {
   flex: 1;
@@ -152,6 +159,113 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* — task detail — */
+.task-main {
+  flex: 1;
+  overflow: auto;
+  padding: 0 20px 104px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.task-archive-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px 20px 30px;
+  background: linear-gradient(to top, var(--color-bg) 60%, transparent);
+}
+
+.task-group-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 16px;
+  cursor: pointer;
+}
+
+.task-row-closed {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.task-row-text {
+  flex: 1;
+  font-size: 15px;
+}
+
+.task-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid var(--color-neutral-400);
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-bg);
+}
+
+.task-dot-accent {
+  border-color: var(--color-accent-400);
+}
+
+.task-dot-done {
+  border: none;
+  background: var(--color-accent-2-500);
+}
+
+.task-focused-card {
+  padding: 18px 16px;
+  gap: 14px;
+  border: 1px solid var(--color-accent-300);
+}
+
+.task-focused-card-neutral {
+  border: none;
+  background: var(--color-accent-2-100);
+}
+
+.task-focused-card .task-row {
+  padding: 0;
+  cursor: default;
+}
+
+.task-hint {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.75;
+  line-height: 1.45;
+  padding-left: 32px;
+}
+
+.task-focused-actions {
+  display: flex;
+  gap: 8px;
+  padding-left: 32px;
+}
+
+.task-date-picker {
+  display: flex;
+  gap: 8px;
+  padding-left: 32px;
+  margin-top: 4px;
+}
+
+.task-date-picker .input {
+  flex: 1;
 }
 
 /* — settings — */
@@ -205,8 +319,18 @@ main {
   flex: 1;
 }
 
-.feed-item .tag + .tag {
-  margin-left: 4px;
+.feed-tag-row {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+
+.feed-section-label {
+  margin: 20px 0 2px;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
 }
 
 #empty {
@@ -225,18 +349,31 @@ main {
   display: none;
 }
 
+/* Centered and thumb-reachable, not tucked in a corner (mockup screen 06:
+   "the only thing on this screen the user must be able to hit without
+   looking"). */
 .fab {
   position: fixed;
-  bottom: 28px;
-  right: calc(50% - 240px + 28px);
-  width: 60px;
-  height: 60px;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
+  padding: 0;
   box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 480px) {
-  .fab { right: 28px; }
+.feed-fade {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  height: 120px;
+  background: linear-gradient(to top, var(--color-bg) 55%, transparent);
+  pointer-events: none;
 }
 
 /* — check-in bottom sheet — */
@@ -257,19 +394,6 @@ main {
   width: 100%;
   max-width: 432px;
   position: relative;
-}
-
-.checkin-float-tag {
-  position: absolute;
-  top: -12px;
-  left: 14px;
-  background: var(--color-bg);
-}
-
-/* Same [hidden]-specificity issue as above: the ds .tag class sets
-   display:inline-flex, which outranks the UA default [hidden]{display:none}. */
-.checkin-float-tag[hidden] {
-  display: none;
 }
 
 .framing-picker {
@@ -344,11 +468,24 @@ main {
   opacity: 0.5;
 }
 
-.subtask-row input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-accent);
+.subtask-toggle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   flex: none;
+  padding: 0;
+  border: 2.5px solid var(--color-neutral-400);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-bg);
+  cursor: pointer;
+}
+
+.subtask-toggle.checked {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
 }
 
 .subtask-row .subtask-text {
@@ -365,20 +502,13 @@ main {
   text-decoration: line-through;
 }
 
-.subtask-row .subtask-remove {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-}
-
 .subtask-add {
   margin-top: 8px;
   padding-inline: 0;
   font-size: 13px;
 }
 
-/* — subtask / rollup rows — */
-.subtask-rollup-row,
+/* — rollup rows — */
 .rollup-row {
   flex-direction: row;
   align-items: center;
@@ -386,10 +516,6 @@ main {
   gap: 10px;
   padding: 12px 14px;
   font-size: 14px;
-}
-
-.subtask-rollup-row {
-  cursor: pointer;
 }
 
 .rollup-group-label {

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt — Task</title>
+<meta name="theme-color" content="#f5ead8">
+<link rel="stylesheet" href="/frontend/mockups/_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
+<link rel="stylesheet" href="/frontend/web/style.css">
+</head>
+<body>
+  <div class="phone">
+    <nav class="nav">
+      <a href="/frontend/web/" class="btn btn-icon" aria-label="Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <span></span>
+    </nav>
+
+    <div style="padding:14px 24px 20px">
+      <h3 id="task-title" style="margin:0 0 10px;font-size:26px;line-height:1.2"></h3>
+      <p id="task-meta" style="font-size:12px;opacity:.5;margin:0"></p>
+    </div>
+
+    <main id="task-main" class="task-main"></main>
+
+    <div class="task-archive-bar">
+      <button id="task-archive" class="btn btn-secondary btn-block" style="height:50px;font-size:15px">Archive this whole thing</button>
+    </div>
+  </div>
+
+  <script src="/frontend/web/persona.js"></script>
+  <script src="/frontend/web/intents.js"></script>
+  <script src="/frontend/web/task.js"></script>
+</body>
+</html>

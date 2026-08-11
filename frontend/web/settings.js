@@ -5,34 +5,45 @@
 // revisited (see PRIVACY.md, CLAUDE.md's "Privacy" row).
 
 // Labels for the ten-question onboarding flow's answers (onboarding.js's
-// QUESTIONS array is the source of truth for the values themselves).
+// QUESTIONS array is the source of truth for the values themselves). Mockup
+// screen 14: a bold primary line ("Stalls at deciding") plus a muted
+// secondary line combining the gap baseline and framing preference
+// ("checks in every few days · asks directly").
 const STALL_LABELS = {
-  starting: "stalls at starting",
-  deciding: "stalls at deciding",
-  finishing: "stalls at finishing",
-  remembering: "stalls at remembering"
+  starting: "Stalls at starting",
+  deciding: "Stalls at deciding",
+  finishing: "Stalls at finishing",
+  remembering: "Stalls at remembering"
+};
+
+const GAP_LABELS = {
+  1: "checks in most days",
+  4: "checks in every few days",
+  14: "checks in every couple of weeks",
+  10: "doesn't keep a regular check-in"
 };
 
 const FRAMING_LABELS = {
-  direct: "prefers direct nudges",
-  inquiring: "prefers being asked",
-  "activation-only": "prefers a first-step nudge",
-  "silent-recovery": "prefers no notifications"
+  direct: "asks directly",
+  inquiring: "asks first",
+  "activation-only": "nudges with a first step",
+  "silent-recovery": "stays quiet until you're back"
 };
 
 function renderPersonaSummary() {
   const persona = loadPersona();
   const summaryEl = document.getElementById("persona-summary");
+  const detailEl = document.getElementById("persona-detail");
   const profile = persona?.onboarding_profile;
-  if (!profile || (!profile.primary_stall_point && !profile.preferred_framing)) {
-    summaryEl.textContent = "Persona not set up yet";
-    return;
-  }
-  const parts = [
-    STALL_LABELS[profile.primary_stall_point],
-    FRAMING_LABELS[profile.preferred_framing]
+
+  const primary = profile && STALL_LABELS[profile.primary_stall_point];
+  summaryEl.textContent = primary || "Persona not set up yet";
+
+  const detail = [
+    profile && GAP_LABELS[profile.gap_baseline_days],
+    profile && FRAMING_LABELS[profile.preferred_framing]
   ].filter(Boolean);
-  summaryEl.textContent = parts.length > 0 ? parts.join(" · ") : "Persona set up";
+  detailEl.textContent = detail.join(" · ");
 }
 renderPersonaSummary();
 

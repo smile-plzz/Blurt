@@ -72,19 +72,23 @@ function stall(intent) {
   intent.state_updated_at = new Date().toISOString();
 }
 
-// Mirrors the mockup's per-state tag color coding (screen 6, "Home — intent
-// feed"): neutral for dormant/deferred, accent for stalled/needs-attention,
-// accent-2 for surfaced/active, outline for settled (resolved/dropped).
+// Mirrors the refined mockup's state-vocabulary legend (2026-08-11 revision,
+// "Final mockup set" header): neutral for dormant/deferred/dropped ("let go" -
+// a real outcome, not a demoted failure, so it stays neutral rather than any
+// accent), accent for stalled/needs-attention, accent-2 for closed-well
+// (resolved), outline for surfaced/deferred. This is a remap from the earlier
+// mockup pass - resolved and surfaced swap which token they use.
 function tagClassForState(state) {
   switch (state) {
     case "stalled":
     case "flagged_for_recovery":
       return "tag-accent";
     case "surfaced":
-      return "tag-accent-2";
-    case "resolved":
-    case "dropped":
       return "tag-outline";
+    case "resolved":
+      return "tag-accent-2";
+    case "dropped":
+      return "tag-neutral";
     default:
       return "tag-neutral";
   }

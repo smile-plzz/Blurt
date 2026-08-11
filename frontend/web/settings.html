@@ -14,34 +14,37 @@
       <a href="/frontend/web/" class="btn btn-icon" aria-label="Back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
-      <span class="nav-brand" style="margin-right:0;margin-left:8px">Settings</span>
     </nav>
+    <div style="padding:14px 24px 24px"><h3 style="margin:0;font-size:26px">Settings</h3></div>
 
     <main class="settings-main">
       <div>
-        <h6 style="opacity:.5;margin:0 0 8px">Persona</h6>
-        <div id="persona-card" class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between">
-          <p class="card-body" id="persona-summary" style="margin:0;opacity:1;font-size:14px"></p>
-          <a href="/frontend/web/onboarding.html" class="btn btn-ghost" style="padding-inline:0">Edit</a>
-        </div>
-      </div>
-
-      <div>
-        <h6 style="opacity:.5;margin:0 0 8px">Privacy</h6>
-        <div class="card elev-sm">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <span class="card-title" style="font-size:15px">Local-first</span>
-            <span class="tag tag-neutral">Always on</span>
+        <h6 style="opacity:.5;margin:0 0 10px;padding-left:4px">Your persona</h6>
+        <div id="persona-card" class="card elev-sm" style="flex-direction:row;align-items:center;justify-content:space-between;padding:16px">
+          <div style="flex:1">
+            <div id="persona-summary" style="font-size:15px"></div>
+            <div id="persona-detail" style="font-size:12px;opacity:.5;margin-top:3px"></div>
           </div>
-          <p class="card-body">Your logs stay on this device. One exception: voice transcription currently uses your browser's built-in speech service, which sends audio off-device. Not user-switchable yet.</p>
+          <a href="/frontend/web/onboarding.html" class="btn btn-ghost" style="height:40px;padding:0 6px;font-size:13px">Edit</a>
         </div>
       </div>
 
       <div>
-        <h6 style="opacity:.5;margin:0 0 8px">Data</h6>
+        <h6 style="opacity:.5;margin:0 0 10px;padding-left:4px">Privacy</h6>
+        <div class="card elev-sm" style="padding:20px;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+            <span class="card-title" style="font-size:15px">Local-first</span>
+            <span class="tag tag-neutral" style="font-size:10px;padding:3px 10px">always on</span>
+          </div>
+          <p class="card-body" style="font-size:13.5px;line-height:1.5">Your logs stay on this device. Two exceptions: voice transcription uses your browser's speech service, and check-in wording is generated off-device. Neither is switchable yet.</p>
+        </div>
+      </div>
+
+      <div>
+        <h6 style="opacity:.5;margin:0 0 10px;padding-left:4px">Your data</h6>
         <div style="display:flex;flex-direction:column;gap:8px">
-          <button id="export-data" class="btn btn-secondary btn-block" style="height:46px">Export my data</button>
-          <button id="delete-data" class="btn btn-ghost btn-block" style="height:46px">Delete everything</button>
+          <button id="export-data" class="btn btn-secondary btn-block" style="height:48px;font-size:14px">Export everything</button>
+          <button id="delete-data" class="btn btn-ghost btn-block" style="height:48px;font-size:14px">Delete everything</button>
         </div>
       </div>
     </main>

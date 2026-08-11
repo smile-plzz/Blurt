@@ -3,9 +3,10 @@
 const STORAGE_KEY = "blurt_intents_v0.1.0";
 const SCHEMA_VERSION = "0.2.0";
 
+const captureMain = document.getElementById("capture-main");
 const micBtn = document.getElementById("mic-btn");
 const statusEl = document.getElementById("status");
-const listeningTag = document.getElementById("listening-tag");
+const stopHint = document.getElementById("stop-hint");
 const pulse1 = document.getElementById("pulse-1");
 const pulse2 = document.getElementById("pulse-2");
 const pulse3 = document.getElementById("pulse-3");
@@ -17,7 +18,7 @@ const recentEl = document.getElementById("recent");
 
 function setListeningUI(isListening) {
   micBtn.classList.toggle("listening", isListening);
-  listeningTag.hidden = !isListening;
+  stopHint.hidden = !isListening;
   pulse1.hidden = !isListening;
   pulse2.hidden = !isListening;
   pulse3.hidden = !isListening;
@@ -63,7 +64,7 @@ function saveIntent(text, captureMethod) {
   intents.push(intent);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(intents));
 
-  showToast(`Captured — “${trimmed}”`);
+  showToast(`Got it — “${trimmed}”`);
   renderRecent();
 }
 
@@ -110,6 +111,7 @@ typeForm.addEventListener("submit", (e) => {
 
 // --- voice capture ---
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const DEFAULT_STATUS = "tap. speak. done.";
 
 if (!SpeechRecognition) {
   micBtn.classList.add("unsupported");
@@ -117,20 +119,34 @@ if (!SpeechRecognition) {
 } else {
   const recognition = new SpeechRecognition();
   recognition.lang = "en-US";
-  recognition.interimResults = false;
+  // Interim results drive the live "“I should cut my…”" transcript
+  // preview (mockup screen 04) - purely a UI preview, saveIntent only ever
+  // fires on a final result, so this doesn't change what gets captured.
+  recognition.interimResults = true;
   recognition.maxAlternatives = 1;
 
   let listening = false;
+  let finalTranscript = "";
 
   recognition.addEventListener("result", (e) => {
-    const text = e.results[0][0].transcript;
-    saveIntent(text, "voice");
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const chunk = e.results[i][0].transcript;
+      if (e.results[i].isFinal) {
+        finalTranscript += (finalTranscript ? " " : "") + chunk;
+      } else {
+        interim += chunk;
+      }
+    }
+    statusEl.textContent = `“${(finalTranscript + " " + interim).trim()}”`;
   });
 
   recognition.addEventListener("end", () => {
     listening = false;
     setListeningUI(false);
-    statusEl.textContent = "tap. speak. done.";
+    if (finalTranscript.trim()) saveIntent(finalTranscript, "voice");
+    finalTranscript = "";
+    statusEl.textContent = DEFAULT_STATUS;
   });
 
   recognition.addEventListener("error", (e) => {
@@ -141,19 +157,29 @@ if (!SpeechRecognition) {
     } else if (e.error === "not-allowed" || e.error === "service-not-allowed") {
       statusEl.textContent = "mic blocked. type it instead.";
     } else {
-      statusEl.textContent = "tap. speak. done.";
+      statusEl.textContent = DEFAULT_STATUS;
     }
   });
 
-  micBtn.addEventListener("click", () => {
-    if (listening) {
-      recognition.stop(); // tap-to-stop, matching the mockup's "Tap to stop" affordance
-      return;
-    }
+  function startListening() {
+    if (listening) return;
     listening = true;
+    finalTranscript = "";
     setListeningUI(true);
     statusEl.textContent = "listening…";
     recognition.start();
+  }
+
+  function stopListening() {
+    if (listening) recognition.stop();
+  }
+
+  micBtn.addEventListener("click", startListening);
+
+  // Tap anywhere to stop (mockup screen 04) - once listening, any tap on the
+  // screen ends the recording; only the mic itself starts it.
+  captureMain.addEventListener("click", (e) => {
+    if (listening && e.target !== micBtn && !micBtn.contains(e.target)) stopListening();
   });
 }
 

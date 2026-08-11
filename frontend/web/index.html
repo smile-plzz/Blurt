@@ -13,17 +13,18 @@
     <nav class="nav">
       <span class="nav-brand">Blurt</span>
       <a href="/frontend/web/settings.html" class="btn btn-icon" aria-label="Settings">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 4v1.5M12 18.5V20M4 12h1.5M18.5 12H20M6.5 6.5l1 1M16.5 16.5l1 1M6.5 17.5l1-1M16.5 7.5l1-1"/></svg>
       </a>
     </nav>
 
     <main>
-      <button id="rollup-entry" class="rollup-entry btn tag-outline" hidden>a few things to catch up on</button>
+      <button id="rollup-entry" class="rollup-entry btn tag-outline" hidden>a few things, all at once</button>
 
       <ul id="feed"></ul>
       <p id="empty" class="text-muted" hidden>nothing captured yet.</p>
     </main>
 
+    <div class="feed-fade"></div>
     <a href="/capture/web/" class="btn btn-primary fab" aria-label="Capture a new intent">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
     </a>
@@ -31,7 +32,6 @@
 
   <div id="checkin" class="dialog-backdrop" hidden>
     <div id="checkin-card" class="card elev-lg checkin-sheet">
-      <span id="checkin-framing-tag" class="tag tag-outline checkin-float-tag" hidden></span>
       <div id="framing-picker" class="framing-picker" role="radiogroup" aria-label="Framing mode (manual, for step-2 tone testing)">
         <label class="radio"><input type="radio" name="framing" value="direct" checked><span class="dot"></span>direct</label>
         <label class="radio"><input type="radio" name="framing" value="inquiring"><span class="dot"></span>inquiring</label>
@@ -42,7 +42,6 @@
       <p class="card-body" id="checkin-body"></p>
       <div id="checkin-list"></div>
       <div class="checkin-actions" id="checkin-actions"></div>
-      <button id="checkin-close" class="btn btn-ghost btn-block">close</button>
     </div>
   </div>
 

@@ -19,7 +19,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
       </a>
     </nav>
-    <main>
+    <main id="capture-main">
       <div class="mic-wrap">
         <div id="pulse-1" class="pulse-ring" hidden></div>
         <div id="pulse-2" class="pulse-ring d2" hidden></div>
@@ -29,7 +29,7 @@
         </button>
       </div>
       <p id="status" aria-live="polite">tap. speak. done.</p>
-      <span id="listening-tag" class="tag tag-outline" hidden>Listening</span>
+      <p id="stop-hint" hidden>Tap anywhere to stop</p>
 
       <form id="type-form">
         <input id="type-input" class="input" type="text" placeholder="or type it" autocomplete="off">

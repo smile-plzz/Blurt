@@ -49,6 +49,7 @@ continueBtn.addEventListener("click", () => {
 
   document.getElementById("recovery-welcome").hidden = true;
   document.getElementById("recovery-step2").hidden = true;
+  document.getElementById("recovery-mic-wrap").hidden = true;
 
   renderFollowups();
 });
@@ -79,31 +80,34 @@ function renderFollowups() {
 
     const card = document.createElement("div");
     card.className = "card elev-sm";
-    card.style.background = "var(--color-surface)";
+    card.style.background = "var(--color-accent-2-100)";
+    card.style.padding = "20px";
+    card.style.gap = "0";
 
     const kicker = document.createElement("p");
     kicker.className = "card-kicker";
+    kicker.style.marginBottom = "10px";
     kicker.textContent = "A moment later";
     card.appendChild(kicker);
 
     const body = document.createElement("p");
-    body.className = "card-body";
     body.style.opacity = "1";
-    body.style.fontSize = "14px";
-    body.textContent = `You'd also mentioned "${item.text}" a while back — still relevant, or should I drop it?`;
+    body.style.fontSize = "15px";
+    body.style.lineHeight = "1.45";
+    body.style.margin = "0 0 18px";
+    body.textContent = `You'd mentioned "${item.text}" a while back — still relevant?`;
     card.appendChild(body);
 
     const actions = document.createElement("div");
     actions.style.display = "flex";
     actions.style.gap = "8px";
-    actions.style.marginTop = "4px";
 
     const keepBtn = document.createElement("button");
     keepBtn.className = "btn btn-secondary";
     keepBtn.style.flex = "1";
-    keepBtn.style.height = "42px";
-    keepBtn.style.fontSize = "13px";
-    keepBtn.textContent = "Still relevant";
+    keepBtn.style.height = "44px";
+    keepBtn.style.fontSize = "14px";
+    keepBtn.textContent = "Still is";
     keepBtn.addEventListener("click", () => {
       const current = loadIntents();
       const target = findIntent(current, item.id);
@@ -118,8 +122,8 @@ function renderFollowups() {
     const dropBtn = document.createElement("button");
     dropBtn.className = "btn btn-ghost";
     dropBtn.style.flex = "1";
-    dropBtn.style.height = "42px";
-    dropBtn.style.fontSize = "13px";
+    dropBtn.style.height = "44px";
+    dropBtn.style.fontSize = "14px";
     dropBtn.textContent = "Drop it";
     dropBtn.addEventListener("click", () => {
       const current = loadIntents();

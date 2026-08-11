@@ -144,13 +144,14 @@ const stepGentleExit = document.getElementById("step-gentle-exit");
 const stepVoice = document.getElementById("step-voice");
 
 const progressEl = document.getElementById("question-progress");
-const passTagEl = document.getElementById("question-pass-tag");
 const titleEl = document.getElementById("question-title");
 const optionsEl = document.getElementById("question-options");
+const nextBtn = document.getElementById("question-next");
 const skipBtn = document.getElementById("question-skip");
 
 let answers = {};
 let questionIndex = 0;
+let selectedValue; // pending selection for the question on screen, not yet committed
 
 function showStep(el) {
   for (const step of [stepWelcome, stepQuestion, stepGentleExit, stepVoice]) step.hidden = step !== el;
@@ -168,22 +169,33 @@ function renderProgress() {
 function renderQuestion() {
   const q = QUESTIONS[questionIndex];
   renderProgress();
-  passTagEl.textContent = q.pass;
   titleEl.textContent = q.title;
   optionsEl.innerHTML = "";
+  selectedValue = undefined;
+  nextBtn.disabled = true;
+
   for (const opt of q.options) {
     const pill = document.createElement("button");
     pill.type = "button";
     pill.className = "onboard-pill";
     pill.textContent = opt.label;
     pill.addEventListener("click", () => {
-      answers[q.id] = q.array ? [opt.value] : opt.value;
-      advance();
+      selectedValue = opt.value;
+      nextBtn.disabled = false;
+      for (const el of optionsEl.children) el.classList.remove("selected");
+      pill.classList.add("selected");
     });
     optionsEl.appendChild(pill);
   }
   showStep(stepQuestion);
 }
+
+nextBtn.addEventListener("click", () => {
+  if (selectedValue === undefined) return;
+  const q = QUESTIONS[questionIndex];
+  answers[q.id] = q.array ? [selectedValue] : selectedValue;
+  advance();
+});
 
 skipBtn.addEventListener("click", () => advance());
 
