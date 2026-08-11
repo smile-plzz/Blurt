@@ -155,10 +155,16 @@ function isAmbiguous(intent) {
 // moment + urgency + receptivity + framing together. If it fails or the endpoint
 // isn't configured (no MISTRAL_API_KEY, offline, etc.), openCheckin falls back to
 // the step 2/3 rule-based/manual flow below rather than breaking the check-in.
+//
+// Sends the onboarding persona's relevant fields (2026-08-11) so the model actually
+// uses them as priors, per each onboarding question's documented "Changes:" behavior
+// (frontend/mockups/Blurt Onboarding Question Flow.dc.html) - previously the persona
+// was captured at onboarding and then never read again anywhere in the app.
 async function inferDecision(intent) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
+    const persona = loadPersona();
     const res = await fetch("/api/infer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -167,7 +173,8 @@ async function inferDecision(intent) {
         state: intent.state,
         stall_count: intent.stall_count,
         captured_at: intent.captured_at,
-        resolution_status: intent.resolution_status
+        resolution_status: intent.resolution_status,
+        persona: persona?.onboarding_profile ?? null
       }),
       signal: controller.signal
     }).finally(() => clearTimeout(timeout));
