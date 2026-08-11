@@ -31,6 +31,19 @@ cd capture/web && npx serve .
 Open the served URL in Chrome/Edge (Web Speech `SpeechRecognition` support required for voice
 capture; Safari support is partial). No tests, no lint — none set up yet.
 
+**`capture/web/sw.js` registers a cache-first service worker on every load.** After editing any file
+in `capture/web/`, a plain reload can keep serving stale assets even with devtools' "disable cache"
+or a hard reload — the service worker's own cache, not the HTTP cache, is what's stale. Unregister it
+and clear its cache before trusting what you see:
+```js
+const regs = await navigator.serviceWorker.getRegistrations();
+for (const r of regs) await r.unregister();
+for (const k of await caches.keys()) await caches.delete(k);
+```
+Bumping the `CACHE` version string in `sw.js` also works for a real deploy (drops the old cache on
+`activate`), but doesn't help mid-session local testing since the *old* service worker is still the
+one intercepting the fetch until it's unregistered.
+
 No other agent (schema aside) has runnable code yet.
 
 ## Architecture
