@@ -10,10 +10,10 @@
 // secondary line combining the gap baseline and framing preference
 // ("checks in every few days · asks directly").
 const STALL_LABELS = {
-  starting: "Stalls at starting",
-  deciding: "Stalls at deciding",
-  finishing: "Stalls at finishing",
-  remembering: "Stalls at remembering"
+  starting: "Gets stuck on starting",
+  deciding: "Gets stuck on deciding",
+  finishing: "Gets stuck on finishing",
+  remembering: "Gets stuck on remembering"
 };
 
 const GAP_LABELS = {
@@ -37,7 +37,7 @@ function renderPersonaSummary() {
   const profile = persona?.onboarding_profile;
 
   const primary = profile && STALL_LABELS[profile.primary_stall_point];
-  summaryEl.textContent = primary || "Persona not set up yet";
+  summaryEl.textContent = primary || "Not set up yet";
 
   const detail = [
     profile && GAP_LABELS[profile.gap_baseline_days],

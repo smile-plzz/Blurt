@@ -125,6 +125,41 @@ mistake was caught — see below.
 - Full 17-screen mockup export synced into `frontend/mockups/` (previously stale, from before the
   2026-08-11 pass).
 
+### Follow-on: product copy + UX audit (same day)
+
+A launch-readiness audit and then a full product-language audit ran against the whole surface.
+Two classes of problem, both fixed:
+
+**Build instruments were shipping as product.** The check-in rendered a debug line reading
+`mistral · <moment> · <urgency> urgency` — naming the model vendor and the internal taxonomy — and
+on fallback, `rule-based fallback — AI call failed or MISTRAL_API_KEY not set`, naming an env var
+to a user who has no idea what that is. The manual `direct`/`inquiring` framing picker, a step-2
+tone-testing control, was a visible radio group on every check-in. Both now render only with
+`?dev=1` (`DEV` in `app.js`).
+
+**One concept, many words.** "Let it go" / "Drop it" / "Archive" / "no longer relevant" were all
+the same action; "Not yet" / "Still there" / "Still is" / "Still on that" were all the other one.
+Unified into a documented vocabulary — see `frontend/README.md`'s new "Product language system"
+table. State-machine identifiers (`dormant`, `stalled`, `surfaced`…) were also printing straight
+into feed tags; `stateLabel()` in `intents.js` is now the single translation point.
+
+Also fixed in the same pass: the empty state was a dead end ("nothing captured yet.", no CTA) on
+the first screen after onboarding; `"Mentioned twice this week"` and the model's `why` prompt both
+asserted time windows nothing verifies, which for a product selling trustworthy resurfacing is a
+worse failure than being vaguer; Safari/Firefox users got "voice not supported here" with no
+explanation of what still works; `"A moment later"` was a mockup *stage direction* that shipped as
+a card label; `"I've used Blurt before"` implied restoring an account that does not exist; and
+`Keep these one` was reachable in the decomposition proposal. `README.md` was rewritten for an
+outside visitor and now documents `MISTRAL_API_KEY` as a setup step, which only internal docs had.
+
+**Deliberately not changed:** the onboarding question wording (genuinely well-written), "tap.
+speak. done.", "Still on your mind, or can this go?", "That's enough for now", "Updated. Nothing
+else changed.", and every zero-guilt structural decision.
+
+**Still open from the launch audit** (engineering, not copy): no landing page — `/` drops a
+first-time visitor into an empty feed; `frontend/web/` has no manifest or service worker, so only
+`capture/web/` is installable; `capture/web/icon.svg` is a placeholder with no PNG fallbacks.
+
 **Not reconciled this pass:** Task detail's visual grouping (mockup wants a flat list with day-chip
 tags and one pinned deadline prompt; built version uses three section headers and a focused-card
 pattern that surfaces one prompt at a time). Functionally equivalent, cosmetic-only gap — lower

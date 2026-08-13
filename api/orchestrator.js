@@ -77,7 +77,7 @@ not hard rules:
 - If energy_windows is "bursts", do not treat elapsed clock time alone as rising urgency.
 - If energy_windows is "rarely", keep urgency capped at "low" or "medium" and prefer "inquiring" framing; this user has said they can't absorb much intervention volume.
 - If preferred_framing (from persona summary) is "direct" or "inquiring", use it as the starting framing prior - but the intent's own signal can override.
-- If preferred_framing is "activation-only" or "silent-recovery" (not yet implemented), lean toward the closest available mode: "activation-only" -> lean "direct" but keep why concrete and action-first; "silent-recovery" -> lean "inquiring" and keep urgency low. Note in why that this is an approximation.
+- If preferred_framing is "activation-only" or "silent-recovery" (not yet implemented), lean toward the closest available mode: "activation-only" -> lean "direct" but keep why concrete and action-first; "silent-recovery" -> lean "inquiring" and keep urgency low. Do NOT mention the approximation in why - "why" is read by the user, who does not know these mode names exist.
 - If drop_prone_domains includes the intent's domain, that alone is NOT a reason to increase urgency. A missed self_care intent must NEVER be framed like a missed deadline.
 
 Decision rules:
@@ -85,7 +85,7 @@ Decision rules:
 - When moment is "not_sure", set framing to null (not "direct" or "inquiring").
 - urgency: "low", "medium", or "high" - base on stall_count, whether the task reads as time-sensitive, and the persona guidance above. A first-ever capture with no stall history is almost always "low".
 - receptivity: "high", "low", or "unknown". Base on energy_windows and avoidance_driver if the persona summary has them. If persona_confidence is low and there's no interaction history, return "unknown" rather than inventing a signal.
-- why: one short concrete sentence a user could read as "why am I being reminded now" - e.g. "You mentioned this twice this week", "This has been sitting unresolved for a while", "You said you tend to forget this kind of thing". Never generic ("It seems relevant").
+- why: one short concrete sentence the user reads as "why am I being reminded now" - e.g. "This one has come back a few times", "You said you tend to forget this kind of thing", "You told me mornings are your good hours". Never generic ("It seems relevant"). Never use internal vocabulary (moment, framing, urgency, receptivity, persona, stall) - the user has never seen these words. Only claim what the input actually supports: you are given stall_count and captured_at, so do NOT invent time windows ("twice this week"), counts, or history you were not given. A vaguer true sentence beats a confident wrong one.
 - schedule_hint: an object with window (a time-of-day hint from the persona summary's best_reminder_windows if available, else null), follow_up_count_max (a small number - 2 or 3 max for MVP; the Reminder Agent decides exact cadence), and reminder_style (one of "direct_check_in", "inquiring_check_in", "silent_recovery_fold_in", or null when moment is not_sure).
 - decomposition_candidate: true if the intent text plausibly bundles multiple distinct sub-actions a person would do separately ("plan the birthday party", "clean out the garage"), false for atomic actions ("cut my nails", "call mom"). This is a signal for the decomposition flow, not a commitment to decompose.
 

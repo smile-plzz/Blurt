@@ -26,6 +26,29 @@ Step 3 is also scaffolded: a rule-based "not sure" fallback (`isAmbiguous`/`rend
 
 Step 4 MVP is scaffolded too: `openCheckin` now calls `/api/infer` (`api/infer.js`, a Vercel serverless function) first — "Option A" from the roadmap, one Mistral call per check-in returning moment + urgency + receptivity + framing together, plus a one-line "why am I being reminded now" transparency note appended to the check-in copy. If the call fails, times out, or `MISTRAL_API_KEY` isn't configured, it silently falls back to the step 2/3 rule-based/manual flow above — the app never breaks for lack of a key. **Requires `MISTRAL_API_KEY` set in the Vercel project's Environment Variables** (Settings → Environment Variables) — this isn't something Claude can set from here, since it's a secret. `receptivity` has no real interaction history to draw on yet (no persona store exists) and is expected to come back `"unknown"` until the Persona Agent's `interaction_log` exists.
 
+## Product language system (2026-08-13)
+
+A copy/UX audit found the same concept wearing five different words across screens, and several
+build instruments shipping as product surface. One vocabulary now, used everywhere:
+
+| Concept | Word | Retired |
+|---|---|---|
+| Finished it | **Done** | Completed, Resolved, "Just that bit" |
+| Keep it, not now | **Not yet** (direct) / **Still on my mind** (inquiring, recovery) | "Still there", "Still is" |
+| Stop caring about it | **Let it go** | "Drop it", "Archive", "no longer relevant" |
+| Did it differently | **Did it another way** | "Something else happened", "Handled a different way" |
+| Repeatedly postponed | **stuck** | "stalled", "stalled 3 times" |
+| Broken-down pieces | **steps** | subtasks, decomposition |
+
+State-machine names (`dormant`, `surfaced`, `deferred`, `stalled`, `flagged_for_recovery`) are
+storage identifiers and never reach the UI — `stateLabel()` in `intents.js` is the single
+translation point, and returns `null` for resting states so untagged *is* the resting state.
+
+**`?dev=1`** reveals the build instruments: the manual `direct`/`inquiring` framing picker and the
+decision-source readout (`mistral · <moment> · <urgency>` / the `MISTRAL_API_KEY` fallback notice).
+Both used to render for everyone. Neither is product surface — they name a model vendor, the
+internal taxonomy, and an env var.
+
 ## Surfaces to build
 
 - **Capture confirmation** — as close to invisible as possible. This layer can quietly reintroduce the friction the Capture Agent worked to remove; treat every added tap/screen as a regression.

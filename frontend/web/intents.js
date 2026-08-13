@@ -78,6 +78,29 @@ function stall(intent) {
 // accent), accent for stalled/needs-attention, accent-2 for closed-well
 // (resolved), outline for surfaced/deferred. This is a remap from the earlier
 // mockup pass - resolved and surfaced swap which token they use.
+// The state machine's names (schema/intent.json) are storage identifiers, not
+// words anyone would say out loud - "dormant", "surfaced", "flagged_for_recovery"
+// read as telemetry. This is the one place they become user language.
+//
+// Returns null for the two resting states: a freshly captured or sleeping item
+// has nothing to report, and per the mockup's tag rule the absence of a tag *is*
+// that state. "stuck" is deliberate for stalled - it describes the item, not the
+// person, which is the same reason this product has no "overdue".
+const STATE_LABELS = {
+  captured: null,
+  dormant: null,
+  surfaced: "asked",
+  deferred: "not yet",
+  stalled: "stuck",
+  flagged_for_recovery: "stuck",
+  resolved: "done",
+  dropped: "let go"
+};
+
+function stateLabel(state) {
+  return STATE_LABELS[state] ?? null;
+}
+
 function tagClassForState(state) {
   switch (state) {
     case "stalled":

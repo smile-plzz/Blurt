@@ -67,8 +67,11 @@ avoidance_driver if present (see above); otherwise there is still no interaction
 draw on, so return "unknown" rather than inventing a signal.
 - "framing": "direct", "inquiring", or null. Use null whenever moment is "not_sure". \
 Only "direct" and "inquiring" are implemented - never return any other framing value.
-- "why": one short sentence a user could read as "why am I being reminded now" - concrete, \
-not generic (e.g. "You mentioned this twice this week", not "It seems relevant").
+- "why": one short sentence the user reads as "why am I being reminded now" - concrete, \
+not generic (e.g. "This one has come back a few times", not "It seems relevant"). Never use \
+internal vocabulary (moment, framing, urgency, receptivity, persona, stall); the user has never \
+seen those words. Only claim what the input supports - do not invent time windows, counts or \
+history you were not given.
 
 Respond with JSON only, no other text.`;
 

@@ -87,7 +87,9 @@ function renderFollowups() {
     const kicker = document.createElement("p");
     kicker.className = "card-kicker";
     kicker.style.marginBottom = "10px";
-    kicker.textContent = "A moment later";
+    // Was "A moment later" - a mockup stage direction (it described when the
+    // card appears) that shipped as if it were a label the user should read.
+    kicker.textContent = "One more thing";
     card.appendChild(kicker);
 
     const body = document.createElement("p");
@@ -107,7 +109,7 @@ function renderFollowups() {
     keepBtn.style.flex = "1";
     keepBtn.style.height = "44px";
     keepBtn.style.fontSize = "14px";
-    keepBtn.textContent = "Still is";
+    keepBtn.textContent = "Still on my mind";
     keepBtn.addEventListener("click", () => {
       const current = loadIntents();
       const target = findIntent(current, item.id);
@@ -124,7 +126,7 @@ function renderFollowups() {
     dropBtn.style.flex = "1";
     dropBtn.style.height = "44px";
     dropBtn.style.fontSize = "14px";
-    dropBtn.textContent = "Drop it";
+    dropBtn.textContent = "Let it go";
     dropBtn.addEventListener("click", () => {
       const current = loadIntents();
       const target = findIntent(current, item.id);

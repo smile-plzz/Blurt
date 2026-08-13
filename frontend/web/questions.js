@@ -6,6 +6,7 @@
 const QUESTIONS = [
   {
     id: "entry_state",
+    short: "How you're doing",
     pass: "Pass 1 of 3",
     title: "How's your head right now?",
     options: [
@@ -17,6 +18,7 @@ const QUESTIONS = [
   },
   {
     id: "typical_intent_class",
+    short: "What you're putting off",
     pass: "Pass 1 of 3",
     title: "What's a thing you've been meaning to do?",
     options: [
@@ -28,6 +30,7 @@ const QUESTIONS = [
   },
   {
     id: "intent_surface_moments",
+    short: "When it hits you",
     pass: "Pass 1 of 3",
     title: "When do you usually notice you meant to do something?",
     array: true,
@@ -40,6 +43,7 @@ const QUESTIONS = [
   },
   {
     id: "primary_stall_point",
+    short: "Where things stall",
     pass: "Pass 2 of 3",
     title: "Where do things usually stall for you?",
     options: [
@@ -51,6 +55,7 @@ const QUESTIONS = [
   },
   {
     id: "avoidance_driver",
+    short: "Why you avoid it",
     pass: "Pass 2 of 3",
     title: "When you've been avoiding something, what's usually behind it?",
     options: [
@@ -62,6 +67,7 @@ const QUESTIONS = [
   },
   {
     id: "energy_windows",
+    short: "When you have energy",
     pass: "Pass 2 of 3",
     title: "When in the day do you actually have something in the tank?",
     options: [
@@ -73,6 +79,7 @@ const QUESTIONS = [
   },
   {
     id: "gap_baseline_days",
+    short: "How often you check in",
     pass: "Pass 2 of 3",
     title: "How long do you usually go before checking in on your own list?",
     // Section 3.4's exact gap-baseline question. Day counts are a coarse,
@@ -87,6 +94,7 @@ const QUESTIONS = [
   },
   {
     id: "preferred_framing",
+    short: "How to be asked",
     pass: "Pass 3 of 3",
     title: "A reminder lands and you haven't done the thing. What helps?",
     options: [
@@ -98,6 +106,7 @@ const QUESTIONS = [
   },
   {
     id: "drop_prone_domains",
+    short: "Where it falls apart",
     pass: "Pass 3 of 3",
     title: "Where does it fall apart most?",
     array: true,
@@ -111,6 +120,7 @@ const QUESTIONS = [
   },
   {
     id: "stated_goal",
+    short: "What you want from this",
     pass: "Pass 3 of 3",
     title: "What would make this worth keeping on your phone?",
     options: [

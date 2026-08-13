@@ -120,8 +120,12 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const DEFAULT_STATUS = "tap. speak. done.";
 
 if (!SpeechRecognition) {
+  // Safari and Firefox land here. The old copy ("voice not supported here")
+  // named the failure without explaining it or saying what still works, which
+  // reads as "this app is broken" on the one screen that carries the product.
   micBtn.classList.add("unsupported");
-  statusEl.textContent = "voice not supported here. type it instead.";
+  statusEl.textContent = "voice needs chrome or edge — typing works anywhere.";
+  typeInput.placeholder = "type it here";
 } else {
   const recognition = new SpeechRecognition();
   recognition.lang = "en-US";

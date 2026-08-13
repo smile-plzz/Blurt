@@ -15,9 +15,9 @@ const archiveBtn = document.getElementById("task-archive");
 
 function daysAgo(iso) {
   const days = Math.floor((Date.now() - new Date(iso)) / 86400000);
-  if (days <= 0) return "captured today";
-  if (days === 1) return "captured yesterday";
-  return `captured ${days} days ago`;
+  if (days <= 0) return "added today";
+  if (days === 1) return "added yesterday";
+  return `added ${days} days ago`;
 }
 
 function weekdayTag(iso) {
@@ -28,7 +28,7 @@ function render() {
   const allIntents = loadIntents();
   const parent = findIntent(allIntents, parentId);
   if (!parent) {
-    mainEl.innerHTML = '<p style="padding:20px 24px;opacity:.6">This task no longer exists.</p>';
+    mainEl.innerHTML = '<p style="padding:20px 24px;opacity:.6">This one\'s gone.</p>';
     archiveBtn.hidden = true;
     return;
   }
@@ -40,7 +40,7 @@ function render() {
   const noDate = open.filter((s) => !s.deadline);
 
   titleEl.textContent = parent.text;
-  metaEl.textContent = `${daysAgo(parent.captured_at)} · ${open.length} step${open.length === 1 ? "" : "s"} open`;
+  metaEl.textContent = `${daysAgo(parent.captured_at)} · ${open.length} step${open.length === 1 ? "" : "s"} left`;
 
   mainEl.innerHTML = "";
 
@@ -58,7 +58,7 @@ function render() {
     const unasked = noDate.find((s) => !s.deadline_confirmed_absent);
     mainEl.appendChild(
       renderGroup(
-        "No date — even footing",
+        "No date",
         noDate.map((item) => renderNoDateRow(item, unasked ? item.id === unasked.id : false))
       )
     );
@@ -136,7 +136,7 @@ function renderDatedRow(item, focused) {
   const hint = document.createElement("p");
   hint.className = "task-hint";
   hint.textContent = item.stall_count > 0
-    ? `Stalled ${item.stall_count === 1 ? "once" : item.stall_count + " times"}. Start with the smallest next step.`
+    ? "This one keeps getting stuck. Start with the smallest piece of it."
     : "Coming up soon.";
   card.appendChild(hint);
 
@@ -147,7 +147,7 @@ function renderDatedRow(item, focused) {
   doneish.style.flex = "1";
   doneish.style.height = "44px";
   doneish.style.fontSize = "14px";
-  doneish.textContent = "Just that bit";
+  doneish.textContent = "I'll start there";
   doneish.addEventListener("click", () => mutate(item.id, (i) => stall(i)));
   actions.appendChild(doneish);
   const letGo = document.createElement("button");
@@ -167,7 +167,7 @@ function renderNoDateRow(item, focused) {
   if (!focused) {
     // No click-to-expand here: an already-confirmed-absent item has nothing
     // left to ask, unlike the "Has a date" group's plain rows.
-    return plainRow(item, item.state !== "dormant" ? item.state : null, tagClassForState(item.state));
+    return plainRow(item, stateLabel(item.state), tagClassForState(item.state));
   }
 
   const card = document.createElement("div");
@@ -224,7 +224,7 @@ function revealDatePicker(card, itemId) {
   wrap.appendChild(input);
   const confirmBtn = document.createElement("button");
   confirmBtn.className = "btn btn-primary";
-  confirmBtn.textContent = "Set";
+  confirmBtn.textContent = "Save";
   confirmBtn.addEventListener("click", () => {
     if (!input.value) return;
     mutate(itemId, (i) => { i.deadline = new Date(input.value).toISOString(); });

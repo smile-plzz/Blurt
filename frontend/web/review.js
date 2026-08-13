@@ -48,7 +48,7 @@ function renderList() {
     body.style.flex = "1";
     const label = document.createElement("div");
     label.style.cssText = "font-size:12px;opacity:.5;margin-bottom:4px";
-    label.textContent = q.title.replace(/\?$/, "");
+    label.textContent = q.short;
     body.appendChild(label);
     const value = document.createElement("div");
     value.style.fontSize = "15px";
@@ -134,7 +134,7 @@ function openEdit(questionId) {
 
 function showSaved(q, before) {
   const after = answerLabel(q, currentProfile()[q.id]) || "Not answered";
-  document.getElementById("saved-title").textContent = q.title.replace(/\?$/, "");
+  document.getElementById("saved-title").textContent = q.short;
   document.getElementById("saved-change").textContent = `${before} → ${after}`;
   showStep(stepSaved);
 }

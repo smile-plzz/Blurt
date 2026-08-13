@@ -16,6 +16,13 @@
 // file - shared with recovery.js so both write the same localStorage store
 // through one code path.
 
+// Build instruments (the manual framing picker, the decision-source readout)
+// render only with ?dev=1. They exist to test tone and to tell "the AI ran" from
+// "the rule-based fallback ran" during development - neither is product surface,
+// and shipping them would put internal taxonomy, a model vendor's name and an
+// env-var name in front of a first-time user.
+const DEV = new URLSearchParams(location.search).has("dev");
+
 const feedEl = document.getElementById("feed");
 const emptyEl = document.getElementById("empty");
 const checkinEl = document.getElementById("checkin");
@@ -27,6 +34,11 @@ const checkinBody = document.getElementById("checkin-body");
 function setCheckinBody(text) {
   checkinBody.textContent = text;
   checkinBody.hidden = !text;
+}
+
+// The picker is a dev instrument, so "show it" only ever means "show it in dev".
+function setFramingPickerHidden(hidden) {
+  document.getElementById("framing-picker").hidden = hidden || !DEV;
 }
 
 // Mockup screens 07/08: the "why am I being reminded now" transparency note is
@@ -94,28 +106,24 @@ function buildFeedRow(intent) {
   const tagRow = document.createElement("div");
   tagRow.className = "feed-tag-row";
 
-  if (intent.state !== "resolved" && intent.state !== "dropped" && isAmbiguous(intent)) {
-    const notSureTag = document.createElement("span");
-    notSureTag.className = "tag tag-accent";
-    notSureTag.textContent = "not sure";
-    tagRow.appendChild(notSureTag);
-  }
-  const tag = document.createElement("span");
-  tag.className = "tag " + tagClassForState(intent.state);
-  // Mockup wording: a decomposed parent shows its open-step count instead of
-  // its own lifecycle state ("4 open" rather than "dormant"); dropped reads
-  // "let go", matching the framing used everywhere else in the check-in copy.
-  if (intent.state === "dropped") {
-    tag.textContent = "let go";
-  } else if (intent.state === "resolved") {
-    tag.textContent = "done";
-  } else if (intent.subtasks.length > 0) {
+  // A decomposed parent shows its open-step count instead of its own lifecycle
+  // state. Everything else goes through stateLabel(), which returns null for the
+  // resting states - per the mockup's own rule, absence of a tag is the resting
+  // state, so only rows with something to say carry one.
+  let label;
+  if (intent.subtasks.length > 0 && intent.state !== "resolved" && intent.state !== "dropped") {
     const openCount = pendingSubtasksOf(intent, loadIntents()).length;
-    tag.textContent = `${openCount} open`;
+    label = `${openCount} step${openCount === 1 ? "" : "s"} left`;
   } else {
-    tag.textContent = intent.state;
+    label = stateLabel(intent.state);
   }
-  tagRow.appendChild(tag);
+
+  if (label) {
+    const tag = document.createElement("span");
+    tag.className = "tag " + tagClassForState(intent.state);
+    tag.textContent = label;
+    tagRow.appendChild(tag);
+  }
   li.appendChild(tagRow);
 
   if (intent.state !== "resolved" && intent.state !== "dropped") {
@@ -146,22 +154,26 @@ function framingCopy(intent, framing) {
       actions: [
         { label: "Done", handler: (i) => resolve(i, "done"), variant: "primary" },
         { label: "Not yet", handler: (i) => defer(i), variant: "secondary" },
-        { label: "Something else happened", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
+        { label: "Did it another way", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
       ]
     };
   }
   // inquiring
+  // Deliberately not "mentioned twice this week": nothing here checks a time
+  // window, so that phrasing states a specific the data can't back. For an app
+  // whose whole pitch is that its resurfacing can be trusted, a confident wrong
+  // detail costs more than a vaguer true one.
   const stalledNote = intent.stall_count > 0
-    ? `Mentioned ${intent.stall_count === 1 ? "twice" : intent.stall_count + " times"} this week`
-    : "This has been sitting a while";
+    ? "This keeps coming back"
+    : "Still open";
   return {
     kicker: stalledNote,
     title: "Still on your mind, or can this go?",
     body: `“${intent.text}”`,
     actions: [
-      { label: "Still there", handler: (i) => stall(i), variant: "primary" },
+      { label: "Still on my mind", handler: (i) => stall(i), variant: "primary" },
       { label: "Let it go", handler: (i) => resolve(i, "no_longer_relevant"), variant: "secondary" },
-      { label: "Handled a different way", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
+      { label: "Did it another way", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
     ]
   };
 }
@@ -240,7 +252,7 @@ async function openCheckin(id) {
   checkinEl.hidden = false;
 
   if (!intent.parent_intent_id) {
-    document.getElementById("framing-picker").hidden = true;
+    setFramingPickerHidden(true);
     checkinSource.textContent = "";
     checkinSource.className = "checkin-source";
     checkinKicker.textContent = "Thinking…";
@@ -265,7 +277,7 @@ async function openCheckin(id) {
 // just extracted so both a top-level intent (after declining/skipping decomposition)
 // and a subtask opened from the rollup can reach it the same way.
 async function runCheckin(intent, id) {
-  document.getElementById("framing-picker").hidden = true;
+  setFramingPickerHidden(true);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   checkinKicker.textContent = "Thinking…";
@@ -290,7 +302,7 @@ async function runCheckin(intent, id) {
 
   // Fallback: step 2/3 rule-based/manual flow, unchanged from before step 4.
   setCheckinSource("fallback", "rule-based fallback — AI call failed or MISTRAL_API_KEY not set");
-  document.getElementById("framing-picker").hidden = isAmbiguous(intent);
+  setFramingPickerHidden(isAmbiguous(intent));
   if (isAmbiguous(intent)) {
     renderNotSure(intent);
   } else {
@@ -323,7 +335,7 @@ async function fetchDecomposition(intent) {
 // commits - never silently finalized. Manual edit (add/remove/rewrite rows) is
 // explicitly in scope per Ismail's 2026-08-10 "keep it simple, add edit" decision.
 function renderDecomposeProposal(intent, subtaskTexts) {
-  document.getElementById("framing-picker").hidden = true;
+  setFramingPickerHidden(true);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   checkinKicker.textContent = "Looks like more than one thing";
@@ -375,7 +387,9 @@ function renderDecomposeProposal(intent, subtaskTexts) {
     checkinList.appendChild(addBtn);
 
     const includedCount = rows.filter((r) => r.included).length;
-    approveBtn.textContent = `Keep these ${includedCount === 1 ? "one" : includedCount}`;
+    // "Keep these one" was reachable when every row but one is excluded.
+    approveBtn.textContent = includedCount === 1 ? "Keep this step" : `Keep these ${includedCount}`;
+    approveBtn.disabled = includedCount === 0;
   }
 
   checkinActions.innerHTML = "";
@@ -463,7 +477,15 @@ function collectRollupGroups() {
 }
 
 function updateRollupEntry() {
-  rollupEntry.hidden = collectRollupGroups().length === 0;
+  const groups = collectRollupGroups();
+  rollupEntry.hidden = groups.length === 0;
+  // Name the actual thing rather than describing the mechanism ("check in on
+  // pending steps"). The user knows what "Birthday party" is; they don't think
+  // of their own life in terms of parents, rollups or pending steps.
+  if (groups.length > 0) {
+    const { parent, pending } = groups[0];
+    rollupEntry.textContent = `${parent.text} — ${pending.length} step${pending.length === 1 ? "" : "s"} left`;
+  }
 }
 
 function rollupRow(item, { onDone, onNotYet }) {
@@ -477,7 +499,7 @@ function rollupRow(item, { onDone, onNotYet }) {
   if (item.stall_count > 0) {
     const tag = document.createElement("span");
     tag.className = "tag tag-accent";
-    tag.textContent = `stalled ${item.stall_count === 1 ? "once" : item.stall_count + " times"}`;
+    tag.textContent = "stuck";
     row.appendChild(tag);
   }
 
@@ -506,7 +528,7 @@ function renderRollup() {
 
   checkinList.innerHTML = "";
   checkinEl.hidden = false;
-  document.getElementById("framing-picker").hidden = true;
+  setFramingPickerHidden(true);
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
   setCheckinWhy(null);
@@ -530,8 +552,8 @@ function renderRollup() {
   const { parent, pending } = parentGroups[0];
   const count = pending.length;
   checkinKicker.textContent = parent.text;
-  checkinTitle.textContent = `${count === 1 ? "One step" : count + " steps"}, one pass`;
-  setCheckinBody("Just this one. Anything else waits its turn.");
+  checkinTitle.textContent = count === 1 ? "One step left" : `${count} steps, all at once`;
+  setCheckinBody("Just this one thing. Everything else can wait.");
 
   function actOn(item, effect) {
     const current = loadIntents();
@@ -562,11 +584,15 @@ function renderRollup() {
   checkinActions.appendChild(exitBtn);
 }
 
-// Visible for testing purposes (per Ismail's request): makes it obvious whether
-// step 4's Mistral call actually ran or the check-in silently fell back to the
-// step 2/3 rule-based path - otherwise a missing/broken MISTRAL_API_KEY looks
-// identical to the AI just picking the same framing the rules would have.
+// Dev instrument only (?dev=1): makes it obvious whether the model call actually
+// ran or the check-in silently fell back to the rule-based path - otherwise a
+// missing/broken MISTRAL_API_KEY looks identical to the AI just picking the same
+// framing the rules would have. Never rendered for a real user: it names the
+// model vendor, the internal moment/urgency taxonomy and an env var, none of
+// which mean anything to someone just trying to answer a check-in.
 function setCheckinSource(kind, label) {
+  if (!DEV) return;
+  checkinSource.hidden = false;
   checkinSource.textContent = label;
   checkinSource.className = "checkin-source source-" + kind;
 }
@@ -645,7 +671,7 @@ function renderCheckin(framing, why) {
 function closeCheckin() {
   checkinEl.hidden = true;
   checkinList.innerHTML = "";
-  document.getElementById("framing-picker").hidden = false;
+  setFramingPickerHidden(false);
   activeIntentId = null;
 }
 
