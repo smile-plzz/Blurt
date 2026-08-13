@@ -142,11 +142,51 @@ function buildFeedRow(intent) {
   return li;
 }
 
-// Copy per the roadmap's Intervention Decision Engine (Notion, 2026-08-10):
-// direct and inquiring are the two framings drafted first; activation-only and
-// silent-recovery are deferred until these two are validated in real use.
-function framingCopy(intent, framing) {
-  if (framing === "direct") {
+// Copy per the roadmap's Intervention Decision Engine (Section 3.3). All four
+// framing modes now render: direct and inquiring were drafted first (the
+// copy-drafting-order decision), activation-only and silent-recovery followed
+// once onboarding Q8 started offering all four as real choices - a preference
+// the setup flow collects and the check-in then ignores is a promise the app
+// breaks quietly, which is worse than not asking.
+//
+// `activationStep` (optional): the smallest next physical action, supplied by
+// the model as decision.activation_step (api/orchestrator.js). Only ever used
+// by the activation-only branch, and only when it actually arrived.
+function framingCopy(intent, framing, activationStep) {
+  // activation-only - roadmap Section 3.3: "no mention of the full task, just
+  // the smallest next physical action" (best for something stalled 2+ times).
+  // So intent.text must not appear anywhere on this screen, which means the one
+  // sentence this screen exists to show has to come from somewhere. It cannot be
+  // derived here: a string heuristic over a capture like "the lecture thing"
+  // would produce a confident instruction for a task the app has not understood,
+  // and a confidently wrong next step costs more than a plainly worded one.
+  // Hence: the model returns it, or this mode degrades rather than invents.
+  const step = typeof activationStep === "string" ? activationStep.trim() : "";
+  // Length cap is a sanity guard, not a style rule - anything long enough to be
+  // a paragraph is the model restating the task instead of naming one action,
+  // which is exactly what this mode must not show.
+  if (framing === "activation-only" && step && step.length <= 120) {
+    return {
+      kicker: "Just the first bit",
+      title: step,
+      // The actions still answer the item itself, not the step - the state
+      // machine records what happened to the thing, and the product vocabulary
+      // (frontend/README.md) has one word per outcome. "Just that bit" is on
+      // that file's retired list.
+      body: "That's the whole ask. The rest can wait.",
+      actions: [
+        { label: "Done", handler: (i) => resolve(i, "done"), variant: "primary" },
+        { label: "Not yet", handler: (i) => defer(i), variant: "secondary" },
+        { label: "Did it another way", handler: (i) => resolve(i, "done_adjacent"), variant: "ghost", fullRow: true }
+      ]
+    };
+  }
+
+  // Degrade path for activation-only with no usable step (the model returned the
+  // framing without the field, or the rule-based fallback picked the framing with
+  // no model call at all). Plainly restating the task is not this mode, but it is
+  // true; a made-up first inch would not be.
+  if (framing === "direct" || framing === "activation-only") {
     return {
       kicker: "Earlier today",
       title: intent.text,
@@ -158,6 +198,37 @@ function framingCopy(intent, framing) {
       ]
     };
   }
+  // silent-recovery - roadmap Section 3.3: "no individual reminder, task folds
+  // into the next Recovery Mode session instead (best when receptivity is low)".
+  //
+  // The mode means "don't show an individual check-in", but the user has just
+  // tapped a feed row asking for exactly that, so showing nothing is a dead end -
+  // a tap that produces a blank sheet reads as the app being broken, and silently
+  // closing reads as the app refusing. The honest resolution is to do the fold for
+  // real (renderCheckin sets flagged_for_recovery before this copy renders, which
+  // is the state recovery.js already picks items up from) and then tell the person
+  // who asked what just happened to their thing and when it comes back. The item
+  // is answered; it just isn't interrogated.
+  //
+  // No task text, no question, nothing owed. And an explicit way back in: someone
+  // who taps through to it anyway has opted in, so offering the check-in on request
+  // is not the nagging this mode exists to prevent.
+  if (framing === "silent-recovery") {
+    return {
+      kicker: "Nothing needed now",
+      title: "This one can come back later",
+      body: "It won't be brought up on its own — it'll be here next time you are.",
+      actions: [
+        { label: "That's fine", handler: () => {}, variant: "primary" },
+        // keepOpen: the sheet re-renders in place instead of closing (see
+        // renderCheckin) - the user asked to look, so they get the gentler of the
+        // two question framings rather than being dropped back on the feed.
+        { label: "Let's look now", handler: () => renderCheckin("inquiring"), variant: "secondary", keepOpen: true },
+        { label: "Let it go", handler: (i) => resolve(i, "no_longer_relevant"), variant: "ghost", fullRow: true }
+      ]
+    };
+  }
+
   // inquiring
   // Deliberately not "mentioned twice this week": nothing here checks a time
   // window, so that phrasing states a specific the data can't back. For an app
@@ -203,7 +274,7 @@ function isAmbiguous(intent) {
 // Orchestrator Agent (AGENTS.md §6): calls /api/orchestrator (api/orchestrator.js),
 // which runs the two-step persona-read -> reminder-plan pipeline specced in
 // orchestrator/REVIEW.md and returns moment + urgency + receptivity + framing +
-// why (plus schedule_hint/decomposition_candidate, not yet consumed here - the
+// why + activation_step (plus schedule_hint/decomposition_candidate, not yet consumed here - the
 // Reminder Agent and decomposition-signal wiring land later). If the call fails
 // or the endpoint isn't configured (no MISTRAL_API_KEY, offline, etc.),
 // openCheckin falls back to the step 2/3 rule-based/manual flow below rather
@@ -221,6 +292,12 @@ async function inferDecision(intent) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         intent,
+        // The whole onboarding_profile goes over as written by onboarding.js /
+        // review.js, so every answered question reaches the orchestrator - which
+        // fields become priors is that endpoint's decision, not this one's. (It
+        // was dropping typical_intent_class and stated_goal on its own side; the
+        // client end of that path was always intact.) interaction_log and
+        // active_clarifications stay behind: nothing in the decision uses them.
         persona: persona
           ? { onboarding_profile: persona.onboarding_profile ?? null, inferred_patterns: persona.inferred_patterns ?? null }
           : null
@@ -295,7 +372,10 @@ async function runCheckin(intent, id) {
     if (decision.moment === "not_sure" || !decision.framing) {
       renderNotSure(intent, decision.why);
     } else {
-      renderCheckin(decision.framing, decision.why);
+      // activation_step is part of the same decision payload (api/orchestrator.js):
+      // the only place a truthful smallest-next-action can come from, since the
+      // client never sees enough of the task to work one out.
+      renderCheckin(decision.framing, decision.why, decision.activation_step);
     }
     return;
   }
@@ -630,15 +710,48 @@ function renderNotSure(intent, why) {
   }
 }
 
+// The state transition behind silent-recovery. intents.js owns the transitions
+// app.js and recovery.js share, but it has no "fold this into the next Recovery
+// Mode session" move, so it lives here rather than in a file this change doesn't
+// own. flagged_for_recovery is precisely what recovery.js's pickStalledItems()
+// reads, so setting it is what makes the fold real instead of rhetorical - the
+// item genuinely comes back through that channel.
+//
+// Deliberately does not touch stall_count: nobody postponed anything here, and
+// stall_count feeds urgency. Choosing not to be nagged must not read to the rest
+// of the system as another miss.
+function foldIntoRecovery(intent) {
+  if (intent.state === "resolved" || intent.state === "dropped") return;
+  intent.state = "flagged_for_recovery";
+  intent.state_updated_at = new Date().toISOString();
+}
+
 // `why` (optional): the step-4 model's one-line "why am I being reminded now"
 // transparency note (roadmap Section 3.3). Absent when called from the manual
 // radio picker or the step 2/3 fallback path.
-function renderCheckin(framing, why) {
+// `activationStep` (optional): decision.activation_step, used only by the
+// activation-only framing. Absent on every fallback path, which that framing
+// handles by degrading rather than inventing one.
+function renderCheckin(framing, why, activationStep) {
   const intents = loadIntents();
   const intent = findIntent(intents, activeIntentId);
   if (!intent) return closeCheckin();
 
-  const copy = framingCopy(intent, framing);
+  // Recovery Mode only ever surfaces top-level items - recovery.js's
+  // pickStalledItems() filters out anything with a parent - so telling someone a
+  // step inside a bigger thing will come back that way would be a promise nothing
+  // in the app keeps. Those get the gentlest built framing instead.
+  const mode = framing === "silent-recovery" && intent.parent_intent_id ? "inquiring" : framing;
+
+  // Done before the copy renders, and before any action is taken, so the fold
+  // holds even if the user leaves via the backdrop - silent-recovery is a
+  // decision the app made about this item, not something waiting on an answer.
+  if (mode === "silent-recovery") {
+    foldIntoRecovery(intent);
+    saveIntents(intents);
+  }
+
+  const copy = framingCopy(intent, mode, activationStep);
   checkinKicker.textContent = copy.kicker;
   checkinTitle.textContent = copy.title;
   setCheckinBody(copy.body);
@@ -661,6 +774,10 @@ function renderCheckin(framing, why) {
         action.handler(target);
         saveIntents(current);
       }
+      // keepOpen actions re-render the sheet themselves (silent-recovery's "Let's
+      // look now"), so closing here would undo what the handler just drew. The
+      // feed still updates when the replacement screen finally exits.
+      if (action.keepOpen) return;
       closeCheckin();
       renderFeed();
     });

@@ -32,7 +32,7 @@ No build step, no dependencies:
 npx serve .
 ```
 
-Then open `/frontend/web/` in Chrome or Edge. Voice capture uses the browser's built-in `SpeechRecognition`, which Safari and Firefox don't fully support — typing works everywhere.
+`/` serves a short marketing page (`landing/`); the app itself is at `/frontend/web/` and is installable as a PWA from there. Voice capture uses the browser's built-in `SpeechRecognition`, which Safari and Firefox don't fully support — typing works everywhere.
 
 ### Optional: the AI check-ins
 

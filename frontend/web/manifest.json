@@ -1,12 +1,13 @@
 {
   "name": "Blurt",
   "short_name": "Blurt",
-  "description": "Blurt it out before it's gone.",
-  "start_url": "./index.html",
+  "description": "Blurt it out before it's gone — capture the thing, and let Blurt bring it back when it's useful.",
+  "start_url": "/frontend/web/index.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#2e2b25",
-  "theme_color": "#2e2b25",
   "orientation": "portrait",
+  "background_color": "#f5ead8",
+  "theme_color": "#f5ead8",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },

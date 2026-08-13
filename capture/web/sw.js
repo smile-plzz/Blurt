@@ -1,8 +1,8 @@
 // Minimal offline shell cache. Capture must work even with a flaky connection -
 // the moment of intent doesn't wait for a network round-trip.
 
-const CACHE = "blurt-capture-v0.1.0";
-const ASSETS = ["./index.html", "./app.js", "./style.css", "./manifest.json", "./icon.svg"];
+const CACHE = "blurt-capture-v0.1.1";
+const ASSETS = ["./index.html", "./app.js", "./style.css", "./manifest.json", "./icon.svg", "/icons/icon-192.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
