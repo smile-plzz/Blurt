@@ -1,7 +1,7 @@
 // Capture Agent: emits raw intent.json-shaped events. No analysis performed here by design.
 
 const STORAGE_KEY = "blurt_intents_v0.1.0";
-const SCHEMA_VERSION = "0.2.0";
+const SCHEMA_VERSION = "0.3.0";
 
 const captureMain = document.getElementById("capture-main");
 const micBtn = document.getElementById("mic-btn");
@@ -63,6 +63,12 @@ function saveIntent(text, captureMethod) {
   const intents = loadIntents();
   intents.push(intent);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(intents));
+
+  // capture/REVIEW.md item 3: downstream agents (Persona/Reminder/Orchestrator)
+  // subscribe to this instead of polling localStorage. Dispatched after the
+  // write completes, carrying the same intent.json-shaped object just stored -
+  // no analysis added, "capture stays dumb" still holds.
+  window.dispatchEvent(new CustomEvent("blurt:intent-captured", { detail: intent }));
 
   showToast(`Got it — “${trimmed}”`);
   renderRecent();
