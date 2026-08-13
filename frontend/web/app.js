@@ -28,6 +28,22 @@ function setCheckinBody(text) {
   checkinBody.textContent = text;
   checkinBody.hidden = !text;
 }
+
+// Mockup screens 07/08: the "why am I being reminded now" transparency note is
+// its own disclosure, closed by default - never concatenated into the question
+// body, never competing with it for attention.
+const checkinWhyToggle = document.getElementById("checkin-why-toggle");
+const checkinWhyNote = document.getElementById("checkin-why");
+checkinWhyToggle.addEventListener("click", () => {
+  const open = checkinWhyToggle.classList.toggle("open");
+  checkinWhyNote.hidden = !open;
+});
+function setCheckinWhy(why) {
+  checkinWhyToggle.classList.remove("open");
+  checkinWhyNote.hidden = true;
+  checkinWhyNote.textContent = why || "";
+  checkinWhyToggle.hidden = !why;
+}
 const checkinList = document.getElementById("checkin-list");
 const checkinActions = document.getElementById("checkin-actions");
 const rollupEntry = document.getElementById("rollup-entry");
@@ -230,6 +246,7 @@ async function openCheckin(id) {
     checkinKicker.textContent = "Thinking…";
     checkinTitle.textContent = "";
     setCheckinBody("");
+    setCheckinWhy(null);
     checkinActions.innerHTML = "";
 
     const decomposition = await fetchDecomposition(intent);
@@ -254,6 +271,7 @@ async function runCheckin(intent, id) {
   checkinKicker.textContent = "Thinking…";
   checkinTitle.textContent = "";
   setCheckinBody("");
+  setCheckinWhy(null);
   checkinActions.innerHTML = "";
   checkinList.innerHTML = "";
 
@@ -311,6 +329,7 @@ function renderDecomposeProposal(intent, subtaskTexts) {
   checkinKicker.textContent = "Looks like more than one thing";
   checkinTitle.textContent = intent.text;
   setCheckinBody("Change anything below. Nothing is saved until you say so.");
+  setCheckinWhy(null);
 
   // { text, included } per row - the round check-icon toggles a row out of the
   // approved set without deleting it (mockup screen 11: no separate remove
@@ -415,13 +434,14 @@ function commitDecomposition(parent, texts, allIntents) {
   parent.subtasks = subtaskIds;
 }
 
-// Reconciles the built per-parent-only rollup above with mockup screen 13
-// ("Rollup check-in view"), which shows a *global* pass: every parent with
-// pending subtasks, grouped by parent, plus other top-level items that are
-// separately resurfacing (stalled/deferred, no subtasks of their own) - one
-// shared "that's enough for now" exit instead of nudging through each parent.
-// Decision #4 in the roadmap ("compiled into a separate check-in section")
-// is about avoiding five separate interruptions; this is that single pass.
+// Rollup check-in (mockup screen 12, resolved to per-parent scope in the
+// refined mockup pass - the earlier global version that pulled every parent's
+// pending subtasks plus unrelated resurfacing items into one screen is
+// retired). One parent, one pass; anything else waits its turn and surfaces
+// next time the entry button is pressed (or from its own feed row via Task
+// detail). Standalone resurfacing items (no subtasks of their own) already
+// have their own check-in reachable straight from the feed - no separate
+// section needed here.
 function pendingSubtasksOf(parent, allIntents) {
   return parent.subtasks
     .map((id) => findIntent(allIntents, id))
@@ -439,19 +459,11 @@ function collectRollupGroups() {
     if (pending.length > 0) parentGroups.push({ parent, pending });
   }
 
-  // "Also resurfacing": standalone items (no subtasks of their own) that are
-  // themselves stalled or deferred - the non-decomposition resurfacing case
-  // mockup 13's second section covers ("Book dentist appointment").
-  const resurfacing = topLevel.filter(
-    (i) => i.subtasks.length === 0 && (i.state === "stalled" || i.state === "deferred")
-  );
-
-  return { parentGroups, resurfacing };
+  return parentGroups;
 }
 
 function updateRollupEntry() {
-  const { parentGroups, resurfacing } = collectRollupGroups();
-  rollupEntry.hidden = parentGroups.length === 0 && resurfacing.length === 0;
+  rollupEntry.hidden = collectRollupGroups().length === 0;
 }
 
 function rollupRow(item, { onDone, onNotYet }) {
@@ -488,8 +500,8 @@ function rollupRow(item, { onDone, onNotYet }) {
   return row;
 }
 
-function renderGlobalRollup() {
-  const { parentGroups, resurfacing } = collectRollupGroups();
+function renderRollup() {
+  const parentGroups = collectRollupGroups();
   activeIntentId = null;
 
   checkinList.innerHTML = "";
@@ -497,9 +509,29 @@ function renderGlobalRollup() {
   document.getElementById("framing-picker").hidden = true;
   checkinSource.textContent = "";
   checkinSource.className = "checkin-source";
-  checkinKicker.textContent = "";
-  checkinTitle.textContent = "A few things, all at once";
-  setCheckinBody("One pass instead of five separate nudges.");
+  setCheckinWhy(null);
+
+  if (parentGroups.length === 0) {
+    checkinKicker.textContent = "";
+    checkinTitle.textContent = "All caught up";
+    setCheckinBody("");
+    checkinActions.innerHTML = "";
+    const exitBtn = document.createElement("button");
+    exitBtn.className = "btn btn-ghost btn-block";
+    exitBtn.style.height = "44px";
+    exitBtn.textContent = "That's enough for now";
+    exitBtn.addEventListener("click", closeCheckin);
+    checkinActions.appendChild(exitBtn);
+    return;
+  }
+
+  // Just the first parent with pending steps - one pass, not a merged view
+  // across unrelated parents. Anything else waits its turn (mockup screen 12).
+  const { parent, pending } = parentGroups[0];
+  const count = pending.length;
+  checkinKicker.textContent = parent.text;
+  checkinTitle.textContent = `${count === 1 ? "One step" : count + " steps"}, one pass`;
+  setCheckinBody("Just this one. Anything else waits its turn.");
 
   function actOn(item, effect) {
     const current = loadIntents();
@@ -509,48 +541,16 @@ function renderGlobalRollup() {
       saveIntents(current);
     }
     renderFeed();
-    renderGlobalRollup();
+    renderRollup();
   }
 
-  for (const { parent, pending } of parentGroups) {
-    const group = document.createElement("div");
-    group.className = "rollup-group";
-    const label = document.createElement("p");
-    label.className = "rollup-group-label";
-    label.textContent = parent.text;
-    group.appendChild(label);
-    for (const sub of pending) {
-      group.appendChild(
-        rollupRow(sub, {
-          onDone: () => actOn(sub, (i) => resolve(i, "done")),
-          onNotYet: () => actOn(sub, (i) => stall(i))
-        })
-      );
-    }
-    checkinList.appendChild(group);
-  }
-
-  if (resurfacing.length > 0) {
-    const group = document.createElement("div");
-    group.className = "rollup-group";
-    const label = document.createElement("p");
-    label.className = "rollup-group-label";
-    label.textContent = "Also resurfacing";
-    group.appendChild(label);
-    for (const item of resurfacing) {
-      group.appendChild(
-        rollupRow(item, {
-          onDone: () => actOn(item, (i) => resolve(i, "done")),
-          onNotYet: () => actOn(item, (i) => stall(i))
-        })
-      );
-    }
-    checkinList.appendChild(group);
-  }
-
-  if (parentGroups.length === 0 && resurfacing.length === 0) {
-    checkinTitle.textContent = "All caught up";
-    setCheckinBody("");
+  for (const sub of pending) {
+    checkinList.appendChild(
+      rollupRow(sub, {
+        onDone: () => actOn(sub, (i) => resolve(i, "done")),
+        onNotYet: () => actOn(sub, (i) => stall(i))
+      })
+    );
   }
 
   checkinActions.innerHTML = "";
@@ -576,9 +576,10 @@ function setCheckinSource(kind, label) {
 // `why` is set when this came from the step-4 model call; absent in the step 2/3
 // rule-based fallback path, which has no transparency signal to offer yet.
 function renderNotSure(intent, why) {
-  checkinKicker.textContent = why || "Asking rather than guessing";
+  checkinKicker.textContent = "Asking rather than guessing";
   checkinTitle.textContent = "Still working on that, or something new?";
   setCheckinBody(`“${intent.text}”`);
+  setCheckinWhy(why);
 
   checkinActions.innerHTML = "";
   const responses = [
@@ -614,7 +615,8 @@ function renderCheckin(framing, why) {
   const copy = framingCopy(intent, framing);
   checkinKicker.textContent = copy.kicker;
   checkinTitle.textContent = copy.title;
-  setCheckinBody([copy.body, why].filter(Boolean).join(" "));
+  setCheckinBody(copy.body);
+  setCheckinWhy(why);
 
   checkinActions.innerHTML = "";
   const actionRow = document.createElement("div");
@@ -653,7 +655,7 @@ function closeCheckin() {
 checkinEl.addEventListener("click", (e) => {
   if (e.target === checkinEl) closeCheckin();
 });
-rollupEntry.addEventListener("click", renderGlobalRollup);
+rollupEntry.addEventListener("click", renderRollup);
 
 // "reset test data" moved into settings.html's "Delete everything" (Data
 // section, mockup screen 11) now that a real settings screen exists.

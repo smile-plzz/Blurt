@@ -92,3 +92,40 @@ not the pieces that need real user testing or native-mobile work):**
   `SpeechRecognition`, which sends audio off-device in Chrome/Edge.
 - Privacy's opt-out tiers (`PRIVACY.md` §2) are designed but need a Schema Agent decision on where
   the `sensitivity`/`excluded_inference_categories` field lives before they're implementable.
+
+---
+
+## Session log — 2026-08-13 (Claude Code, ismai's machine) — UI/UX refinement round-trip
+
+Local clone was 74 commits stale at session start (last synced 2026-08-13's earlier session);
+`git pull` brought it current before any work started. The user sent a Notion brief
+("UI/UX Refinement" page, written earlier this session) to Claude Design, then handed back its
+output as a zip (`UI mockups project kickoff.zip`) containing a refreshed 17-screen mockup set plus
+an auto-generated `github.md` sync summary.
+
+**Correction made mid-session:** the zip's `Blurt Mockups v2.dc.html` looked like the newest file by
+name but was actually the *previous* (14-screen) mockup pass, archived under that name; the true
+latest was `Blurt Mockups.dc.html` (17 screens, matches `github.md`'s sync note). Initial work
+(the "why now" disclosure) was built against content that happened to match either version, but the
+rollup-scope conclusion drawn from the wrong file was backwards and had to be reverted once the
+mistake was caught — see below.
+
+**What shipped, reconciling `web/` against the true-latest mockup's four "drifted behaviours":**
+- Rollup check-in reverted from global (all parents + resurfacing merged into one screen, built
+  2026-08-11) back to per-parent scope, matching the refined mockup's explicit reversal of that
+  earlier decision. `renderGlobalRollup` → `renderRollup`.
+- "Why am I being reminded now" transparency note converted from text concatenated into the
+  check-in body to its own closed-by-default disclosure toggle (`checkin-why-toggle`/`checkin-why`).
+- New resumable Settings persona-edit flow (`review.html`/`review.js`) replacing the old "Edit"
+  link, which restarted the ten-question onboarding from scratch — a documented open item since
+  2026-08-11. `QUESTIONS` extracted from `onboarding.js` into shared `questions.js`.
+- Decomposition's subtask-removal interaction checked against the mockup's annotation (which
+  claimed the build still used delete-row buttons) and found already correct — the annotation was
+  stale, left unchanged after verifying `renderDecomposeProposal` directly.
+- Full 17-screen mockup export synced into `frontend/mockups/` (previously stale, from before the
+  2026-08-11 pass).
+
+**Not reconciled this pass:** Task detail's visual grouping (mockup wants a flat list with day-chip
+tags and one pinned deadline prompt; built version uses three section headers and a focused-card
+pattern that surfaces one prompt at a time). Functionally equivalent, cosmetic-only gap — lower
+priority, flagged in `frontend/README.md`.

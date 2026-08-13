@@ -18,7 +18,7 @@
     </nav>
 
     <main>
-      <button id="rollup-entry" class="rollup-entry btn tag-outline" hidden>a few things, all at once</button>
+      <button id="rollup-entry" class="rollup-entry btn tag-outline" hidden>check in on pending steps</button>
 
       <ul id="feed"></ul>
       <p id="empty" class="text-muted" hidden>nothing captured yet.</p>
@@ -40,6 +40,11 @@
       <p class="card-kicker" id="checkin-kicker"></p>
       <h3 id="checkin-title"></h3>
       <p class="card-body" id="checkin-body"></p>
+      <button type="button" id="checkin-why-toggle" class="checkin-why-toggle" hidden>
+        <span>Why now?</span>
+        <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <p class="checkin-why" id="checkin-why" hidden></p>
       <div id="checkin-list"></div>
       <div class="checkin-actions" id="checkin-actions"></div>
     </div>

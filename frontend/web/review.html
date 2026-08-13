@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blurt — Review your persona</title>
+<meta name="theme-color" content="#f5ead8">
+<link rel="stylesheet" href="/frontend/mockups/_ds/organic-d78833b6-7fe1-4f47-8711-04fb39094145/styles.css">
+<link rel="stylesheet" href="/frontend/web/style.css">
+</head>
+<body>
+  <div class="phone">
+
+    <!-- Mockup screen 15: the resume point is a list of what was already
+         answered, not question one. Replaces the old "Edit restarts the ten-
+         question flow from scratch" behavior (ROADMAP.md open item). -->
+    <section id="step-list" class="onboard-step">
+      <nav class="nav" style="padding:18px 20px 0">
+        <a href="/frontend/web/settings.html" class="btn btn-icon" aria-label="Back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+      </nav>
+      <div style="padding:14px 24px 20px">
+        <h3 style="margin:0 0 8px;font-size:26px;line-height:1.2">What you told me</h3>
+        <p style="font-size:13.5px;opacity:.6;margin:0">Change any one of these. The rest stay as they are.</p>
+      </div>
+      <div id="review-list" style="flex:1;overflow:auto;padding:0 20px 20px;display:flex;flex-direction:column;gap:8px"></div>
+      <div style="padding:8px 24px 40px">
+        <button id="review-walkthrough" class="btn btn-ghost btn-block" style="height:50px;font-size:15px">Walk through all ten</button>
+      </div>
+    </section>
+
+    <!-- Mockup screen 16: same pill layout as onboarding, minus the progress
+         bar - there is no sequence to be partway through. Prior answer is
+         pre-selected. -->
+    <section id="step-edit" class="onboard-step" hidden>
+      <div style="padding:20px 28px 0">
+        <button id="edit-back" class="btn btn-icon" aria-label="Back to the list">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px;gap:30px">
+        <div>
+          <h3 id="edit-title" style="margin:0 0 10px;font-size:30px;line-height:1.2"></h3>
+          <p style="font-size:13px;opacity:.55;margin:0">Your answer is kept unless you change it.</p>
+        </div>
+        <div id="edit-options" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+      <div style="padding:0 24px 40px;display:flex;flex-direction:column;gap:4px">
+        <button id="edit-save" class="btn btn-primary btn-block" style="height:52px;font-size:15px">Save this answer</button>
+        <button id="edit-cancel" class="btn btn-ghost btn-block" style="height:44px">Back to the list</button>
+      </div>
+    </section>
+
+    <!-- Mockup screen 17: confirms the single change and says what stayed -
+         the reason a resumable edit feels safe to open. -->
+    <section id="step-saved" class="onboard-step" hidden>
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 32px;gap:22px">
+        <h3 style="margin:0;font-size:30px;line-height:1.2">Updated. Nothing else changed.</h3>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:flex-start">
+            <div style="width:18px;height:18px;border-radius:50%;background:var(--color-accent-2-500);flex:none;display:flex;align-items:center;justify-content:center;color:var(--color-bg);margin-top:2px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div>
+              <div id="saved-title" style="font-size:15px"></div>
+              <div id="saved-change" style="font-size:13px;opacity:.6;margin-top:2px"></div>
+            </div>
+          </div>
+          <p style="font-size:13.5px;opacity:.6;margin:0;line-height:1.5">Your next check-in will use this. The other answers are untouched.</p>
+        </div>
+      </div>
+      <div style="padding:0 24px 40px">
+        <button id="saved-done" class="btn btn-primary btn-block" style="height:52px;font-size:15px">Done</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/frontend/web/persona.js"></script>
+  <script src="/frontend/web/questions.js"></script>
+  <script src="/frontend/web/review.js"></script>
+</body>
+</html>

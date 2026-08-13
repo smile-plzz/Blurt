@@ -422,6 +422,43 @@ main {
   color: var(--color-accent-700);
 }
 
+/* Mockup screens 07/08: transparency note as its own disclosure — closed by
+   default, never competing with the check-in question for attention. */
+.checkin-why-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  font: inherit;
+  font-size: 12.5px;
+  color: inherit;
+  opacity: .55;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.checkin-why-toggle[hidden] {
+  display: none;
+}
+.checkin-why-toggle .chevron {
+  transition: transform .15s ease;
+}
+.checkin-why-toggle.open .chevron {
+  transform: rotate(180deg);
+}
+.checkin-why {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  opacity: .7;
+  border-left: 2px solid var(--color-neutral-300);
+  padding: 2px 0 2px 12px;
+}
+.checkin-why[hidden] {
+  display: none;
+}
+
 .checkin-actions {
   display: flex;
   flex-direction: column;
