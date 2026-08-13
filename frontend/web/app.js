@@ -172,31 +172,30 @@ function isAmbiguous(intent) {
   return isVagueText(intent.text) || isRepeatStalled(intent);
 }
 
-// Orchestrator Agent, step 4 (AGENTS.md): "Option A" from the roadmap's Section 3.7
-// - one call to /api/infer (Vercel serverless function, api/infer.js) returns
-// moment + urgency + receptivity + framing together. If it fails or the endpoint
-// isn't configured (no MISTRAL_API_KEY, offline, etc.), openCheckin falls back to
-// the step 2/3 rule-based/manual flow below rather than breaking the check-in.
-//
-// Sends the onboarding persona's relevant fields (2026-08-11) so the model actually
-// uses them as priors, per each onboarding question's documented "Changes:" behavior
-// (frontend/mockups/Blurt Onboarding Question Flow.dc.html) - previously the persona
-// was captured at onboarding and then never read again anywhere in the app.
+// Orchestrator Agent (AGENTS.md §6): calls /api/orchestrator (api/orchestrator.js),
+// which runs the two-step persona-read -> reminder-plan pipeline specced in
+// orchestrator/REVIEW.md and returns moment + urgency + receptivity + framing +
+// why (plus schedule_hint/decomposition_candidate, not yet consumed here - the
+// Reminder Agent and decomposition-signal wiring land later). If the call fails
+// or the endpoint isn't configured (no MISTRAL_API_KEY, offline, etc.),
+// openCheckin falls back to the step 2/3 rule-based/manual flow below rather
+// than breaking the check-in. Supersedes the old direct /api/infer call (kept in
+// place as a fallback endpoint during the transition, per REVIEW.md §4) - this
+// function's signature and return shape are unchanged, so nothing downstream of
+// inferDecision() needs to change.
 async function inferDecision(intent) {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
     const persona = loadPersona();
-    const res = await fetch("/api/infer", {
+    const res = await fetch("/api/orchestrator", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        text: intent.text,
-        state: intent.state,
-        stall_count: intent.stall_count,
-        captured_at: intent.captured_at,
-        resolution_status: intent.resolution_status,
-        persona: persona?.onboarding_profile ?? null
+        intent,
+        persona: persona
+          ? { onboarding_profile: persona.onboarding_profile ?? null, inferred_patterns: persona.inferred_patterns ?? null }
+          : null
       }),
       signal: controller.signal
     }).finally(() => clearTimeout(timeout));
