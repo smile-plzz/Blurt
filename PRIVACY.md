@@ -100,12 +100,13 @@ Reusing the onboarding `Q9` `drop_prone_domains` vocabulary and the source doc's
   narrow, non-embarrassing case: a user may want reminders for self-care tasks but not want the persona to learn
   "this person drops self-care a lot."
 
-**Open question for the team:** Does `category` on `intent.json` (currently written by the Persona Agent as an
-*inferred* task category) need a parallel *user-declared* sensitivity marker, or do we add a new field
-(e.g. `sensitivity: "local_only" | "excluded_from_inference" | null`)? The schema Agent should own this — it's a
-schema change, and `category` is currently described as "Inferred task category, written by Persona Agent." A
-user-declared sensitivity flag is a different field with a different writer (Capture Agent at save time). Don't
-overwrite `category`'s semantics.
+**Resolved (2026-08-18):** both fields, not one — they serve different tiers with different writers, per §2a's
+table. `intent.json` 0.4.0 adds `analysis_scope: "cloud_ok" | "local_only"` (tier 1, written by the Capture Agent
+at save time — a different writer and axis than `category`, which stays inferred-only). `persona.json` 0.3.0 adds
+`excluded_inference_categories` (tier 2, a list on the persona so it survives the whole interaction log rather
+than being re-declared per intent). See `schema/SCHEMA.md`'s 0.3.0→0.4.0 and 0.2.0→0.3.0 migration notes. Neither
+field has a UI yet — capture-time opt-out UI, the settings-level global toggle (tier 3), and the settings/privacy
+copy (§3b) are still open (§6 items 2, 4, 5).
 
 ---
 
@@ -306,11 +307,10 @@ Reviewed against: `capture/REVIEW.md`, `frontend/web/app.js`, `frontend/web/sett
 ### 5f. Schema (`schema/intent.json`, `schema/persona.json`) — **within scope, one recommended addition**
 
 - `intent.json` 0.3.0 and `persona.json` 0.2.0 are within the source doc's spec. ✅
-- **Recommended schema addition (Privacy Agent → Schema Agent):** a `sensitivity` field on `intent.json` (or a
-  `excluded_inference_categories` list on `persona.json`) to carry the opt-out tiers from §2. This is a schema change
-  and must be proposed to the Schema Agent, not added unilaterally. See §2c open question. Do not overload the existing
-  `category` field (described as "inferred task category, written by Persona Agent") with a user-declared sensitivity
-  marker.
+- **Schema addition, resolved 2026-08-18:** `intent.json` 0.4.0 adds `analysis_scope` (tier 1) and `persona.json`
+  0.3.0 adds `excluded_inference_categories` (tier 2) to carry the opt-out tiers from §2. See §2c and
+  `schema/SCHEMA.md`'s migration notes. `category` was not overloaded — it stays inferred-only, written by the
+  Persona Agent; the new fields are user-declared with a different writer. UI against these fields is still unbuilt.
 
 ### 5g. Overall assessment
 
@@ -324,8 +324,9 @@ opt-out tiers (at minimum, the "local_only" flag on voice captures as a default)
 
 ## 6. Open Questions for the Team
 
-1. **Opt-out schema shape:** Does `intent.json` get a new `sensitivity` field, or does the persona get an
-   `excluded_inference_categories` list (or both)? Schema Agent to propose. Don't overload `category`.
+1. **Opt-out schema shape:** ~~Does `intent.json` get a new `sensitivity` field, or does the persona get an
+   `excluded_inference_categories` list (or both)?~~ **Resolved 2026-08-18:** both — `intent.json` 0.4.0
+   `analysis_scope` (tier 1) and `persona.json` 0.3.0 `excluded_inference_categories` (tier 2). See §2c.
 2. **Voice default for self-test:** Should voice captures default to `analysis_scope: "local_only"` until the user
    explicitly opts into cloud inference? Conservative default recommended; needs team agreement.
 3. **On-device Whisper timeline:** Is WASM Whisper a v1 goal or later? The Capture Agent's `REVIEW.md` §7 item 2

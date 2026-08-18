@@ -33,7 +33,7 @@ Living checklist owned by the QA & Validation Agent. Source: `blurt-concept.md`'
 |---|---|---|
 | 11 | How many interactions before a persona-based reminder feels noticeably better than a generic one? | open |
 | 12 | Should persona-building lean on explicit self-report or inferred behavior — where do they disagree? | open |
-| 13 | Are there intent categories people don't want captured/analyzed at all (embarrassing, private, medical)? | open (tracked jointly with `PRIVACY.md`) |
+| 13 | Are there intent categories people don't want captured/analyzed at all (embarrassing, private, medical)? | schema shape decided 2026-08-18 (`intent.json` 0.4.0 `analysis_scope`, `persona.json` 0.3.0 `excluded_inference_categories` — see `schema/SCHEMA.md`); opt-out UI still unbuilt (tracked jointly with `PRIVACY.md`) |
 
 ## Adoption / retention ("why would this survive week 3")
 

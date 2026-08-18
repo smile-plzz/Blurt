@@ -4,7 +4,7 @@
   "title": "Intent",
   "description": "Full lifecycle of a single captured intent, from capture to resolution.",
   "type": "object",
-  "schemaVersion": "0.3.0",
+  "schemaVersion": "0.4.0",
   "required": ["id", "text", "captured_at", "resolution_status", "state"],
   "properties": {
     "id": { "type": "string", "description": "UUID for this intent." },
@@ -94,6 +94,12 @@
       "type": "boolean",
       "default": false,
       "description": "True once the system has asked whether this intent has a deadline and the user confirmed it doesn't. Prevents re-asking; the intent then competes in the normal urgency-neutral pool alongside everything else without a deadline (decision #8)."
+    },
+    "analysis_scope": {
+      "type": "string",
+      "enum": ["cloud_ok", "local_only"],
+      "default": "cloud_ok",
+      "description": "User-declared, per-intent opt-out (PRIVACY.md §2, tier 1). Written by Capture Agent at save time - a different writer and a different axis than `category`, which is inferred, not user-declared; do not conflate the two. `local_only` means this intent is exempt from every LLM egress point: `inferDecision()` must skip `/api/infer` and fall back to rule-based framing, and `fetchDecomposition()` must skip `/api/decompose`. The schema default is `cloud_ok`, but PRIVACY.md §2b recommends the Capture Agent write `local_only` as the applied default for voice captures the user hasn't explicitly cleared for analysis - that conservative default is capture-time UX logic, not a schema-level default, since a schema default can't vary by capture_method."
     }
   }
 }
