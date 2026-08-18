@@ -300,9 +300,11 @@ with the user before starting any of these if the ask that sent you here didn't 
 3. **On-device transcription** (`PRIVACY.md` §3's target state) — replace browser-native
    `SpeechRecognition` (which sends audio off-device in Chrome/Edge) with on-device Whisper (WASM).
    Typed fallback must never be removed, before or after this lands.
-4. **Sensitivity/opt-out tiers** (`PRIVACY.md` §2) — designed on paper, not implemented. Needs a schema
-   decision (new field on `intent.json` vs. a list on `persona.json`) before any UI work — don't build
-   the UI first and back into a schema shape.
+4. **Sensitivity/opt-out tiers** (`PRIVACY.md` §2) — schema shape decided 2026-08-18: `intent.json` 0.4.0
+   `analysis_scope` (tier 1, per-intent, Capture Agent) and `persona.json` 0.3.0
+   `excluded_inference_categories` (tier 2, per-category, on the persona). See `schema/SCHEMA.md`'s
+   migration notes. UI (capture-time opt-out control, settings global toggle, §3b privacy copy) is still
+   unbuilt — do not build it without checking in; it needs its own UX decisions this schema pass didn't make.
 5. **`?dev=1` manual framing picker only offers 2 of 4 framings** — cosmetic gap in a dev-only tool,
    lowest priority of this list.
 

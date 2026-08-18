@@ -4,7 +4,7 @@
   "title": "User Persona",
   "description": "Per-user, isolated persona. Never pooled or generalized across users.",
   "type": "object",
-  "schemaVersion": "0.2.0",
+  "schemaVersion": "0.3.0",
   "required": ["user_id", "onboarding_profile", "interaction_log", "inferred_patterns", "active_clarifications"],
   "properties": {
     "user_id": { "type": "string" },
@@ -116,6 +116,15 @@
           "timestamp": { "type": "string", "format": "date-time" }
         }
       }
+    },
+    "excluded_inference_categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["medical", "private", "embarrassing", "work_study", "home_admin", "people", "self_care", "even"]
+      },
+      "default": [],
+      "description": "User-declared opt-out (PRIVACY.md §2, tier 2). Categories the persona must never learn from: the Persona Agent's inference pass filters out any intent whose `category` matches one of these before writing `inferred_patterns`, but the Reminder Agent can still act on the intent normally - exclusion from inference is not exclusion from the reminder loop. Reuses the onboarding Q9 `drop_prone_domains` vocabulary (`work_study`, `home_admin`, `people`, `self_care`, `even`) plus the source doc's three named sensitive categories (`medical`, `private`, `embarrassing`) rather than inventing a parallel taxonomy. Lives on the persona, not per-intent, because it must survive across the whole interaction log, not just one capture."
     }
   }
 }
