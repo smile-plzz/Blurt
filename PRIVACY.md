@@ -16,7 +16,7 @@ exception applies.
 
 **What is local-only (always, today):**
 - Every captured intent (`intent.json` objects in `localStorage` key `blurt_intents_v0.1.0`)
-- The user persona (`persona.json` shape in `localStorage`, key `blurt_persona_v0.2.0`)
+- The user persona (`persona.json` shape in `localStorage`, key `blurt_persona_v0.1.0`)
 - All onboarding answers, voice transcript analysis, interaction log, inferred patterns, active clarifications
 - The `SpeechRecognition`/`saveIntent` flow (Capture Agent — see §3 for the one live network exception)
 
@@ -203,7 +203,7 @@ starting point, and §4 recommends making it more granular.
 
 The existing `settings.js` delete button (`delete-data`) removes:
 - `blurt_intents_v0.1.0` (all intents)
-- `blurt_persona_v0.2.0` (persona)
+- `blurt_persona_v0.1.0` (persona)
 - `blurt_onboarded_v1` (onboarding flag)
 - `blurt_last_open` (last-open timestamp)
 - `sessionStorage` recovery flag

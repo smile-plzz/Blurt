@@ -2,6 +2,14 @@
    type) comes from the "organic" design system linked in index.html
    (frontend/mockups/_ds/organic-.../styles.css), the same one the mockups use. */
 
+/* Safety net, not the fix: decorative elements like .onboard-blob are
+   deliberately positioned partway off-canvas for the bleed effect, and text
+   content (see .feed-text below) is made to wrap rather than force width.
+   This just guarantees neither can ever open horizontal scroll on the page. */
+html, body {
+  overflow-x: hidden;
+}
+
 @keyframes pulse { 0% { transform: scale(1); opacity: .5 } 100% { transform: scale(1.9); opacity: 0 } }
 .pulse-ring {
   position: absolute;
@@ -204,6 +212,8 @@
 .task-row-text {
   flex: 1;
   font-size: 15px;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .task-dot {
@@ -317,6 +327,14 @@ main {
   font-size: 14px;
   opacity: 1;
   flex: 1;
+  /* Captured text is raw and unedited (capture stays dumb - CLAUDE.md), so a
+     row can't assume it only ever holds normal wrappable prose: a pasted URL
+     or a typo with no spaces is a real input, not an edge case to ignore.
+     min-width: 0 lets this flex item shrink below its content's intrinsic
+     width in the first place; overflow-wrap is what then breaks a single
+     unbreakable token instead of the row forcing the whole page wider. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .feed-tag-row {
@@ -546,6 +564,7 @@ main {
 
 .subtask-row .subtask-text {
   flex: 1;
+  min-width: 0;
   font-size: 14px;
   border: none;
   background: transparent;
