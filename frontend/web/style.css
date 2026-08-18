@@ -380,6 +380,14 @@ main {
   text-align: center;
   margin-bottom: 12px;
   height: 44px;
+  /* Its label is built from a captured intent's raw, unedited text (app.js's
+     renderRollup trigger), which can run far longer than this fixed-height
+     pill was sized for - without this, a long one wraps to multiple lines
+     and the extra lines clip against the pill's rounded shape instead of
+     just being unreadable, which reads as broken rather than merely long. */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .rollup-entry[hidden] {
