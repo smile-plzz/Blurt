@@ -305,8 +305,9 @@ with the user before starting any of these if the ask that sent you here didn't 
    `excluded_inference_categories` (tier 2, per-category, on the persona). See `schema/SCHEMA.md`'s
    migration notes. UI (capture-time opt-out control, settings global toggle, §3b privacy copy) is still
    unbuilt — do not build it without checking in; it needs its own UX decisions this schema pass didn't make.
-5. **`?dev=1` manual framing picker only offers 2 of 4 framings** — cosmetic gap in a dev-only tool,
-   lowest priority of this list.
+5. **`?dev=1` manual framing picker only offers 2 of 4 framings** — closed 2026-08-18. The consumer
+   side (`framingCopy()`, `renderCheckin()`) already handled all four modes correctly; only the
+   radiogroup markup was missing `activation-only` and `silent-recovery` options.
 
 ## 7. Explicit "do not touch" list
 
