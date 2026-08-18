@@ -573,6 +573,11 @@ main {
 .subtask-row .subtask-text {
   flex: 1;
   min-width: 0;
+  /* An <input> never wraps, so a proposed subtask longer than the row just
+     stopped mid-word at the box edge with no sign there was more - text-
+     overflow:ellipsis at least tells the user there's more to see (tap in to
+     read/edit the rest; the caret auto-scrolls to it while focused). */
+  text-overflow: ellipsis;
   font-size: 14px;
   border: none;
   background: transparent;
