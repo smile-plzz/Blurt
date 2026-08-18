@@ -167,4 +167,9 @@ main {
   border-left: 2px solid color-mix(in srgb, var(--color-bg) 25%, transparent);
   padding-left: 10px;
   text-align: left;
+  /* Raw, unedited transcript text (capture stays dumb) can be a single long
+     token with no spaces to break on - default word wrapping only breaks at
+     spaces, so without this a long word paints past the 280px column instead
+     of wrapping inside it. Same fix as .feed-text in frontend/web/style.css. */
+  overflow-wrap: anywhere;
 }
